@@ -1,0 +1,250 @@
+/*!
+ * FullCalendar v3.9.0
+ * Docs & License: https://fullcalendar.io/
+ * (c) 2018 Adam Shaw
+ */
+
+h2 {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  color: #002147;
+}
+
+.fancytext {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  color: #002147;
+}
+
+.fancytextsmall {
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  color: #002147;
+}
+
+.midfancytext {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  color: #002147;
+}
+
+.bigfancytext {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  color: #002147;
+}
+
+.normalfancytext {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  color: #002147;
+}
+
+.bigfancytitle {
+  margin-left: 5%;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 35px;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  color: #002147;
+  margin-bottom: 10px;
+}
+
+/*
+The ones below are just for the Title
+*/
+h1 {
+  text-align: center;
+  font-size: 3em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: black;
+  text-shadow: 0 1px 2px rgba(rgb(206, 23, 23), 0.15);
+  text-shadow: 2px 2px #ffffff;
+}
+
+.X:hover {
+  color: CornflowerBlue;
+}
+
+.numberCircle {
+  border-radius: 20%;
+  width: 28px;
+  height: 28px;
+  padding-top: 1.5px;
+  padding-left: 1px;
+  background: #fff;
+  color: #666;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+.numberCircle:hover {
+  background-color: lightgrey;
+}
+
+.numberCircleCurrent {
+  border-radius: 20%;
+  width: 28px;
+  height: 28px;
+  padding-top: 1.5px;
+  padding-left: 1px;
+  background: #fff;
+  border: 2px solid rgb(0, 20, 6);
+  color: white;
+  text-align: center;
+  margin-bottom: 2px;
+  background-color: rgba(60, 186, 200);
+}
+
+.boxItem {
+  border: 2px solid gray;
+  border-radius: 5px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* this class below is for centering specific items */
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+/**
+The below is styling for the react date picker
+ */
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+  display: block;
+  width: 250px;
+}
+
+.modal-content {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+}
+
+.border-radius-2 div {
+  border-radius: 2px !important;
+}
+
+/* Force all image to be rounded off */
+img {
+  border-radius: 15px;
+}
+
+/* Repeating modal css */
+.dot {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  background: #f0f0f0;
+  cursor: pointer;
+}
+
+.selected {
+  background: #1a73e8;
+}
+
+.repeat-form input,
+.delete-repeat-form input {
+  transform: scale(1.5);
+  cursor: pointer;
+  -webkit-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  -o-transform: scale(1.5);
+}
+
+.repeat-form input.input-exception {
+  transform: none;
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+}
+
+.date-picker-btn {
+  margin-left: 94px;
+}
+
+input.date-picker-btn {
+  width: 140px;
+  height: 28px;
+  font-size: 0.9rem;
+}
+
+.repeatOptionDropDown button {
+  background: white;
+  border: 1px solid #ced4da;
+  color: #495057;
+  /* display: block; */
+  white-space: normal;
+  word-break: break-all;
+  text-align: left;
+}
+
+.editGR-datepicker .react-datepicker__input-container {
+  width: inherit;
+}
+
+.editGR-datepicker .react-datepicker-wrapper {
+  width: 100px;
+}
+
+.editGR-datepicker .react-datepicker__input-container input {
+  width: 110px;
+  margin-left: 75px;
+}
+
+.formEltMargin {
+  margin: 15px;
+}
