@@ -1,3 +1,4 @@
+import * as axios from "axios";
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as debug from "debug";
@@ -745,33 +746,52 @@ app.post("/TALogIn", function (req, result) {
   let givenPass = req.body.password;
   let emailId1 = emailId.toLowerCase();
   let emailId_final = formatEmail(emailId1);
-  let db = firebase.firestore();
-  let TAs = db.collection("trusted_advisor");
-  TAs.where("email_id", "==", emailId_final)
-    .get()
-    .then((snapshot) => {
-      //No email matches
-      if (snapshot.empty) {
-        console.log("no user");
-        result.json(false);
+  // console.log(givenPass, emailId_final);
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginTA/";
+
+  axios.get(url + emailId1 + "/" + givenPass).then(
+    (response) => {
+      if (response.data.result) {
+        req.session.user = req.body.username;
+        result.json(req.body.username);
+        return;
       } else {
-        snapshot.forEach((doc) => {
-          //Matching password
-          if (givenPass === doc.data().password_key) {
-            req.session.user = req.body.username;
-            result.json(req.body.username);
-            return;
-          }
-        });
-        // Run following when username/passowrd matches
         console.log("not matching password");
         result.json(false);
       }
-    })
-    .catch((err) => {
-      console.log("Error getting documents", err);
-      result.json(false);
-    });
+    }
+  ).catch((err) => {
+    console.log("Error getting documents", err);
+    result.json(false);
+  });
+
+  // let db = firebase.firestore();
+  // let TAs = db.collection("trusted_advisor");
+  // TAs.where("email_id", "==", emailId_final)
+  //   .get()
+  //   .then((snapshot) => {
+  //     //No email matches
+  //     if (snapshot.empty) {
+  //       console.log("no user");
+  //       result.json(false);
+  //     } else {
+  //       snapshot.forEach((doc) => {
+  //         //Matching password
+  //         if (givenPass === doc.data().password_key) {
+  //           req.session.user = req.body.username;
+  //           result.json(req.body.username);
+  //           return;
+  //         }
+  //       });
+  //       // Run following when username/passowrd matches
+  //       console.log("not matching password");
+  //       result.json(false);
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log("Error getting documents", err);
+  //     result.json(false);
+  //   });
 });
 
 /*
