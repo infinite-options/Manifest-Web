@@ -1,4 +1,4 @@
-import * as axios from "axios";
+import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as debug from "debug";
@@ -914,22 +914,30 @@ app.get("/adduser", function (req, result) {
         auth: oAuth2Client,
         version: "v2",
       });
-
-      let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
-      let body = {
-        email_id: emailId,
-        google_auth_token: token.access_token,
-        google_refresh_token: token.refresh_token,
-        first_name: "New",
-        last_name: "User",
-      };
-      axios.post(url, body)
-      .then(() => {
-        result.redirect("/main?createUser=true&email=" + emailId);
-      })
-      .catch((err) => {
-        console.log("Error getting firebase documents", err);
-        result.json(err);
+      oauth2.userinfo.get((err, res) => {
+        if (err) {
+          result.json(err);
+        } else {
+          let emailId = res.data.email;
+          emailId = formatEmail(emailId);
+          
+          let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
+          let body = {
+            email_id: emailId,
+            google_auth_token: token.access_token,
+            google_refresh_token: token.refresh_token,
+            first_name: "New",
+            last_name: "User",
+          };
+          axios.post(url, body)
+          .then(() => {
+            result.redirect("/main?createUser=true&email=" + emailId);
+          })
+          .catch((err) => {
+            console.log("Error getting firebase documents", err);
+            result.json(err);
+          });
+        }
       });
     });
   });
