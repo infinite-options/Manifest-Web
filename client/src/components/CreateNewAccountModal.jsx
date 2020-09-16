@@ -1,3 +1,4 @@
+import * as axios from "axios";
 import React, { Component } from "react";
 import firebase from "./firebase";
 import {Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstrap";
@@ -24,51 +25,22 @@ export default class AddNewPeople extends Component {
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
   };
 
-  newUserInputSubmit = ()=> {
-    let advisors = firebase.firestore().collection("trusted_advisor")
-    this.state.UserDocsPath.where( 'email_id', '==', this.props.email )
-    .get()
-    .then(
-      ( snapshot ) => {
-        snapshot.forEach((doc) => {
-          this.state.UserDocsPath.doc(doc.id)
-          .update({
-            first_name: this.state.itemToEdit.first_name,
-            last_name: this.state.itemToEdit.last_name,
-            about_me: {have_pic: false, message_card: "", message_day: "", pic: "",
-            "timeSettings": {afternoon: "", dayEnd: "", dayStart: "", evening: "", morning: "", night: "", timeZone: this.state.timeZone}}
-          });
-          console.log(this.props.loggedInEmail)
-          advisors.where( 'email_id', '==', this.props.loggedInEmail ).get()
-          .then(
-            ( snapshot ) => {
-              snapshot.forEach((advisor_doc) => {
-                let found = false
-                advisor_doc.data().users.forEach((user) => {
-                  console.log(doc.id, user.User.id)
-                  if(doc.id == user.User.id){
-                    found = true
-                  }
-                });
-                if (!found) {
-                  advisors.doc(advisor_doc.id)
-                  .update({
-                    users: firebase.firestore.FieldValue.arrayUnion({
-                      Relationship: "advisor",
-                      User: doc.ref
-                    })
-                  }).then(()=>{
-                    this.props.newUserAdded();
-                  });
-                } else {
-                  this.props.newUserAdded();
-                }
-              });
-            })
-          });
-        }
-      );
-    }
+  newUserInputSubmit = () => {
+    axios
+    .post("/updateNewUser",
+    {
+      first_name: this.state.itemToEdit.first_name,
+      last_name: this.state.itemToEdit.last_name,
+      about_me: {have_pic: false, message_card: "", message_day: "", pic: "",
+      "timeSettings": {afternoon: "", dayEnd: "", dayStart: "", evening: "", morning: "", night: "", timeZone: this.state.timeZone}}
+    })
+    .then((result) => {
+       this.props.newUserAdded();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
 
     handleTimeZoneChange = (e) => {
       console.log(e);

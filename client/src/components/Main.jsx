@@ -167,12 +167,7 @@ export default class MainPage extends React.Component {
         .get()
         .then((doc) => {
           if (doc.exists) {
-            // console.log(doc.data());
             var x = doc.data();
-            // console.log("this is the data", x);
-            // console.log(x["goals&routines"]);
-            // x = x["goals&routines"];
-
             let routine = [];
             let routine_ids = [];
             let goal = [];

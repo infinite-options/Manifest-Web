@@ -83,14 +83,14 @@ if (hostname == "manifestmylife") {
 
 firebase.initializeApp(firebaseConfig);
 firebase
-  .auth()
-  .signInAnonymously()
-  .catch(function (error) {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ...
-  });
+.auth()
+.signInAnonymously()
+.catch(function (error) {
+  // Handle Errors here.
+  const errorCode = error.code;
+  const errorMessage = error.message;
+  // ...
+});
 
 if (process.env.NODE_ENV === "development") {
   const compiler = webpack(webpackConfig as any);
@@ -111,7 +111,7 @@ const opn = require("open");
 const readline = require("readline");
 const { google } = require("googleapis");
 let calenAuth = null,
-  calendar = null;
+calendar = null;
 const calendarID = "iodevcalendar@gmail.com"; //Change here for someone else's calendar
 // var calendarID = "pmarathay@gmail.com"
 // var calendarID = "jeremyhmanalo@gmail.com"
@@ -245,131 +245,131 @@ app.get("/isdisplayedugh", (req, res) => {
   let db = firebase.firestore();
   let grs = [];
   db.collection("users")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        if (doc.data()["goals&routines"] != null) {
-          let arrs = doc.data()["goals&routines"];
-          arrs.forEach((gr) => {
-            let startDate = new Date(
-              new Date(gr["start_day_and_time"]).toLocaleString("en-US", {
-                timeZone: "America/Los_Angeles",
-              })
-            );
-            startDate.setHours(0, 0, 0, 0);
-            let isDisplayedTodayCalculated: boolean = false;
-            let repeatOccurences = parseInt(gr["repeat_occurences"]);
-            let repeatEvery = parseInt(gr["repeat_every"]);
-            let repeatEnds = gr["repeat_ends"];
-            let repeatEndsOn: Date = new Date(
-              new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
-                timeZone: "America/Los_Angeles",
-              })
-            );
-            repeatEndsOn.setHours(0, 0, 0, 0);
-            let repeatFrequency: string = gr["repeat_frequency"];
-            let repeatWeekDays: number[] = [];
-            if (gr["repeat_week_days"] != null) {
-              Object.keys(gr["repeat_week_days"]).forEach((k: string) => {
-                if (gr["repeat_week_days"][k] != "") {
-                  repeatWeekDays.push(parseInt(k));
-                }
-              });
-            }
+  .get()
+  .then((snapshot) => {
+    snapshot.forEach((doc) => {
+      if (doc.data()["goals&routines"] != null) {
+        let arrs = doc.data()["goals&routines"];
+        arrs.forEach((gr) => {
+          let startDate = new Date(
+            new Date(gr["start_day_and_time"]).toLocaleString("en-US", {
+              timeZone: "America/Los_Angeles",
+            })
+          );
+          startDate.setHours(0, 0, 0, 0);
+          let isDisplayedTodayCalculated: boolean = false;
+          let repeatOccurences = parseInt(gr["repeat_occurences"]);
+          let repeatEvery = parseInt(gr["repeat_every"]);
+          let repeatEnds = gr["repeat_ends"];
+          let repeatEndsOn: Date = new Date(
+            new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
+              timeZone: "America/Los_Angeles",
+            })
+          );
+          repeatEndsOn.setHours(0, 0, 0, 0);
+          let repeatFrequency: string = gr["repeat_frequency"];
+          let repeatWeekDays: number[] = [];
+          if (gr["repeat_week_days"] != null) {
+            Object.keys(gr["repeat_week_days"]).forEach((k: string) => {
+              if (gr["repeat_week_days"][k] != "") {
+                repeatWeekDays.push(parseInt(k));
+              }
+            });
+          }
 
-            if (!gr.repeat) {
-              isDisplayedTodayCalculated =
-                CurrentDate.getTime() - startDate.getTime() == 0;
-            } else {
-              if (CurrentDate >= startDate) {
-                if (repeatEnds == "On") {
-                } else if (repeatEnds == "After") {
-                  if (repeatFrequency == "DAY") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setDate(
-                      startDate.getDate() + (repeatOccurences - 1) * repeatEvery
-                    );
-                  } else if (repeatFrequency == "WEEK") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setDate(
-                      startDate.getDate() +
-                        (repeatOccurences - 1) * 7 * repeatEvery
-                    );
-                  } else if (repeatFrequency == "MONTH") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setMonth(
-                      startDate.getMonth() +
-                        (repeatOccurences - 1) * repeatEvery
-                    );
-                  } else if (repeatFrequency == "YEAR") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setFullYear(
-                      startDate.getFullYear() +
-                        (repeatOccurences - 1) * repeatEvery
-                    );
-                  }
-                } else if (repeatEnds == "Never") {
-                  repeatEndsOn = CurrentDate;
+          if (!gr.repeat) {
+            isDisplayedTodayCalculated =
+            CurrentDate.getTime() - startDate.getTime() == 0;
+          } else {
+            if (CurrentDate >= startDate) {
+              if (repeatEnds == "On") {
+              } else if (repeatEnds == "After") {
+                if (repeatFrequency == "DAY") {
+                  repeatEndsOn = new Date(startDate);
+                  repeatEndsOn.setDate(
+                    startDate.getDate() + (repeatOccurences - 1) * repeatEvery
+                  );
+                } else if (repeatFrequency == "WEEK") {
+                  repeatEndsOn = new Date(startDate);
+                  repeatEndsOn.setDate(
+                    startDate.getDate() +
+                    (repeatOccurences - 1) * 7 * repeatEvery
+                  );
+                } else if (repeatFrequency == "MONTH") {
+                  repeatEndsOn = new Date(startDate);
+                  repeatEndsOn.setMonth(
+                    startDate.getMonth() +
+                    (repeatOccurences - 1) * repeatEvery
+                  );
+                } else if (repeatFrequency == "YEAR") {
+                  repeatEndsOn = new Date(startDate);
+                  repeatEndsOn.setFullYear(
+                    startDate.getFullYear() +
+                    (repeatOccurences - 1) * repeatEvery
+                  );
                 }
+              } else if (repeatEnds == "Never") {
+                repeatEndsOn = CurrentDate;
+              }
 
-                if (CurrentDate <= repeatEndsOn) {
-                  if (repeatFrequency == "DAY") {
-                    isDisplayedTodayCalculated =
-                      Math.floor(
-                        (CurrentDate.getTime() - startDate.getTime()) /
-                          (24 * 3600 * 1000)
-                      ) %
-                        repeatEvery ==
-                      0;
-                  } else if (repeatFrequency == "WEEK") {
-                    isDisplayedTodayCalculated =
-                      repeatWeekDays.includes(CurrentDate.getDay()) &&
-                      Math.floor(
-                        (CurrentDate.getTime() - startDate.getTime()) /
-                          (7 * 24 * 3600 * 1000)
-                      ) %
-                        repeatEvery ==
-                        0;
-                  } else if (repeatFrequency == "MONTH") {
-                    isDisplayedTodayCalculated =
-                      CurrentDate.getDate() == startDate.getDate() &&
-                      ((CurrentDate.getFullYear() - startDate.getFullYear()) *
-                        12 +
-                        CurrentDate.getMonth() -
-                        startDate.getMonth()) %
-                        repeatEvery ==
-                        0;
-                  } else if (repeatFrequency == "YEAR") {
-                    isDisplayedTodayCalculated =
-                      startDate.getDate() == CurrentDate.getDate() &&
-                      CurrentDate.getMonth() == startDate.getMonth() &&
-                      (CurrentDate.getFullYear() - startDate.getFullYear()) %
-                        repeatEvery ==
-                        0;
-                  }
+              if (CurrentDate <= repeatEndsOn) {
+                if (repeatFrequency == "DAY") {
+                  isDisplayedTodayCalculated =
+                  Math.floor(
+                    (CurrentDate.getTime() - startDate.getTime()) /
+                    (24 * 3600 * 1000)
+                  ) %
+                  repeatEvery ==
+                  0;
+                } else if (repeatFrequency == "WEEK") {
+                  isDisplayedTodayCalculated =
+                  repeatWeekDays.includes(CurrentDate.getDay()) &&
+                  Math.floor(
+                    (CurrentDate.getTime() - startDate.getTime()) /
+                    (7 * 24 * 3600 * 1000)
+                  ) %
+                  repeatEvery ==
+                  0;
+                } else if (repeatFrequency == "MONTH") {
+                  isDisplayedTodayCalculated =
+                  CurrentDate.getDate() == startDate.getDate() &&
+                  ((CurrentDate.getFullYear() - startDate.getFullYear()) *
+                  12 +
+                  CurrentDate.getMonth() -
+                  startDate.getMonth()) %
+                  repeatEvery ==
+                  0;
+                } else if (repeatFrequency == "YEAR") {
+                  isDisplayedTodayCalculated =
+                  startDate.getDate() == CurrentDate.getDate() &&
+                  CurrentDate.getMonth() == startDate.getMonth() &&
+                  (CurrentDate.getFullYear() - startDate.getFullYear()) %
+                  repeatEvery ==
+                  0;
                 }
               }
             }
-            grs.push({
-              userId: doc.id,
-              title: gr.title,
-              repeat: gr.repeat,
-              startDate: startDate,
-              repeatOccurences: repeatOccurences,
-              repeatEndsOn: repeatEndsOn,
-              currentDate: CurrentDate,
-              isDisplayedToday: gr["is_displayed_today"],
-              isDisplayedTodayCalculated: isDisplayedTodayCalculated,
-            });
-            // gr["is_displayed_today"] = isDisplayedTodayCalculated
+          }
+          grs.push({
+            userId: doc.id,
+            title: gr.title,
+            repeat: gr.repeat,
+            startDate: startDate,
+            repeatOccurences: repeatOccurences,
+            repeatEndsOn: repeatEndsOn,
+            currentDate: CurrentDate,
+            isDisplayedToday: gr["is_displayed_today"],
+            isDisplayedTodayCalculated: isDisplayedTodayCalculated,
           });
-          // db.collection("users")
-          // .doc(doc.id)
-          // .update({ "goals&routines": arrs });
-        }
-      });
-      res.json(grs);
+          // gr["is_displayed_today"] = isDisplayedTodayCalculated
+        });
+        // db.collection("users")
+        // .doc(doc.id)
+        // .update({ "goals&routines": arrs });
+      }
     });
+    res.json(grs);
+  });
 });
 
 app.get("/ishistoryugh", (req, res) => {
@@ -381,47 +381,47 @@ app.get("/ishistoryugh", (req, res) => {
   // log for previous day
   date.setDate(date.getDate() - 1);
   let date_string =
-    date.getFullYear() +
-    "_" +
-    (date.getMonth() > 8 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) +
-    "_" +
-    (date.getDate() > 9 ? date.getDate() : "0" + date.getDate());
+  date.getFullYear() +
+  "_" +
+  (date.getMonth() > 8 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) +
+  "_" +
+  (date.getDate() > 9 ? date.getDate() : "0" + date.getDate());
   let users = [];
   let db = firebase.firestore();
   db.collection("users")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        var data = doc.data()["goals&routines"];
-        if (data != null) {
-          let usr = {
-            email_id: doc.data().email_id,
-            "goals&routines": [],
-            user_id: doc.id,
-          };
-          data.forEach((gr) => {
-            usr["goals&routines"].push({
-              id: gr["id"],
-              title: gr["title"],
-              is_complete: gr["is_complete"],
-            });
+  .get()
+  .then((snapshot) => {
+    snapshot.forEach((doc) => {
+      var data = doc.data()["goals&routines"];
+      if (data != null) {
+        let usr = {
+          email_id: doc.data().email_id,
+          "goals&routines": [],
+          user_id: doc.id,
+        };
+        data.forEach((gr) => {
+          usr["goals&routines"].push({
+            id: gr["id"],
+            title: gr["title"],
+            is_complete: gr["is_complete"],
           });
-          users.push(usr);
-        }
-      });
-      users.forEach((usr) => {
-        let docRef = db.collection("history").doc(usr.user_id);
-        let logRef = docRef.collection("goals&routines").doc(date_string);
-        docRef.set({
-          email_id: usr.email_id,
         });
-        logRef.set({
-          date: date_string,
-          log: usr["goals&routines"],
-        });
-      });
-      res.json("Success");
+        users.push(usr);
+      }
     });
+    users.forEach((usr) => {
+      let docRef = db.collection("history").doc(usr.user_id);
+      let logRef = docRef.collection("goals&routines").doc(date_string);
+      docRef.set({
+        email_id: usr.email_id,
+      });
+      logRef.set({
+        date: date_string,
+        log: usr["goals&routines"],
+      });
+    });
+    res.json("Success");
+  });
 });
 
 //Landing Page
@@ -736,6 +736,12 @@ function formatEmail(email) {
   return email[0].concat(email[1]); // The function returns the product of p1 and p2
 }
 
+app.post("/updateNewUser", function (req, result) {
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
+  console.log("test");
+  result.json("test");
+});
+
 /*
 Log in ROUTE:
 Attempt to sign in as trusted advisor
@@ -746,10 +752,9 @@ app.post("/TALogIn", function (req, result) {
   let givenPass = req.body.password;
   let emailId1 = emailId.toLowerCase();
   let emailId_final = formatEmail(emailId1);
-  // console.log(givenPass, emailId_final);
   let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginTA/";
 
-  axios.get(url + emailId1 + "/" + givenPass).then(
+  axios.get(url + emailId_final + "/" + givenPass).then(
     (response) => {
       if (response.data.result) {
         req.session.user = req.body.username;
@@ -764,34 +769,6 @@ app.post("/TALogIn", function (req, result) {
     console.log("Error getting documents", err);
     result.json(false);
   });
-
-  // let db = firebase.firestore();
-  // let TAs = db.collection("trusted_advisor");
-  // TAs.where("email_id", "==", emailId_final)
-  //   .get()
-  //   .then((snapshot) => {
-  //     //No email matches
-  //     if (snapshot.empty) {
-  //       console.log("no user");
-  //       result.json(false);
-  //     } else {
-  //       snapshot.forEach((doc) => {
-  //         //Matching password
-  //         if (givenPass === doc.data().password_key) {
-  //           req.session.user = req.body.username;
-  //           result.json(req.body.username);
-  //           return;
-  //         }
-  //       });
-  //       // Run following when username/passowrd matches
-  //       console.log("not matching password");
-  //       result.json(false);
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.log("Error getting documents", err);
-  //     result.json(false);
-  //   });
 });
 
 /*
@@ -803,27 +780,23 @@ app.post("/TASocialLogIn", function (req, result) {
   let emailId = req.body.username;
   let emailId1 = emailId.toLowerCase();
   let emailId_final = formatEmail(emailId1);
-  let db = firebase.firestore();
-  let TAs = db.collection("trusted_advisor");
-  TAs.where("email_id", "==", emailId_final)
-    .get()
-    .then((snapshot) => {
-      //No email matches
-      if (snapshot.empty) {
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginSocialTA/";
+
+  axios.get(url + emailId_final).then(
+    (response) => {
+      if (response.data.result) {
+        req.session.user = req.body.username;
+        result.json(req.body.username);
+        return;
+      } else {
         console.log("no user");
         result.json(false);
-      } else {
-        snapshot.forEach((doc) => {
-          req.session.user = req.body.username;
-          result.json(req.body.username);
-          return;
-        });
       }
-    })
-    .catch((err) => {
-      console.log("Error getting documents", err);
-      result.json(false);
-    });
+    }
+  ).catch((err) => {
+    console.log("Error getting documents", err);
+    result.json(false);
+  });
 });
 
 /*
@@ -855,23 +828,23 @@ Trusted advisor sign up
 app.post("/TASignUp", function (req, result) {
   let db = firebase.firestore();
   let newTARef = db.collection("trusted_advisor").doc();
-  newTARef
-    .set({
-      email_id: formatEmail(req.body.username),
-      password_key: req.body.password,
-      phone_number: req.body.phoneNumber,
-      first_name: req.body.fName,
-      last_name: req.body.lName,
-      employer: req.body.employer,
-      users: [],
-    })
-    .then(() => {
-      result.json(true);
-    })
-    .catch((err) => {
-      console.log("Error writing", err);
-      result.json(false);
-    });
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewTA";
+  let body = {
+    email_id: formatEmail(req.body.username),
+    password: req.body.password,
+    first_name: req.body.fName,
+    last_name: req.body.lName,
+    phone_number: req.body.phoneNumber,
+    employer: req.body.employer,
+  };
+  axios.post(url, body)
+  .then(() => {
+    result.json(true);
+  })
+  .catch((err) => {
+    console.log("Error writing", err);
+    result.json(false);
+  });
 });
 
 /*
@@ -882,22 +855,22 @@ app.post("/TASocialSignUp", function (req, result) {
   //console.log(req.body);
   let db = firebase.firestore();
   let newTARef = db.collection("trusted_advisor").doc();
-  newTARef
-    .set({
-      email_id: formatEmail(req.body.username),
-      phone_number: req.body.phoneNumber,
-      first_name: req.body.fName,
-      last_name: req.body.lName,
-      employer: req.body.employer,
-      users: [],
-    })
-    .then(() => {
-      result.json(true);
-    })
-    .catch((err) => {
-      console.log("Error writing", err);
-      result.json(false);
-    });
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewSocialTA";
+  let body = {
+    email_id: formatEmail(req.body.username),
+    first_name: req.body.fName,
+    last_name: req.body.lName,
+    phone_number: req.body.phoneNumber,
+    employer: req.body.employer,
+  };
+  axios.post(url, body)
+  .then(() => {
+    result.json(true);
+  })
+  .catch((err) => {
+    console.log("Error writing", err);
+    result.json(false);
+  });
 });
 
 app.get("/auth-url", function (req, result) {
@@ -941,50 +914,22 @@ app.get("/adduser", function (req, result) {
         auth: oAuth2Client,
         version: "v2",
       });
-      oauth2.userinfo.get((err, res) => {
-        if (err) {
-          result.json(err);
-        } else {
-          let emailId = res.data.email;
-          emailId = formatEmail(emailId);
 
-          let db = firebase.firestore();
-          let users = db.collection("users");
-          users
-            .where("email_id", "==", emailId)
-            .get()
-            .then((snapshot) => {
-              if (snapshot.empty) {
-                // Add tokens to firebase
-                let newClientRef = users.doc();
-                newClientRef.set({
-                  email_id: emailId,
-                  google_auth_token: token.access_token,
-                  google_refresh_token: token.refresh_token,
-                  first_name: "New",
-                  last_name: "User",
-                });
-                result.redirect("/main?createUser=true&email=" + emailId);
-              } else {
-                //##############################################################################
-                // Fix this to give error not update
-                //##############################################################################
-                snapshot.forEach((doc) => {
-                  users.doc(doc.id).update({
-                    google_auth_token: token.access_token,
-                    google_refresh_token: token.refresh_token,
-                    first_name: "New",
-                    last_name: "User",
-                  });
-                });
-                result.redirect("/main?createUser=true&email=" + emailId);
-              }
-            })
-            .catch((err) => {
-              console.log("Error getting firebase documents", err);
-              result.json(err);
-            });
-        }
+      let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
+      let body = {
+        email_id: emailId,
+        google_auth_token: token.access_token,
+        google_refresh_token: token.refresh_token,
+        first_name: "New",
+        last_name: "User",
+      };
+      axios.post(url, body)
+      .then(() => {
+        result.redirect("/main?createUser=true&email=" + emailId);
+      })
+      .catch((err) => {
+        console.log("Error getting firebase documents", err);
+        result.json(err);
       });
     });
   });
@@ -1006,11 +951,11 @@ app.get("/adduser", function (req, result) {
 //Below is all the google authorization code
 
 /**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
+* Create an OAuth2 client with the given credentials, and then execute the
+* given callback function.
+* @param {Object} credentials The authorization client credentials.
+* @param {function} callback The callback to call with the authorized client.
+*/
 function authorize(credentials, callback) {
   const { client_secret, client_id, redirect_uris } = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
@@ -1039,31 +984,31 @@ function authorizeById(credentials, id, callback) {
   const db = firebase.firestore();
   if (id) {
     db.collection("users")
-      .doc(id)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.data().google_auth_token) {
-          //console.log(snapshot.data().google_auth_token);
-          oAuth2Client.setCredentials({
-            access_token: snapshot.data().google_auth_token,
-            refresh_token: snapshot.data().google_refresh_token,
-          });
-          //console.log({
-          //  access_token: snapshot.data().google_auth_token,
-          //  refresh_token: snapshot.data().google_refresh_token,
-          //});
-          callback(oAuth2Client);
-        }
-      });
+    .doc(id)
+    .get()
+    .then((snapshot) => {
+      if (snapshot.data().google_auth_token) {
+        //console.log(snapshot.data().google_auth_token);
+        oAuth2Client.setCredentials({
+          access_token: snapshot.data().google_auth_token,
+          refresh_token: snapshot.data().google_refresh_token,
+        });
+        //console.log({
+        //  access_token: snapshot.data().google_auth_token,
+        //  refresh_token: snapshot.data().google_refresh_token,
+        //});
+        callback(oAuth2Client);
+      }
+    });
   }
 }
 
 /**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
+* Get and store new token after prompting for user authorization, and then
+* execute the given callback with the authorized OAuth2 client.
+* @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+* @param {getEventsCallback} callback The callback for the authorized client.
+*/
 function getAccessToken(oAuth2Client, callback) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
@@ -1091,9 +1036,9 @@ function getAccessToken(oAuth2Client, callback) {
 }
 
 /**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
+* Lists the next 10 events on the user's primary calendar.
+* @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+*/
 function saveCredentials(auth) {
   //Tyler: saveCredentials has been altered to just set-up, no listing events
   //console.log("saveCredentials", auth);
@@ -1142,13 +1087,13 @@ if (process.env.SUDO_USER != undefined) {
   options["key"] = fs.readFileSync(key_url);
   options["cert"] = fs.readFileSync(cert_url);
   http
-    .createServer(function (req, res) {
-      res.writeHead(301, {
-        Location: "https://" + req.headers["host"] + req.url,
-      });
-      res.end();
-    })
-    .listen(80);
+  .createServer(function (req, res) {
+    res.writeHead(301, {
+      Location: "https://" + req.headers["host"] + req.url,
+    });
+    res.end();
+  })
+  .listen(80);
 } else {
   //console.log("Local Host");
   options["key"] = fs.readFileSync("privkey.pem");
@@ -1156,7 +1101,7 @@ if (process.env.SUDO_USER != undefined) {
   const listener = app.listen(process.env.PORT || 80, () => {
     const address = listener.address() as AddressInfo;
     if (process.env.NODE_ENV === "development")
-      debugLog(`Listening on ${address.address}:${address.port}`);
+    debugLog(`Listening on ${address.address}:${address.port}`);
   });
 }
 
