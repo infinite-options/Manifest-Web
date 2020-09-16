@@ -736,10 +736,23 @@ function formatEmail(email) {
   return email[0].concat(email[1]); // The function returns the product of p1 and p2
 }
 
-app.post("/updateNewUser", function (req, result) {
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
-  console.log("test");
-  result.json("test");
+app.post("/updateNameTimeZone", function (req, result) {
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNameTimeZone";
+  let body = {
+    email_id: formatEmail(req.body.email),
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    about_me: req.body.about_me,
+  };
+  console.log(body);
+  axios.post(url, body)
+  .then((response) => {
+    result.json("")
+  })
+  .catch((err) => {
+    console.log("Error getting documents", err);
+    result.json(false);
+  });
 });
 
 /*
@@ -920,7 +933,7 @@ app.get("/adduser", function (req, result) {
         } else {
           let emailId = res.data.email;
           emailId = formatEmail(emailId);
-          
+
           let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
           let body = {
             email_id: emailId,
@@ -929,6 +942,7 @@ app.get("/adduser", function (req, result) {
             first_name: "New",
             last_name: "User",
           };
+          console.log(body);
           axios.post(url, body)
           .then(() => {
             result.redirect("/main?createUser=true&email=" + emailId);

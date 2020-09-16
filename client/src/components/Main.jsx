@@ -343,6 +343,7 @@ export default class MainPage extends React.Component {
     const db = firebase.firestore();
     const docRef = db.collection("users");
     const trustedAd = db.collection("trusted_advisor");
+
     docRef.get().then((usersArray) => {
       trustedAd
         .get()
@@ -379,93 +380,43 @@ export default class MainPage extends React.Component {
               }
             }
             if (advisors.length <= 0) continue;
-
-            // console.log("this is the user should be 3 times", x);
-
-            // console.log(user.data());
             let firstName = x.first_name || "";
             let lastName = x.last_name || "";
             let name = firstName + " " + lastName;
             let picURL = "";
-            // console.log("this is x", x);
-            //  console.log(x["about_me"]);
             if (x["about_me"] !== undefined) {
               picURL = x["about_me"].pic;
-              // console.log("we got in");
             }
 
             profilePicURLArray.push(picURL);
-            //I know what went wrong need to change picURL with the id bc can have multiple picurl with same thing.
-            //so have to change structure of whole thing.
-            // console.log("this is the picURL", picURL);
             nameIdObject[id] = name;
             timeZoneObject[id] = theTimeZone;
-            // namePicObject[picURL] = name;
-            // console.log(x["about_me"]  );
-            // db.collection("users").doc(user.id).get()
-            //   .then()
-
-            // if(this.state.currentUserId=== ""){
             theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
             theCurrentUserPic = profilePicURLArray[0];
             theCurrentUserId = Object.keys(nameIdObject)[0];
-            // }else{
-            //   theCurrentUserName = this.state.userIdAndNames[this.state.currentUserId];
-            //   theCurrentUserPic = this.state.currentUserPicUrl;
-            //   theCurrentUserId = this.state.currentUserId;
-            // }
+
+            this.setState(
+              {
+                userIdAndNames: nameIdObject,
+                userTimeZone: timeZoneObject,
+                enableNameDropDown: true,
+                userPicsArray: profilePicURLArray,
+                currentUserPicUrl: theCurrentUserPic,
+                currentUserId: theCurrentUserId,
+                currentUserName: theCurrentUserName,
+                currentUserTimeZone: theTimeZone,
+              },
+              () => {
+                this.grabFireBaseRoutinesGoalsData();
+                this.updateEventsArray();
+              }
+            );
           }
-          // console.log("this is the object for name and pic after",namePicObject);
-          this.setState(
-            {
-              userIdAndNames: nameIdObject,
-              userTimeZone: timeZoneObject,
-              enableNameDropDown: true,
-              // currentProfilePicUrl: Object.keys(nameIdObject)[0],
-              userPicsArray: profilePicURLArray,
-              currentUserPicUrl: theCurrentUserPic,
-              currentUserId: theCurrentUserId,
-              currentUserName: theCurrentUserName,
-              currentUserTimeZone: theTimeZone,
-              // currentUserPicUrl: profilePicURLArray[0],
-              // currentUserId: Object.keys(nameIdObject)[0],
-              // currentUserName: nameIdObject[Object.keys(nameIdObject)[0]]
-            },
-            () => {
-              this.grabFireBaseRoutinesGoalsData();
-              this.updateEventsArray();
-            }
-          );
         })
         .catch(function (error) {
           console.log("Error getting document:", error);
         });
     });
-    // console.log("this is doc", usersArray.docs);
-
-    // const db = firebase.firestore();
-    // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
-    // docRef
-    //   .get()
-    //   .then((doc) => {
-    //     if (doc.exists) {
-
-    //       var x = doc.data();
-    //       var firstName = x.first_name;
-    //       var lastName = x.last_name;
-    //       // console.log("this is x.data", x.last_name);
-    //       x = x["about_me"];
-    //       this.setState({
-    //         profilePicUrl: x.pic,
-    //         profileName: firstName + " " + lastName,
-    //       });
-    //     } else {
-    //       console.log("No such document!");
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log("Error getting document:", error);
-    //   });
   };
 
   /*

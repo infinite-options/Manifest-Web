@@ -27,8 +27,9 @@ export default class AddNewPeople extends Component {
 
   newUserInputSubmit = () => {
     axios
-    .post("/updateNewUser",
+    .post("/updateNameTimeZone",
     {
+      email: this.props.loggedInEmail,
       first_name: this.state.itemToEdit.first_name,
       last_name: this.state.itemToEdit.last_name,
       about_me: {have_pic: false, message_card: "", message_day: "", pic: "",
