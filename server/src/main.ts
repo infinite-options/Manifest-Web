@@ -787,10 +787,8 @@ Attempt to sign in as trusted advisor
 */
 app.get("/usersOfTA", function (req, result) {
   let emailId = req.query.emailId;
-  let emailId1 = emailId.toLowerCase();
-  let emailId_final = formatEmail(emailId1);
   let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersOfTA/";
-  axios.get(url + emailId_final).then(
+  axios.get(url + emailId).then(
     (response) => {
       result.json(response.data.result);
     }
