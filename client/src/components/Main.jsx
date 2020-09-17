@@ -351,15 +351,19 @@ export default class MainPage extends React.Component {
       let theCurrentUserPic = "";
       let theCurrentUserId = "";
       let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      response.data.forEach((d, i) => {
-        let id = d.user_unique_id;
-        profilePicURLArray.push(d.picture);
-        nameIdObject[id] = d.user_name;
-        timeZoneObject[id] = d.time_zone;
-      });
-      theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
-      theCurrentUserPic = profilePicURLArray[0];
-      theCurrentUserId = Object.keys(nameIdObject)[0];
+
+      if(response.data.length != 0) {
+        response.data.forEach((d, i) => {
+          let id = d.user_unique_id;
+          profilePicURLArray.push(d.picture);
+          nameIdObject[id] = d.user_name;
+          timeZoneObject[id] = d.time_zone;
+        });
+        theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
+        theCurrentUserPic = profilePicURLArray[0];
+        theCurrentUserId = Object.keys(nameIdObject)[0];
+      }
+
       this.setState(
         {
           userIdAndNames: nameIdObject,
@@ -373,8 +377,8 @@ export default class MainPage extends React.Component {
           currentUserTimeZone: theTimeZone,
         },
         () => {
-          this.grabFireBaseRoutinesGoalsData();
-          this.updateEventsArray();
+          // this.grabFireBaseRoutinesGoalsData();
+          // this.updateEventsArray();
         }
       );
     });
