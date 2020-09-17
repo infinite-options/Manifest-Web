@@ -33,8 +33,7 @@ export default class AddNewPeople extends Component {
       email: this.props.email,
       first_name: this.state.itemToEdit.first_name,
       last_name: this.state.itemToEdit.last_name,
-      about_me: {have_pic: false, message_card: "", message_day: "", pic: "",
-      "timeSettings": {afternoon: "", dayEnd: "", dayStart: "", evening: "", morning: "", night: "", timeZone: this.state.timeZone}}
+      timeZone: this.state.timeZone
     })
     .then((result) => {
        this.props.newUserAdded();

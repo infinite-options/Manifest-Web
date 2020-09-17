@@ -743,7 +743,7 @@ app.post("/updateNewUser", function (req, result) {
     email: formatEmail(req.body.email),
     first_name: req.body.first_name,
     last_name: req.body.last_name,
-    about_me: req.body.about_me,
+    timeZone: req.body.timeZone,
   };
   console.log(body);
   axios.post(url, body)
