@@ -737,7 +737,7 @@ function formatEmail(email) {
 }
 
 app.post("/updateNewUser", function (req, result) {
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNameTimeZone";
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
   let body = {
     ta_email: req.body.ta_email,
     email: formatEmail(req.body.email),
