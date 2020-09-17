@@ -29,7 +29,8 @@ export default class AddNewPeople extends Component {
     axios
     .post("/updateNameTimeZone",
     {
-      email: this.props.loggedInEmail,
+      ta_email: this.props.loggedInEmail,
+      email: this.props.email,
       first_name: this.state.itemToEdit.first_name,
       last_name: this.state.itemToEdit.last_name,
       about_me: {have_pic: false, message_card: "", message_day: "", pic: "",

@@ -340,83 +340,117 @@ export default class MainPage extends React.Component {
   };
 
   updateProfileFromFirebase = () => {
-    const db = firebase.firestore();
-    const docRef = db.collection("users");
-    const trustedAd = db.collection("trusted_advisor");
-
-    docRef.get().then((usersArray) => {
-      trustedAd
-        .get()
-        .then((advisorArray) => {
-          let nameIdObject = {};
-          let timeZoneObject = {};
-          let profilePicURLArray = [];
-          let theCurrentUserName = "";
-          let theCurrentUserPic = "";
-          let theCurrentUserId = "";
-          let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          for (let user of usersArray.docs) {
-            // console.log("this is x before", user.id);
-            let id = user.id;
-            let x = user.data();
-            var advisors = [];
-            for (let advisor of advisorArray.docs) {
-              this.state.advisorIdAndNames[advisor.id] = advisor.data();
-              if (advisor.data().users) {
-                if (this.state.loggedIn == advisor.data().email_id) {
-                  for (let u of advisor.data().users) {
-                    if (u.User.id == id) {
-                      advisors.push(u.User.id);
-                      if (
-                        x.about_me != undefined &&
-                        x.about_me.timeSettings != undefined &&
-                        x.about_me.timeSettings.timeZone != ""
-                      ) {
-                        theTimeZone = x.about_me.timeSettings.timeZone;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            if (advisors.length <= 0) continue;
-            let firstName = x.first_name || "";
-            let lastName = x.last_name || "";
-            let name = firstName + " " + lastName;
-            let picURL = "";
-            if (x["about_me"] !== undefined) {
-              picURL = x["about_me"].pic;
-            }
-
-            profilePicURLArray.push(picURL);
-            nameIdObject[id] = name;
-            timeZoneObject[id] = theTimeZone;
-            theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
-            theCurrentUserPic = profilePicURLArray[0];
-            theCurrentUserId = Object.keys(nameIdObject)[0];
-
-            this.setState(
-              {
-                userIdAndNames: nameIdObject,
-                userTimeZone: timeZoneObject,
-                enableNameDropDown: true,
-                userPicsArray: profilePicURLArray,
-                currentUserPicUrl: theCurrentUserPic,
-                currentUserId: theCurrentUserId,
-                currentUserName: theCurrentUserName,
-                currentUserTimeZone: theTimeZone,
-              },
-              () => {
-                this.grabFireBaseRoutinesGoalsData();
-                this.updateEventsArray();
-              }
-            );
-          }
-        })
-        .catch(function (error) {
-          console.log("Error getting document:", error);
-        });
+    console.log(this.state.loggedIn);
+    axios.get("/usersOfTA?emailId=" + this.state.loggedIn)
+    .then((response) => {
+      console.log(response.data);
+      let nameIdObject = {};
+      let timeZoneObject = {};
+      let profilePicURLArray = [];
+      let theCurrentUserName = "";
+      let theCurrentUserPic = "";
+      let theCurrentUserId = "";
+      let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      response.data.forEach((d, i) => {
+      });
     });
+
+    // this.setState(
+    //   {
+    //     userIdAndNames: nameIdObject,
+    //     userTimeZone: timeZoneObject,
+    //     userPicsArray: profilePicURLArray,
+    //
+    //     enableNameDropDown: true,
+    //     currentUserPicUrl: theCurrentUserPic,
+    //     currentUserId: theCurrentUserId,
+    //     currentUserName: theCurrentUserName,
+    //     currentUserTimeZone: theTimeZone,
+    //   },
+    //   () => {
+    //     this.grabFireBaseRoutinesGoalsData();
+    //     this.updateEventsArray();
+    //   }
+    // );
+
+      // const db = firebase.firestore();
+      // const docRef = db.collection("users");
+      // const trustedAd = db.collection("trusted_advisor");
+    //
+    // docRef.get().then((usersArray) => {
+    //   trustedAd
+    //     .get()
+    //     .then((advisorArray) => {
+    //       let nameIdObject = {};
+    //       let timeZoneObject = {};
+    //       let profilePicURLArray = [];
+    //       let theCurrentUserName = "";
+    //       let theCurrentUserPic = "";
+    //       let theCurrentUserId = "";
+    //       let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    //       for (let user of usersArray.docs) {
+    //         // console.log("this is x before", user.id);
+    //         let id = user.id;
+    //         let x = user.data();
+    //         var advisors = [];
+    //         for (let advisor of advisorArray.docs) {
+    //           this.state.advisorIdAndNames[advisor.id] = advisor.data();
+    //           if (advisor.data().users) {
+    //             if (this.state.loggedIn == advisor.data().email_id) {
+    //               for (let u of advisor.data().users) {
+    //                 if (u.User.id == id) {
+    //                   advisors.push(u.User.id);
+    //                   if (
+    //                     x.about_me != undefined &&
+    //                     x.about_me.timeSettings != undefined &&
+    //                     x.about_me.timeSettings.timeZone != ""
+    //                   ) {
+    //                     theTimeZone = x.about_me.timeSettings.timeZone;
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //         if (advisors.length <= 0) continue;
+    //         let firstName = x.first_name || "";
+    //         let lastName = x.last_name || "";
+    //         let name = firstName + " " + lastName;
+    //         let picURL = "";
+    //         if (x["about_me"] !== undefined) {
+    //           picURL = x["about_me"].pic;
+    //         }
+    //
+    //         profilePicURLArray.push(picURL);
+            // nameIdObject[id] = name;
+            // timeZoneObject[id] = theTimeZone;
+            // theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
+            // theCurrentUserPic = profilePicURLArray[0];
+            // theCurrentUserId = Object.keys(nameIdObject)[0];
+
+    //         this.setState(
+    //           {
+    //             userIdAndNames: nameIdObject,
+    //             userTimeZone: timeZoneObject,
+    //             userPicsArray: profilePicURLArray,
+    //
+    //             enableNameDropDown: true,
+    //             currentUserPicUrl: theCurrentUserPic,
+    //             currentUserId: theCurrentUserId,
+    //             currentUserName: theCurrentUserName,
+    //             currentUserTimeZone: theTimeZone,
+    //           },
+    //           () => {
+    //             this.grabFireBaseRoutinesGoalsData();
+    //             this.updateEventsArray();
+    //           }
+    //         );
+    //       }
+    //     })
+    //     .catch(function (error) {
+    //       console.log("Error getting document:", error);
+    //     });
+    // });
   };
 
   /*

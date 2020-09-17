@@ -736,10 +736,11 @@ function formatEmail(email) {
   return email[0].concat(email[1]); // The function returns the product of p1 and p2
 }
 
-app.post("/updateNameTimeZone", function (req, result) {
+app.post("/updateNewUser", function (req, result) {
   let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNameTimeZone";
   let body = {
-    email_id: formatEmail(req.body.email),
+    ta_email: req.body.ta_email,
+    email: formatEmail(req.body.email),
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     about_me: req.body.about_me,
@@ -755,10 +756,6 @@ app.post("/updateNameTimeZone", function (req, result) {
   });
 });
 
-/*
-Log in ROUTE:
-Attempt to sign in as trusted advisor
-*/
 app.post("/TALogIn", function (req, result) {
   //console.log(req.body.username, req.body.password);
   let emailId = req.body.username;
@@ -777,6 +774,25 @@ app.post("/TALogIn", function (req, result) {
         console.log("not matching password");
         result.json(false);
       }
+    }
+  ).catch((err) => {
+    console.log("Error getting documents", err);
+    result.json(false);
+  });
+});
+
+/*
+Log in ROUTE:
+Attempt to sign in as trusted advisor
+*/
+app.get("/usersOfTA", function (req, result) {
+  let emailId = req.query.emailId;
+  let emailId1 = emailId.toLowerCase();
+  let emailId_final = formatEmail(emailId1);
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersOfTA/";
+  axios.get(url + emailId_final).then(
+    (response) => {
+      result.json(response.data.result);
     }
   ).catch((err) => {
     console.log("Error getting documents", err);
