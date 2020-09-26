@@ -18,6 +18,8 @@ export default class SettingPage extends Component {
       dayEnd: this.props.currentTimeSetting.dayEnd || '',
       timeZone: this.props.currentTimeSetting.timeZone || '',
     };
+    
+    console.log(this.state)
   }
 
   onTimeChange = (event, value) => {

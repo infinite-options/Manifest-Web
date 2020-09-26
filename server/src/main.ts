@@ -556,6 +556,7 @@ app.get("/getEventsByInterval", function (req, result) {
     //console.log("start : ", startParam, " end:", endParam);
   }
 
+  
   setUpAuthById(id, (auth) => {
     calendar = google.calendar({ version: "v3", auth });
     calendar.events.list(
@@ -739,12 +740,14 @@ function formatEmail(email) {
 app.post("/updateNewUser", function (req, result) {
   let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
   let body = {
+    ta_people_id: req.body.ta_people_id,
     ta_email: req.body.ta_email,
     email: formatEmail(req.body.email),
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     timeZone: req.body.timeZone,
   };
+  console.log("in updatenewuser")
   console.log(body);
   axios.post(url, body)
   .then((response) => {
@@ -768,7 +771,13 @@ app.post("/TALogIn", function (req, result) {
     (response) => {
       if (response.data.result) {
         req.session.user = req.body.username;
-        result.json(req.body.username);
+        req.session.ta_people_id = response.data.result;
+        let result_body = {
+          ta_people_id: response.data.result,
+          username: req.body.username
+        }
+        result.json(result_body);
+        // result.json(req.body.username);
         return;
       } else {
         console.log("not matching password");
@@ -831,9 +840,15 @@ Log in status ROUTE:
 Check trusted advisor login status
 */
 app.get("/TALogInStatus", function (req, result) {
-  //console.log(req.session);
+  // console.log("#####")
+  // console.log(req.session);
+  
+  let result_body = {
+    ta_people_id: req.session.ta_people_id,
+    username: req.session.user
+  }
   if (req.session.user) {
-    result.json(req.session.user);
+    result.json(result_body);
   } else {
     result.json(false);
   }
@@ -945,6 +960,7 @@ app.get("/adduser", function (req, result) {
         if (err) {
           result.json(err);
         } else {
+          console.log(res.data)
           let emailId = res.data.email;
           emailId = formatEmail(emailId);
 
@@ -956,7 +972,6 @@ app.get("/adduser", function (req, result) {
             first_name: "New",
             last_name: "User",
           };
-          console.log(body);
           axios.post(url, body)
           .then(() => {
             result.redirect("/main?createUser=true&email=" + emailId);
@@ -1015,28 +1030,51 @@ function authorizeById(credentials, id, callback) {
     client_secret,
     REDIRECTED_ADD_USER_URI
   );
+  
+  // RDS Update
+  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersToken/";
+  // console.log("******")
+  console.log(id)
+  console.log(url + id)
+  axios.get(url + id).then(
+     (response) => {
+       if (response.data) {
+         // console.log(response.data)
+         oAuth2Client.setCredentials({
+           access_token: response.data.google_auth_token,
+           refresh_token: response.data.google_refresh_token
+         });
+         callback(oAuth2Client);
+         return;
+       } else {
+         console.log("not matching password");
+       }
+     }
+  ).catch((err) => {
+    console.log("Error getting access/refresh tokens", err);
+  });
 
   // Store to firebase
-  const db = firebase.firestore();
-  if (id) {
-    db.collection("users")
-    .doc(id)
-    .get()
-    .then((snapshot) => {
-      if (snapshot.data().google_auth_token) {
-        //console.log(snapshot.data().google_auth_token);
-        oAuth2Client.setCredentials({
-          access_token: snapshot.data().google_auth_token,
-          refresh_token: snapshot.data().google_refresh_token,
-        });
-        //console.log({
-        //  access_token: snapshot.data().google_auth_token,
-        //  refresh_token: snapshot.data().google_refresh_token,
-        //});
-        callback(oAuth2Client);
-      }
-    });
-  }
+  // const db = firebase.firestore();
+  // if (id) {
+  //   db.collection("users")
+  //   .doc(id)
+  //   .get()
+  //   .then((snapshot) => {
+  //     if (snapshot.data().google_auth_token) {
+  //       //console.log(snapshot.data().google_auth_token);
+  //       oAuth2Client.setCredentials({
+  //         access_token: snapshot.data().google_auth_token,
+  //         refresh_token: snapshot.data().google_refresh_token,
+  //       });
+  //       //console.log({
+  //       //  access_token: snapshot.data().google_auth_token,
+  //       //  refresh_token: snapshot.data().google_refresh_token,
+  //       //});
+  //       callback(oAuth2Client);
+  //     }
+  //   });
+  // }
 }
 
 /**

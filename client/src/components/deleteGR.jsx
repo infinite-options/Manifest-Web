@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios';
 export default class deleteGR extends Component {
   constructor(props) {
     super(props);
     // console.log('Delete AT constructor');
-    console.log("props in deleteGR");
-    console.log(this.props);
+    // console.log("props in deleteGR");
+    // console.log(this.props);
   }
 
   submitRequest = () => {
@@ -20,54 +21,77 @@ export default class deleteGR extends Component {
     }
     this.tempdeleteArrPortion();
   };
-
+  
   tempdeleteArrPortion = () => {
-    //Delete from the firebase
-    let arr = [...this.props.Array];
-    var id = arr[this.props.deleteIndex]["id"];
-    const url =
-      "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
-    const Data = {
-      data: {
-        path: this.props.Path.path + "/goals&routines/" + id, //<<<<< Entire path of the document to delete
-      },
-    };
-    console.log("path " + this.props.Path.path + "/goals&routines/" + id);
-
-    const param = {
-      headers: {
-        //"content-type":"application/json; charset=UTF-8"
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(Data),
-      method: "POST",
-    };
-
-    fetch(url, param)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
+  
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/deleteGR"
+  
     let items = [...this.props.Array];
-    //items[this.props.deleteIndex]['deleted'] = true;
     let i = this.props.deleteIndex;
-    const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
-
-    this.props.Path.update({ "goals&routines": newArr }).then((doc) => {
-      // console.log('updateEntireArray Finished')
-      // console.log(doc);
-      if (this.props != null) {
-        // console.log("refreshing FireBasev2 from delete GRItem");
-        this.props.refresh();
-      } else {
-        console.log("delete failure");
-      }
-    });
+  
+    let body = {
+      goal_routine_id: items[i].id
+    }
+  
+    axios.post(url, body)
+       .then(() => {
+         console.log("Deleted Goal/Routine to Database")
+         if (this.props != null) {
+           this.props.refresh();
+         }
+       })
+       .catch((err) => {
+         console.log("Error deleting Goal/Routine", err);
+       });
   };
+
+  // tempdeleteArrPortion = () => {
+  //   //Delete from the firebase
+  //   let arr = [...this.props.Array];
+  //   var id = arr[this.props.deleteIndex]["id"];
+  //   const url =
+  //     "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
+  //   const Data = {
+  //     data: {
+  //       path: this.props.Path.path + "/goals&routines/" + id, //<<<<< Entire path of the document to delete
+  //     },
+  //   };
+  //   console.log("path " + this.props.Path.path + "/goals&routines/" + id);
+  //
+  //   const param = {
+  //     headers: {
+  //       //"content-type":"application/json; charset=UTF-8"
+  //       "content-type": "application/json",
+  //     },
+  //     body: JSON.stringify(Data),
+  //     method: "POST",
+  //   };
+  //
+  //   fetch(url, param)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  //
+  //   let items = [...this.props.Array];
+  //   //items[this.props.deleteIndex]['deleted'] = true;
+  //   let i = this.props.deleteIndex;
+  //   const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
+  //
+  //   this.props.Path.update({ "goals&routines": newArr }).then((doc) => {
+  //     // console.log('updateEntireArray Finished')
+  //     // console.log(doc);
+  //     if (this.props != null) {
+  //       // console.log("refreshing FireBasev2 from delete GRItem");
+  //       this.props.refresh();
+  //     } else {
+  //       console.log("delete failure");
+  //     }
+  //   });
+  // };
 
   deleteArrPortion = () => {
     // console.log("request was made to delete this  element " +  this.props.deleteIndex);

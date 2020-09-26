@@ -138,7 +138,13 @@ export default class MainPage extends React.Component {
       enableNameDropDown: false,
       showNewAccountmodal: false,
       showAllowTAmodel: false,
-
+  
+  
+      ta_people_id: "",
+      emailIdObject: {},
+      theCurrentUserEmail: {},
+      
+      
       versionNumber: this.getVersionNumber(),
     };
   }
@@ -152,6 +158,188 @@ export default class MainPage extends React.Component {
 
   //   }
   // }
+  
+  grabFireBaseRoutinesGoalsData = () => {
+    
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/"
+  
+    let routine = [];
+    let routine_ids = [];
+    let goal = [];
+    let goal_ids = [];
+  
+    axios.get(url + this.state.currentUserId)
+       .then((response) => {
+       
+         if(response.data.result && (response.data.result.length !== 0)) {
+           
+           let x = response.data.result;
+           
+           x.sort((a, b) => {
+             let datetimeA = new Date(a["start_day_and_time"]);
+             let datetimeB = new Date(b["start_day_and_time"]);
+             let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
+             let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
+             return timeA - timeB;
+           });
+           
+           
+           let gr_array = [];
+  
+           for (let i = 0; i < x.length; ++i) {
+  
+             let gr = {};
+             gr.audio =  "";
+             // gr.available_end_time = "23:59:59";
+             // gr.available_start_time = "00:00:00";
+             gr.datetime_completed = x[i].datetime_completed;
+             gr.datetime_started = x[i].datetime_started;
+             gr.end_day_and_time =  x[i].end_day_and_time;
+             gr.expected_completion_time = x[i].expected_completion_time;
+             gr.id = x[i].gr_unique_id;
+  
+             gr.is_available = x[i].is_available.toLowerCase() === "true"
+             gr.is_complete = x[i].is_complete.toLowerCase() === "true"
+             gr.is_displayed_today = x[i].is_displayed_today.toLowerCase() === "true"
+             gr.is_in_progress = x[i].is_in_progress.toLowerCase() === "true"
+             gr.is_persistent = x[i].is_persistent.toLowerCase() === "true"
+             gr.is_sublist_available = x[i].is_sublist_available.toLowerCase() === "true"
+             gr.is_timed = x[i].is_timed.toLowerCase() === "true"
+  
+             gr.photo = x[i].photo
+             gr.repeat = x[i].repeat.toLowerCase() === "true"
+             gr.repeat_ends = x[i].repeat_ends || "Never"
+             gr.repeat_ends_on = x[i].repeat_ends_on
+             gr.repeat_every = x[i].repeat_every
+             gr.repeat_frequency = x[i].repeat_frequency
+             gr.repeat_occurences = x[i].repeat_occurences
+  
+             const repeat_week_days_json = JSON.parse(x[i].repeat_week_days)
+  
+             if (repeat_week_days_json) {
+               gr.repeat_week_days = {
+                 0: ( repeat_week_days_json.Sunday && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
+                 1: ( repeat_week_days_json.Monday && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
+                 2: ( repeat_week_days_json.Tuesday && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
+                 3: ( repeat_week_days_json.Wednesday && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
+                 4: ( repeat_week_days_json.Thursday && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
+                 5: ( repeat_week_days_json.Friday && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
+                 6: ( repeat_week_days_json.Saturday && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
+               }
+             } else {
+               gr.repeat_week_days = {
+                 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: ""
+               }
+             }
+  
+             // gr.repeat_week_days = {
+             //   0 : (repeat_week_days_json && repeat_week_days_json.Sunday.toLowerCase() === "true") ? "Sunday" : "",
+             //   1 : (repeat_week_days_json && repeat_week_days_json.Monday.toLowerCase() === "true") ? "Monday" : "",
+             //   2 : (repeat_week_days_json && repeat_week_days_json.Tuesday.toLowerCase() === "true") ? "Tuesday" : "",
+             //   3 : (repeat_week_days_json && repeat_week_days_json.Wednesday.toLowerCase() === "true") ? "Wednesday" : "",
+             //   4 : (repeat_week_days_json && repeat_week_days_json.Thursday.toLowerCase() === "true") ? "Thursday" : "",
+             //   5 : (repeat_week_days_json && repeat_week_days_json.Friday.toLowerCase() === "true") ? "Friday" : "",
+             //   6 : (repeat_week_days_json && repeat_week_days_json.Saturday.toLowerCase() === "true") ? "Saturday" : ""
+             // }
+  
+             gr.start_day_and_time = x[i].start_day_and_time
+  
+             
+             // Need to update assignments
+             gr.ta_notifications = {
+               before :{
+                 is_enabled :"",
+                 is_set: "",
+                 message: "",
+                 time: ""
+               },
+               during:{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               },
+               after :{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               }
+             }
+  
+             gr.user_notifications = {
+               before :{
+                 is_enabled :"",
+                 is_set: "",
+                 message: "",
+                 time: ""
+               },
+               during:{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               },
+               after :{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               }
+             }
+  
+             gr.title = x[i].gr_title
+             
+             gr_array.push(gr)
+             
+             if (x[i]["is_persistent"].toLowerCase() === "true") {
+               
+               // routine_ids.push(i);
+               
+               // routine_ids.push(x[i]["gr_unique_id"]);
+               // routine.push(x[i]);
+               
+               routine_ids.push(gr["id"]);
+               routine.push(gr);
+             } else if (x[i]["is_persistent"].toLowerCase() === "false") {
+               // goal_ids.push(i);
+               
+               // goal_ids.push(x[i]["gr_unique_id"]);
+               // goal.push(x[i]);
+  
+               goal_ids.push(gr["id"]);
+               goal.push(gr);
+             }
+           }
+  
+           this.setState({
+             originalGoalsAndRoutineArr: gr_array,
+             goals: goal,
+             addNewGRModalShow: false,
+             routine_ids: routine_ids,
+             goal_ids: goal_ids,
+             routines: routine,
+           });
+           
+         } else {
+           this.setState({
+             originalGoalsAndRoutineArr: [],
+             goals: goal,
+             addNewGRModalShow: false,
+             routine_ids: routine_ids,
+             goal_ids: goal_ids,
+             routines: routine,
+           });
+         }
+  
+         console.log(this.state)
+       })
+       .catch((error) => {
+         console.log('Error in getting goals and routines ' + error);
+    });
+  };
+  
+  
   /**
    * grabFireBaseRoutinesGoalsData:
    * this function grabs the goals&routines array from the path located in this function
@@ -159,69 +347,69 @@ export default class MainPage extends React.Component {
    * separately. The arrays will be used for display and data manipulation later.
    *
    */
-  grabFireBaseRoutinesGoalsData = () => {
-    const db = firebase.firestore();
-    if (this.state.currentUserId !== "") {
-      const docRef = db.collection("users").doc(this.state.currentUserId);
-      docRef
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            var x = doc.data();
-            let routine = [];
-            let routine_ids = [];
-            let goal = [];
-            let goal_ids = [];
-            if (x["goals&routines"] !== undefined) {
-              x = x["goals&routines"];
-              // console.log("this is the goals and routines", x);
-              x.sort((a, b) => {
-                let datetimeA = new Date(a["start_day_and_time"]);
-                let datetimeB = new Date(b["start_day_and_time"]);
-                let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
-                let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
-                return timeA - timeB;
-              });
-              for (let i = 0; i < x.length; ++i) {
-                if (x[i]["is_persistent"]) {
-                  // console.log("routine " + x[i]["title"]);
-                  // console.log("is the is the id ", x[i].id);
-                  routine_ids.push(i);
-                  routine.push(x[i]);
-                } else if (!x[i]["is_persistent"]) {
-                  // console.log("not routine " + x[i]["title"]);
-                  goal_ids.push(i);
-                  goal.push(x[i]);
-                }
-              }
-              this.setState({
-                originalGoalsAndRoutineArr: x,
-                goals: goal,
-                addNewGRModalShow: false,
-                routine_ids: routine_ids,
-                goal_ids: goal_ids,
-                routines: routine,
-              });
-            } else {
-              this.setState({
-                originalGoalsAndRoutineArr: [],
-                goals: goal,
-                addNewGRModalShow: false,
-                routine_ids: routine_ids,
-                goal_ids: goal_ids,
-                routines: routine,
-              });
-            }
-          } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-          }
-        })
-        .catch(function (error) {
-          console.log("Error getting document:", error);
-        });
-    }
-  };
+  // grabFireBaseRoutinesGoalsData = () => {
+  //   const db = firebase.firestore();
+  //   if (this.state.currentUserId !== "") {
+  //     const docRef = db.collection("users").doc(this.state.currentUserId);
+  //     docRef
+  //       .get()
+  //       .then((doc) => {
+  //         if (doc.exists) {
+  //           var x = doc.data();
+  //           let routine = [];
+  //           let routine_ids = [];
+  //           let goal = [];
+  //           let goal_ids = [];
+  //           if (x["goals&routines"] !== undefined) {
+  //             x = x["goals&routines"];
+  //             // console.log("this is the goals and routines", x);
+  //             x.sort((a, b) => {
+  //               let datetimeA = new Date(a["start_day_and_time"]);
+  //               let datetimeB = new Date(b["start_day_and_time"]);
+  //               let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
+  //               let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
+  //               return timeA - timeB;
+  //             });
+  //             for (let i = 0; i < x.length; ++i) {
+  //               if (x[i]["is_persistent"]) {
+  //                 // console.log("routine " + x[i]["title"]);
+  //                 // console.log("is the is the id ", x[i].id);
+  //                 routine_ids.push(i);
+  //                 routine.push(x[i]);
+  //               } else if (!x[i]["is_persistent"]) {
+  //                 // console.log("not routine " + x[i]["title"]);
+  //                 goal_ids.push(i);
+  //                 goal.push(x[i]);
+  //               }
+  //             }
+  //             this.setState({
+  //               originalGoalsAndRoutineArr: x,
+  //               goals: goal,
+  //               addNewGRModalShow: false,
+  //               routine_ids: routine_ids,
+  //               goal_ids: goal_ids,
+  //               routines: routine,
+  //             });
+  //           } else {
+  //             this.setState({
+  //               originalGoalsAndRoutineArr: [],
+  //               goals: goal,
+  //               addNewGRModalShow: false,
+  //               routine_ids: routine_ids,
+  //               goal_ids: goal_ids,
+  //               routines: routine,
+  //             });
+  //           }
+  //         } else {
+  //           // doc.data() will be undefined in this case
+  //           console.log("No such document!");
+  //         }
+  //       })
+  //       .catch(function (error) {
+  //         console.log("Error getting document:", error);
+  //       });
+  //   }
+  // };
 
   handleRepeatDropDown = (eventKey, week_days) => {
     if (eventKey === "WEEK") {
@@ -272,14 +460,17 @@ export default class MainPage extends React.Component {
       .then((response) => {
         this.setState({
           loaded: true,
-          loggedIn: response.data,
+          loggedIn: response.data.username,
+          ta_people_id: response.data.ta_people_id
         });
         if (response.data) {
           this.updateStatesByQuery();
           this.updateProfileFromFirebase();
           this.updateEventsArray();
-          console.log(document.cookie);
+          // console.log(document.cookie);
           // this.getEventNotifications();
+  
+          // this.listAllTAs();      // Testing listing all TA's as a separate call
         }
       })
       .catch((error) => {
@@ -340,28 +531,34 @@ export default class MainPage extends React.Component {
   };
 
   updateProfileFromFirebase = () => {
-    console.log(this.state.loggedIn);
+    // console.log("**")
+    // console.log(this.state);
     axios.get("/usersOfTA?emailId=" + this.state.loggedIn)
     .then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       let nameIdObject = {};
       let timeZoneObject = {};
+      let emailIdObject = {};
       let profilePicURLArray = [];
       let theCurrentUserName = "";
       let theCurrentUserPic = "";
       let theCurrentUserId = "";
+      let theCurrentUserEmail = "";
       let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       if(response.data.length != 0) {
         response.data.forEach((d, i) => {
+          // console.log(d)
           let id = d.user_unique_id;
           profilePicURLArray.push(d.picture);
           nameIdObject[id] = d.user_name;
           timeZoneObject[id] = d.time_zone;
+          emailIdObject[id] = d.email_id;
         });
         theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
         theCurrentUserPic = profilePicURLArray[0];
         theCurrentUserId = Object.keys(nameIdObject)[0];
+        theCurrentUserEmail = Object.keys(emailIdObject)[0];
       }
 
       this.setState(
@@ -369,19 +566,39 @@ export default class MainPage extends React.Component {
           userIdAndNames: nameIdObject,
           userTimeZone: timeZoneObject,
           userPicsArray: profilePicURLArray,
+          emailIdObject: emailIdObject,
 
           enableNameDropDown: true,
           currentUserPicUrl: theCurrentUserPic,
           currentUserId: theCurrentUserId,
           currentUserName: theCurrentUserName,
           currentUserTimeZone: theTimeZone,
+          theCurrentUserEmail: theCurrentUserEmail,
         },
         () => {
-          // this.grabFireBaseRoutinesGoalsData();
-          // this.updateEventsArray();
+          this.grabFireBaseRoutinesGoalsData();
+          this.updateEventsArray();
+          this.listAllTAs();
         }
       );
     });
+    
+    
+    // // Fetching all TA's to populate advisorIdAndNames
+    // axios.get("https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
+    //    .then((response) => {
+    //
+    //      if(response.data.result.length !== 0) {
+    //        response.data.result.forEach( ( d, i ) => {
+    //          this.state.advisorIdAndNames[i] = {
+    //            first_name: d.first_name,
+    //            last_name: d.last_name,
+    //            uid: d.unique_id
+    //          };
+    //        });
+    //      }
+    //    });
+    
 
       // const db = firebase.firestore();
       // const docRef = db.collection("users");
@@ -462,6 +679,26 @@ export default class MainPage extends React.Component {
     //     });
     // });
   };
+  
+  // Gets all TA's for the logged in user. Added by Vishal
+  listAllTAs = () => {
+    // Fetching all TA's to populate advisorIdAndNames
+    
+    console.log("User ID: " + this.state.currentUserId)
+    axios.get("https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
+       .then((response) => {
+
+         if(response.data.result.length !== 0) {
+           response.data.result.forEach( ( d, i ) => {
+             this.state.advisorIdAndNames[i] = {
+               first_name: d.first_name,
+               last_name: d.last_name,
+               uid: d.unique_id
+             };
+           });
+         }
+       });
+  }
 
   /*
 getThisMonthEvents:
@@ -2413,11 +2650,14 @@ this will close repeat modal.
         currentUserName: name,
         currentUserTimeZone: timezone,
         currentUserId: id,
+        currentUserEmail: this.state.emailIdObject[id],
         showAboutModal: false,
       },
       () => {
         this.grabFireBaseRoutinesGoalsData();
         this.updateEventsArray();
+        this.listAllTAs();
+        // console.log(this.state)
       }
     );
   };
@@ -2428,44 +2668,105 @@ this will close repeat modal.
       currentAdvisorCandidateId: advisorId,
     });
   };
-
+  
   giveAcessToTA = () => {
-    console.log(this.state.currentAdvisorCandidateId);
-    console.log(this.state.currentUserId);
-    const db = firebase.firestore();
-
-    db.collection("users")
-      .doc(this.state.currentUserId)
-      .get()
-      .then((doc) => {
-        db.collection("trusted_advisor")
-          .doc(this.state.currentAdvisorCandidateId)
-          .get()
-          .then((snapshot) => {
-            let found = false;
-            snapshot.data().users.forEach((user) => {
-              if (user.id == this.state.currentUserId) {
-                found = true;
-              }
-            });
-            if (!found) {
-              db.collection("trusted_advisor")
-                .doc(this.state.currentAdvisorCandidateId)
-                .update({
-                  users: firebase.firestore.FieldValue.arrayUnion({
-                    Relationship: "advisor",
-                    User: doc.ref,
-                  }),
-                })
-                .then(() => {
-                  alert("Succeed");
-                });
-            } else {
-              console.log("The trusted advisor already has access to the user");
-            }
-          });
-      });
+    // console.log(this.state.advisorIdAndNames[this.state.currentAdvisorCandidateId].uid);
+    // console.log(this.state.currentUserId);
+    // console.log(this.state.currentAdvisorCandidateId);
+  
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/anotherTAAccess";
+    
+    let body = {
+      ta_people_id: this.state.advisorIdAndNames[this.state.currentAdvisorCandidateId].uid,
+      user_id: this.state.currentUserId
+    }
+    
+    console.log(body)
+  
+    axios.post(url, body)
+       .then(() => {
+         console.log("Updated Relationship")
+       })
+       .catch((err) => {
+         console.log("Error updating relationship", err);
+         result.json(false);
+       });
+    
+    // const db = firebase.firestore();
+    
+    // db.collection("users")
+    //    .doc(this.state.currentUserId)
+    //    .get()
+    //    .then((doc) => {
+    //      db.collection("trusted_advisor")
+    //         .doc(this.state.currentAdvisorCandidateId)
+    //         .get()
+    //         .then((snapshot) => {
+    //           let found = false;
+    //           snapshot.data().users.forEach((user) => {
+    //             if (user.id == this.state.currentUserId) {
+    //               found = true;
+    //             }
+    //           });
+    //           if (!found) {
+    //             db.collection("trusted_advisor")
+    //                .doc(this.state.currentAdvisorCandidateId)
+    //                .update({
+    //                  users: firebase.firestore.FieldValue.arrayUnion({
+    //                    Relationship: "advisor",
+    //                    User: doc.ref,
+    //                  }),
+    //                })
+    //                .then(() => {
+    //                  alert("Succeed");
+    //                });
+    //           } else {
+    //             console.log("The trusted advisor already has access to the user");
+    //           }
+    //         });
+    //    });
   };
+
+  // giveAcessToTA = () => {
+  //   console.log("inside giveAccess")
+  //   console.log(this.state.currentAdvisorCandidateId);
+  //   console.log(this.state.currentUserId);
+  //   const db = firebase.firestore();
+  //
+  //   db.collection("users")
+  //     .doc(this.state.currentUserId)
+  //     .get()
+  //     .then((doc) => {
+  //       db.collection("trusted_advisor")
+  //         .doc(this.state.currentAdvisorCandidateId)
+  //         .get()
+  //         .then((snapshot) => {
+  //           let found = false;
+  //           snapshot.data().users.forEach((user) => {
+  //             if (user.id == this.state.currentUserId) {
+  //               found = true;
+  //             }
+  //           });
+  //           if (!found) {
+  //             db.collection("trusted_advisor")
+  //               .doc(this.state.currentAdvisorCandidateId)
+  //               .update({
+  //                 users: firebase.firestore.FieldValue.arrayUnion({
+  //                   Relationship: "advisor",
+  //                   User: doc.ref,
+  //                 }),
+  //               })
+  //               .then(() => {
+  //                 alert("Succeed");
+  //               });
+  //           } else {
+  //             console.log("The trusted advisor already has access to the user");
+  //           }
+  //         });
+  //     });
+  // };
+  
+  
 
   showDayViewOrAboutView = () => {
     if (this.state.dayEventSelected) {
@@ -2599,7 +2900,8 @@ this will close repeat modal.
                                 console.log(
                                   this.state.userTimeZone,
                                   keyName,
-                                  this.state.userTimeZone[keyName]
+                                  this.state.userTimeZone[keyName],
+                                   this.state.currentUserId
                                 );
                                 this.changeUser(
                                   keyName,
@@ -2717,6 +3019,7 @@ this will close repeat modal.
                     userNamesAndId={this.state.userIdAndNames}
                     email={this.state.newAccountEmail}
                     loggedInEmail={this.state.loggedIn}
+                    theCurrentTAID={this.state.ta_people_id}
                   />
                 )}
               </Col>
@@ -2759,6 +3062,7 @@ this will close repeat modal.
               {this.state.currentUserId != "" && (
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}
+                  theCurrentTAID={this.state.ta_people_id}
                   grabFireBaseRoutinesGoalsData={
                     this.grabFireBaseRoutinesGoalsData
                   }

@@ -30,16 +30,22 @@ export default class ShowISList extends React.Component {
       iconShow: items[this.props.Index]["is_sublist_available"],
     });
   }
-
+  
   hasStepss = async () => {
-    const id = this.props.Array[this.props.Index].id;
-    const res = await this.props.Path.collection("actions&tasks").doc(id).get();
-    const steps = res.data()["instructions&steps"];
-    // console.log("this is steps:", steps);
-    if (steps.length === 0) {
-      this.setState({ hasSteps: false });
-    }
+    const ATItem = this.props.Array[this.props.Index];
+    
+    if (!ATItem.steps) this.setState({ hasSteps: false })
   };
+
+  // hasStepss = async () => {
+  //   const id = this.props.Array[this.props.Index].id;
+  //   const res = await this.props.Path.collection("actions&tasks").doc(id).get();
+  //   const steps = res.data()["instructions&steps"];
+  //   // console.log("this is steps:", steps);
+  //   if (steps.length === 0) {
+  //     this.setState({ hasSteps: false });
+  //   }
+  // };
 
   editFirBaseFalse = (e) => {
     this.setState({ iconShow: false });

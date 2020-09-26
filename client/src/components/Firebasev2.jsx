@@ -34,6 +34,7 @@ import {
   faBookmark,
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios';
 // import moment from "moment";
 
 /**
@@ -196,13 +197,13 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   refreshATItem = (arr) => {
-    console.log("AT items after delete", arr);
+    // console.log("AT items after delete", arr);
     this.setState({ singleATitemArr: arr });
     let resArr = this.createListofAT(arr);
     let singleGR = this.state.singleGR;
-    console.log("singleGR", singleGR.title, singleGR.arr);
+    // console.log("singleGR", singleGR.title, singleGR.arr);
     singleGR.arr = resArr;
-    console.log("After delete singleGR", singleGR.arr);
+    // console.log("After delete singleGR", singleGR.arr);
     this.setState({ singleGR: singleGR });
   };
 
@@ -256,82 +257,169 @@ export default class FirebaseV2 extends React.Component {
     return time.format("YYYY MMM DD HH:mm");
     */
   }
-
+  
   //This function essentially grabs all action/tasks
   //for the routine or goal passed in and pops open the
   //modal for the action/task
-  getATList = async (id, title, persist) => {
-    const db = firebase.firestore();
-    let docRef = db
-      .collection("users")
-      .doc(this.props.theCurrentUserID)
-      .collection("goals&routines")
-      .doc(id);
-    docRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          // console.log(doc.data());
-          var x = doc.data()["actions&tasks"];
-          // console.log(x);
-          if (x == null) {
-            let singleGR = {
-              //Variable to hold information about the parent Goal/ Routine
-              show: true,
-              type: persist ? "Routine" : "Goal",
-              title: title,
-              id: id,
-              is_complete: doc.data().is_complete,
-              is_in_progress: doc.data().is_in_progress,
-              arr: [],
-              fbPath: docRef,
-            };
-            this.setState({
-              singleGR: singleGR,
-              singleATitemArr: [],
-            });
-            return;
-          }
+  getATList = async (id, title, persist, tempGR) => {
+  
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/"
+  
+    axios.get(url + id)
+       .then((response) => {
+         if (response.data.result && (response.data.result.length > 0)) {
+           
+           let x = response.data.result;
+  
+           for (let i = 0; i < x.length; ++i) {
+             x[i].audio = x[i].audio || "";
+             x[i].available_end_time = x[i].available_end_time || "";
+             x[i].available_start_time = x[i].available_start_time || "";
+             x[i].id = x[i].at_unique_id;
+             
+             x[i].is_available = x[i].is_available.toLowerCase() === "true";
+             x[i].is_complete = x[i].is_complete.toLowerCase() === "true";
+             x[i].is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
+             x[i].is_must_do = x[i].is_must_do.toLowerCase() === "true";
+             x[i].is_sublist_available = x[i].is_sublist_available.toLowerCase() === "true";
+             x[i].is_timed = x[i].is_timed.toLowerCase() === "true";
+             x[i].title = x[i].at_title;
+             
+           }
+           
+           let singleGR = {
+             //initialise without list to pass fbPath to child
+             show: true,
+             type: persist ? "Routine" : "Goal",
+             title: title,
+             id: id,
+             arr: [], //array of current action/task in this singular Routine
+             // fbPath: docRef,
+           };
 
-          let singleGR = {
-            //initialise without list to pass fbPath to child
-            show: true,
-            type: persist ? "Routine" : "Goal",
-            title: title,
-            id: id,
-            arr: [], //array of current action/task in this singular Routine
-            fbPath: docRef,
-          };
+           this.setState({
+             singleGR: singleGR,
+             singleATitemArr: x,
+           });
+           let resArr = this.createListofAT(x);
+           //assemble singleGR template here:
 
-          this.setState({
-            singleGR: singleGR,
-            singleATitemArr: x,
-          });
-          let resArr = this.createListofAT(x);
-          //assemble singleGR template here:
+           singleGR = {
+             show: true,
+             type: persist ? "Routine" : "Goal",
+             title: title,
+             id: id,
+             arr: resArr, //array of current action/task in this singular Routine
+             // fbPath: docRef,
+           };
 
-          singleGR = {
-            show: true,
-            type: persist ? "Routine" : "Goal",
-            title: title,
-            id: id,
-            arr: resArr, //array of current action/task in this singular Routine
-            fbPath: docRef,
-          };
-
-          this.setState({
-            singleGR: singleGR,
-          });
-          console.log(this.state.singleATitemArr);
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
+           this.setState({
+             singleGR: singleGR,
+           });
+           // console.log(this.state.singleATitemArr);
+         } else {
+  
+           console.log("there are  no action/tasks")
+           console.log(response.data)
+           
+           let singleGR = {
+             
+             //Variable to hold information about the parent Goal/ Routine
+             show: true,
+             type: persist ? "Routine" : "Goal",
+             title: title,
+             id: id,
+             is_complete: tempGR.is_complete,
+             is_in_progress: tempGR.is_in_progress,
+             arr: [],
+             // fbPath: docRef,
+           };
+           this.setState({
+             singleGR: singleGR,
+             singleATitemArr: [],
+           });
+         }
+       })
+       .catch((error) => {
+         console.log("Error Occurred in Retrieving Action/Tasks" + error);
+       });
   };
+
+  // //This function essentially grabs all action/tasks
+  // //for the routine or goal passed in and pops open the
+  // //modal for the action/task
+  // getATList = async (id, title, persist) => {
+  //   const db = firebase.firestore();
+  //   let docRef = db
+  //     .collection("users")
+  //     .doc(this.props.theCurrentUserID)
+  //     .collection("goals&routines")
+  //     .doc(id);
+  //   docRef
+  //     .get()
+  //     .then((doc) => {
+  //       if (doc.exists) {
+  //         // console.log(doc.data());
+  //         var x = doc.data()["actions&tasks"];
+  //         // console.log(x);
+  //         if (x == null) {
+  //           let singleGR = {
+  //             //Variable to hold information about the parent Goal/ Routine
+  //             show: true,
+  //             type: persist ? "Routine" : "Goal",
+  //             title: title,
+  //             id: id,
+  //             is_complete: doc.data().is_complete,
+  //             is_in_progress: doc.data().is_in_progress,
+  //             arr: [],
+  //             fbPath: docRef,
+  //           };
+  //           this.setState({
+  //             singleGR: singleGR,
+  //             singleATitemArr: [],
+  //           });
+  //           return;
+  //         }
+  //
+  //         let singleGR = {
+  //           //initialise without list to pass fbPath to child
+  //           show: true,
+  //           type: persist ? "Routine" : "Goal",
+  //           title: title,
+  //           id: id,
+  //           arr: [], //array of current action/task in this singular Routine
+  //           fbPath: docRef,
+  //         };
+  //
+  //         this.setState({
+  //           singleGR: singleGR,
+  //           singleATitemArr: x,
+  //         });
+  //         let resArr = this.createListofAT(x);
+  //         //assemble singleGR template here:
+  //
+  //         singleGR = {
+  //           show: true,
+  //           type: persist ? "Routine" : "Goal",
+  //           title: title,
+  //           id: id,
+  //           arr: resArr, //array of current action/task in this singular Routine
+  //           fbPath: docRef,
+  //         };
+  //
+  //         this.setState({
+  //           singleGR: singleGR,
+  //         });
+  //         console.log(this.state.singleATitemArr);
+  //       } else {
+  //         // doc.data() will be undefined in this case
+  //         console.log("No such document!");
+  //       }
+  //     })
+  //     .catch(function (error) {
+  //       console.log("Error getting document:", error);
+  //     });
+  // };
 
   //Creates a array of all actions/task for get getATList function
   //getATList stands for get all action/task
@@ -345,6 +433,10 @@ export default class FirebaseV2 extends React.Component {
       let tempPhoto = A[i]["photo"];
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
+      
+      // console.log("in createlist")
+      // console.log(this.state.timeSlotForAT)
+      // console.log(this.state.singleATitemArr)
 
       res.push(
         <div key={"AT" + i}>
@@ -687,44 +779,86 @@ export default class FirebaseV2 extends React.Component {
   ISonClickEvent = (title) => {
     console.log("Inside IS Click " + title);
   };
-
+  
   /**
    * Retrieve parent goal's start time and end time and use them for it's ATItem
    */
-  setTimeSlot = async (id) => {
-    let timeSlot = [];
-    const db = firestore();
-    const userData = await db
-      .collection("users")
-      .doc(this.props.theCurrentUserID)
-      .get();
-
-    let userGR = userData.data()["goals&routines"];
-
-    userGR.forEach((doc) => {
-      // console.log("This is from useGR: ", this.state.singleGR);
-      if (doc.id === id) {
-        //console.log("Time String From firebase: ", doc.start_day_and_time);
-        let start_day_and_time = new Date(doc.start_day_and_time).toString();
-        let end_day_and_time = new Date(doc.end_day_and_time).toString();
-        //console.log("Time String after firebase: ", start_day_and_time);
-
-        timeSlot = [
-          start_day_and_time.split(" ")[4],
-          end_day_and_time.split(" ")[4],
-        ];
-      }
-    });
+  setTimeSlot = async (id, tempGR) => {
+    
+    // console.log("in setTimeSlot")
+    // console.log(tempGR)
+  
+    let start_day_and_time = new Date(tempGR.start_day_and_time).toString();
+    let end_day_and_time = new Date(tempGR.end_day_and_time).toString();
+    
+    let timeSlot = [
+      start_day_and_time.split(" ")[4],
+      end_day_and_time.split(" ")[4],
+    ];
+   
+    // const db = firestore();
+    // const userData = await db
+    //    .collection("users")
+    //    .doc(this.props.theCurrentUserID)
+    //    .get();
+    //
+    // let userGR = userData.data()["goals&routines"];
+    //
+    // userGR.forEach((doc) => {
+    //   // console.log("This is from useGR: ", this.state.singleGR);
+    //   if (doc.id === id) {
+    //     //console.log("Time String From firebase: ", doc.start_day_and_time);
+    //     let start_day_and_time = new Date(doc.start_day_and_time).toString();
+    //     let end_day_and_time = new Date(doc.end_day_and_time).toString();
+    //     //console.log("Time String after firebase: ", start_day_and_time);
+    //
+    //     timeSlot = [
+    //       start_day_and_time.split(" ")[4],
+    //       end_day_and_time.split(" ")[4],
+    //     ];
+    //   }
+    // });
     this.setState({ timeSlotForAT: timeSlot });
   };
+
+  // /**
+  //  * Retrieve parent goal's start time and end time and use them for it's ATItem
+  //  */
+  // setTimeSlot = async (id) => {
+  //   let timeSlot = [];
+  //   const db = firestore();
+  //   const userData = await db
+  //     .collection("users")
+  //     .doc(this.props.theCurrentUserID)
+  //     .get();
+  //
+  //   let userGR = userData.data()["goals&routines"];
+  //
+  //   userGR.forEach((doc) => {
+  //     // console.log("This is from useGR: ", this.state.singleGR);
+  //     if (doc.id === id) {
+  //       //console.log("Time String From firebase: ", doc.start_day_and_time);
+  //       let start_day_and_time = new Date(doc.start_day_and_time).toString();
+  //       let end_day_and_time = new Date(doc.end_day_and_time).toString();
+  //       //console.log("Time String after firebase: ", start_day_and_time);
+  //
+  //       timeSlot = [
+  //         start_day_and_time.split(" ")[4],
+  //         end_day_and_time.split(" ")[4],
+  //       ];
+  //     }
+  //   });
+  //   this.setState({ timeSlotForAT: timeSlot });
+  // };
   /**
    * In this function we are passed in the id title and persist property of the incoming routine/goal
    * and we need to make return a viewable list of all the actions/tasks for this routine/goal
    * which is done in getATList function
    */
-  GRonClickEvent = async (title, id, persist) => {
-    await this.setTimeSlot(id);
-    this.getATList(id, title, persist);
+  GRonClickEvent = async (title, id, persist, tempGR) => {
+    // console.log(title, id, persist)
+    await this.setTimeSlot(id, tempGR);
+    this.getATList(id, title, persist, tempGR);
     // console.log("GRonClickEvent", id, title, persist);
   };
 
@@ -841,13 +975,14 @@ export default class FirebaseV2 extends React.Component {
         let tempTitle = this.props.routines[i]["title"];
         let tempID = this.props.routines[i]["id"];
         let tempPersist = this.props.routines[i]["is_persistent"];
+        let tempGR = this.props.routines[i];
 
         displayRoutines.push(
           <div key={"test0" + i}>
             <ListGroup.Item
               action
               onClick={() => {
-                this.GRonClickEvent(tempTitle, tempID, tempPersist);
+                this.GRonClickEvent(tempTitle, tempID, tempPersist, tempGR);
               }}
               variant="light"
               style={{ marginBottom: "3px" }}
@@ -924,6 +1059,8 @@ export default class FirebaseV2 extends React.Component {
                             .collection("users")
                             .doc(this.props.theCurrentUserID)}
                           refresh={this.grabFireBaseRoutinesGoalsData}
+                          theCurrentUserId={this.props.theCurrentUserID}
+                          theCurrentTAID={this.props.theCurrentTAID}
                         />
                         <EditIcon
                           openEditModal={() => {
@@ -960,6 +1097,9 @@ export default class FirebaseV2 extends React.Component {
                         .collection("users")
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                      theCurrentUserId={this.props.theCurrentUserID}
+                      theCurrentTAID={this.props.theCurrentTAID}
+                      
                       // chnagePhoto = {this.changePhotoIcon()}
                     />
                   </Row>
@@ -1016,6 +1156,8 @@ export default class FirebaseV2 extends React.Component {
                         .collection("users")
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
+                      theCurrentUserId={this.props.theCurrentUserID}
+                      theCurrentTAID={this.props.theCurrentTAID}
                     />
                     <EditIcon
                       openEditModal={() => {
@@ -1050,6 +1192,8 @@ export default class FirebaseV2 extends React.Component {
                         .collection("users")
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                      theCurrentUserId={this.props.theCurrentUserID}
+                      theCurrentTAID={this.props.theCurrentTAID}
                     />
                   </Row>
                 </div>
@@ -1121,6 +1265,9 @@ export default class FirebaseV2 extends React.Component {
   };
 
   getATexpectedTime(id) {
+    
+    // console.log("inside getATexpectedTime")
+    
     let ActionTaskArrayPath = firebase
       .firestore()
       .collection("users")
@@ -1294,12 +1441,13 @@ export default class FirebaseV2 extends React.Component {
         let tempTitle = this.props.goals[i]["title"];
         let tempID = this.props.goals[i]["id"];
         let tempPersist = this.props.goals[i]["is_persistent"];
+        let tempGR = this.props.goals[i];
         displayGoals.push(
           <div key={"test1" + i}>
             <ListGroup.Item
               action
               onClick={() => {
-                this.GRonClickEvent(tempTitle, tempID, tempPersist);
+                this.GRonClickEvent(tempTitle, tempID, tempPersist, tempGR);
               }}
               variant="light"
               style={{ marginBottom: "3px" }}
@@ -1374,6 +1522,8 @@ export default class FirebaseV2 extends React.Component {
                             .collection("users")
                             .doc(this.props.theCurrentUserID)}
                           refresh={this.grabFireBaseRoutinesGoalsData}
+                          theCurrentUserId={this.props.theCurrentUserID}
+                          theCurrentTAID={this.props.theCurrentTAID}
                         />
                         <EditIcon
                           openEditModal={() => {
@@ -1410,6 +1560,8 @@ export default class FirebaseV2 extends React.Component {
                         .collection("users")
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                      theCurrentUserId={this.props.theCurrentUserID}
+                      theCurrentTAID={this.props.theCurrentTAID}
                     />
                   </Row>
                 </div>
@@ -1465,6 +1617,8 @@ export default class FirebaseV2 extends React.Component {
                         .collection("users")
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
+                      theCurrentUserId={this.props.theCurrentUserID}
+                      theCurrentTAID={this.props.theCurrentTAID}
                     />
                     <EditIcon
                       openEditModal={() => {
@@ -1499,6 +1653,8 @@ export default class FirebaseV2 extends React.Component {
                         .collection("users")
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                      theCurrentUserId={this.props.theCurrentUserID}
+                      theCurrentTAID={this.props.theCurrentTAID}
                     />
                   </Row>
                 </div>
@@ -2195,6 +2351,7 @@ shows entire list of goals and routines
         width={this.state.modalWidth}
         todayDateObject={this.props.todayDateObject}
         theCurrentUserId={this.props.theCurrentUserID}
+        theCurrentTAID={this.props.theCurrentTAID}
         singleGR={this.state.singleGR}
       />
     );
@@ -2535,6 +2692,7 @@ shows entire list of goals and routines
    * goal/ routine
    */
   abstractedActionsAndTaskList = (props) => {
+    // console.log("in abstractedactions");
     return (
       <Modal.Dialog
         style={{

@@ -2,10 +2,11 @@ import React, { Component } from "react";
 // import { Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import axios from 'axios';
 export default class deleteAT extends Component {
   constructor(props) {
     super(props);
-    console.log("in deleteAT", this.props);
+    // console.log("in deleteAT", this.props);
   }
 
   componentDidMount() {
@@ -23,41 +24,63 @@ export default class deleteAT extends Component {
     }
     this.tempdeleteArrPortion();
   };
-
+  
   tempdeleteArrPortion = () => {
-    //Delete from the firebase
-    let arr = [...this.props.Array];
-    let j = this.props.deleteIndex;
-    var id = arr[j]["id"];
-    const url =
-      "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
-    const Data = {
-      data: {
-        path: this.props.Item.fbPath.path + "/" + this.props.type + "/" + id, //<<<<< Entire path of the document to delete
-      },
-    };
-    console.log("path " + this.props.Item.fbPath.path);
+  
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/deleteAT";
 
-    const param = {
-      headers: {
-        //"content-type":"application/json; charset=UTF-8"
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(Data),
-      method: "POST",
-    };
-
-    fetch(url, param)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    this.deleteArrPortion();
+    let items = [...this.props.Array];
+    let i = this.props.deleteIndex;
+    const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
+    
+    let body = {
+      at_id: items[i]["id"]
+    }
+    
+    axios.post(url, body)
+       .then(() => {
+         console.log("Deleted Action/Task to Database")
+         this.props.refresh(newArr);
+       })
+       .catch((err) => {
+         console.log("Error deleting Action/Task", err);
+       });
   };
+
+  // tempdeleteArrPortion = () => {
+  //   //Delete from the firebase
+  //   let arr = [...this.props.Array];
+  //   let j = this.props.deleteIndex;
+  //   var id = arr[j]["id"];
+  //   const url =
+  //     "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
+  //   const Data = {
+  //     data: {
+  //       path: this.props.Item.fbPath.path + "/" + this.props.type + "/" + id, //<<<<< Entire path of the document to delete
+  //     },
+  //   };
+  //   console.log("path " + this.props.Item.fbPath.path);
+  //
+  //   const param = {
+  //     headers: {
+  //       //"content-type":"application/json; charset=UTF-8"
+  //       "content-type": "application/json",
+  //     },
+  //     body: JSON.stringify(Data),
+  //     method: "POST",
+  //   };
+  //
+  //   fetch(url, param)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  //
+  //   this.deleteArrPortion();
+  // };
 
   /**
    *

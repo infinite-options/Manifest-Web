@@ -163,6 +163,7 @@ export default class MainPage extends React.Component {
       .then((response) => {
         console.log(response.data);
         if (response.data !== false) {
+          console.log(response.data)
           this.setState({
             loggedIn: true,
           });

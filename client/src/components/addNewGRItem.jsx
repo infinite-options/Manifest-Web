@@ -10,6 +10,7 @@ import { firestore, storage } from "firebase";
 import DateAndTimePickers from "./DatePicker";
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
+import axios from 'axios';
 
 export default class AddNewGRItem extends Component {
   constructor(props) {
@@ -166,35 +167,173 @@ export default class AddNewGRItem extends Component {
 
     this.getGRDataFromFB();
   }
-
+  
   getGRDataFromFB = () => {
-    //Grab the goals/routine array from firebase and then store it in state varible grArr
-    console.log(
-      "this is the goals and rountins from firebase",
-      this.state.arrPath
-    );
-
-    this.state.arrPath
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          var x = doc.data();
-          if (x["goals&routines"] != undefined) {
-            x = x["goals&routines"];
-            this.setState({
-              grArr: x,
-            });
-          }
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document! 2");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-        alert("Error getting document");
-      });
+  
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/"
+  
+    axios.get(url + this.props.theCurrentUserId)
+       .then((response) => {
+         if(response.data.result && (response.data.result.length !== 0)) {
+           let x = response.data.result;
+  
+           x.sort((a, b) => {
+             let datetimeA = new Date(a["start_day_and_time"]);
+             let datetimeB = new Date(b["start_day_and_time"]);
+             let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
+             let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
+             return timeA - timeB;
+           });
+  
+           let gr_array = [];
+  
+           for (let i = 0; i < x.length; ++i) {
+  
+             let gr = {};
+             gr.audio = "";
+             // gr.available_end_time = "23:59:59";
+             // gr.available_start_time = "00:00:00";
+             gr.datetime_completed = x[ i ].datetime_completed;
+             gr.datetime_started = x[ i ].datetime_started;
+             gr.end_day_and_time = x[ i ].end_day_and_time;
+             gr.expected_completion_time = x[ i ].expected_completion_time;
+             gr.id = x[ i ].gr_unique_id;
+  
+             gr.is_available = x[ i ].is_available.toLowerCase() === "true"
+             gr.is_complete = x[ i ].is_complete.toLowerCase() === "true"
+             gr.is_displayed_today = x[ i ].is_displayed_today.toLowerCase() === "true"
+             gr.is_in_progress = x[ i ].is_in_progress.toLowerCase() === "true"
+             gr.is_persistent = x[ i ].is_persistent.toLowerCase() === "true"
+             gr.is_sublist_available = x[ i ].is_sublist_available.toLowerCase() === "true"
+             gr.is_timed = x[ i ].is_timed.toLowerCase() === "true"
+  
+             gr.photo = x[ i ].photo
+             gr.repeat = x[ i ].repeat.toLowerCase() === "true"
+             gr.repeat_ends = x[ i ].repeat_ends || "Never"
+             gr.repeat_ends_on = x[ i ].repeat_ends_on
+             gr.repeat_every = x[ i ].repeat_every
+             gr.repeat_frequency = x[ i ].repeat_frequency
+             gr.repeat_occurences = x[ i ].repeat_occurences
+  
+             const repeat_week_days_json = JSON.parse( x[ i ].repeat_week_days )
+             
+             if (repeat_week_days_json) {
+               gr.repeat_week_days = {
+                 0: ( repeat_week_days_json.Sunday && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
+                 1: ( repeat_week_days_json.Monday && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
+                 2: ( repeat_week_days_json.Tuesday && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
+                 3: ( repeat_week_days_json.Wednesday && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
+                 4: ( repeat_week_days_json.Thursday && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
+                 5: ( repeat_week_days_json.Friday && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
+                 6: ( repeat_week_days_json.Saturday && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
+               }
+             } else {
+               gr.repeat_week_days = {
+                 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: ""
+               }
+             }
+  
+             // gr.repeat_week_days = {
+             //   0: ( repeat_week_days_json && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
+             //   1: ( repeat_week_days_json && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
+             //   2: ( repeat_week_days_json && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
+             //   3: ( repeat_week_days_json && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
+             //   4: ( repeat_week_days_json && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
+             //   5: ( repeat_week_days_json && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
+             //   6: ( repeat_week_days_json && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
+             // }
+  
+             gr.start_day_and_time = x[ i ].start_day_and_time
+  
+  
+             // Need to update assignments
+             gr.ta_notifications = {
+               before: {
+                 is_enabled: "",
+                 is_set:    "",
+                 message:   "",
+                 time:      ""
+               },
+               during: {
+                 is_enabled: "",
+                 is_set:    "",
+                 message:   "",
+                 time:      ""
+               },
+               after:  {
+                 is_enabled: "",
+                 is_set:    "",
+                 message:   "",
+                 time:      ""
+               }
+             }
+  
+             gr.user_notifications = {
+               before: {
+                 is_enabled: "",
+                 is_set:    "",
+                 message:   "",
+                 time:      ""
+               },
+               during: {
+                 is_enabled: "",
+                 is_set:    "",
+                 message:   "",
+                 time:      ""
+               },
+               after:  {
+                 is_enabled: "",
+                 is_set:    "",
+                 message:   "",
+                 time:      ""
+               }
+             }
+  
+             gr.title = x[ i ].gr_title
+  
+             gr_array.push( gr )
+           }
+  
+           this.setState({
+             grArr: gr_array,
+           });
+         }
+       })
+       .catch(function (error) {
+         console.log("Error getting goals and routines:", error);
+         // alert("Error getting document");
+       });
   };
+
+  // getGRDataFromFB = () => {
+  //   //Grab the goals/routine array from firebase and then store it in state varible grArr
+  //   console.log(
+  //     "this is the goals and rountins from firebase",
+  //     this.state.arrPath
+  //   );
+  //
+  //   this.state.arrPath
+  //     .get()
+  //     .then((doc) => {
+  //       if (doc.exists) {
+  //         var x = doc.data();
+  //         if (x["goals&routines"] != undefined) {
+  //           x = x["goals&routines"];
+  //           this.setState({
+  //             grArr: x,
+  //           });
+  //         }
+  //       } else {
+  //         // doc.data() will be undefined in this case
+  //         console.log("No such document! 2");
+  //       }
+  //     })
+  //     .catch(function (error) {
+  //       console.log("Error getting document:", error);
+  //       alert("Error getting document");
+  //     });
+  // };
+  
 
   newInputSubmit = () => {
     status = this.newInputVerify();
@@ -238,116 +377,132 @@ export default class AddNewGRItem extends Component {
       this.setState({ itemToEdit: temp });
     }
   };
-
+  
   addNewDoc = () => {
-    // this.state.routineDocsPath
-    // .add({
-    //   title: this.state.itemToEdit.title,
-    //   "actions&tasks": [],
-    // })
-    // .then((ref) => {
-    //   if (ref.id === null) {
-    //     alert("Fail to add new routine / goal item");
-    //     return;
-    //   }
-    //   let newArr = this.props.ATArray;
-    //   let temp = this.state.itemToEdit;
-    //   temp.id = ref.id;
-    //   temp.available_start_time = this.state.itemToEdit.available_start_time;
-    //   temp.available_end_time = this.state.itemToEdit.available_end_time;
-
-    //   temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
-    //   temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
-    //   temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
-    //   newArr.push(temp);
-    //   this.updateEntireArray(newArr);
-    // });
-    this.state.arrPath
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          console.log("getGRDataFromFB DATA:");
-          // console.log(doc.data());
-          var x = doc.data();
-          if (x["goals&routines"] != undefined) {
-            x = x["goals&routines"];
-            console.log("this is the goals and routines", x);
-            this.setState({
-              grArr: x,
-            });
-          }
-
-          this.state.routineDocsPath
-            .add({
-              title: this.state.itemToEdit.title,
-              completed: false,
-              "actions&tasks": [],
-            })
-            .then((ref) => {
-              if (ref.id === null) {
-                alert("Fail to add new routine / goal item");
-                return;
-              }
-              console.log(ref);
-              //let newArr = this.props.ATArray;
-              let newArr = this.state.grArr;
-              let temp = this.state.itemToEdit;
-
-              temp.id = ref.id;
-              temp.available_start_time = this.state.itemToEdit.available_start_time;
-              temp.available_end_time = this.state.itemToEdit.available_end_time;
-              temp.is_displayed_today = this.calculateIsDisplayed(temp);
-
-              console.log(
-                "this is the start day before ",
-                this.state.itemToEdit.start_day_and_time
-              );
-              console.log(
-                "this is the repeat end on before ",
-                this.state.itemToEdit.repeat_ends_on
-              );
-              temp.start_day_and_time = new Date(
-                this.state.itemToEdit.start_day_and_time
-              ).toLocaleString();
-              temp.end_day_and_time = new Date(
-                this.state.itemToEdit.end_day_and_time
-              ).toLocaleString();
-
-              // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
-              // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
-              // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
-              temp.repeat_ends_on = String(
-                this.state.itemToEdit.repeat_ends_on
-              );
-
-              // console.log(temp.available_start_time, temp.available_end_time);
-              // console.log("Added document with ID: ", ref.id);
-              // this.state.grArr.push(temp);
-              newArr.push(temp);
-
-              this.updateEntireArray(newArr);
-            });
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document! 2");
-        }
-        // let newArr = this.props.ATArray;
-        // let temp = this.state.itemToEdit;
-        // temp.id = ref.id;
-        // temp.available_start_time = this.state.itemToEdit.available_start_time;
-        // temp.available_end_time = this.state.itemToEdit.available_end_time;
-
-        // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
-        // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
-        // temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
-        // // newArr.push(temp);
-        // this.updateEntireArray(newArr);
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-        alert("Error getting document:");
-      });
+    
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR"
+  
+    let newArr = this.state.grArr;
+    let temp = this.state.itemToEdit;
+    
+    temp.available_start_time = this.state.itemToEdit.available_start_time;
+    temp.available_end_time = this.state.itemToEdit.available_end_time;
+    temp.is_displayed_today = this.calculateIsDisplayed(temp);
+  
+    temp.start_day_and_time = new Date(
+       this.state.itemToEdit.start_day_and_time
+    ).toLocaleString();
+    temp.end_day_and_time = new Date(
+       this.state.itemToEdit.end_day_and_time
+    ).toLocaleString();
+  
+    temp.repeat_ends_on = String(
+       this.state.itemToEdit.repeat_ends_on
+    );
+    
+    let body = JSON.parse(JSON.stringify(temp))
+    
+    // changes to request body to make it compatible with RDS
+    
+    body.user_id = this.props.theCurrentUserId;
+    if (body.id) delete body.id;
+  
+    if (body.available_end_time) delete body.available_end_time;
+    if (body.available_start_time) delete body.available_start_time;
+    
+    body.ta_people_id = this.props.theCurrentTAID;
+    
+    // console.log(body)
+  
+    axios.post(url, body)
+       .then(() => {
+         console.log("Added Goal/Routine to Database")
+         newArr.push(temp);
+         // this.updateEntireArray(newArr);
+         
+         this.getGRDataFromFB();
+         if (this.props != null) {
+           this.props.refresh();
+         }
+       })
+       .catch((err) => {
+         console.log("Error adding Goal/Routine", err);
+       });
+  
+    // this.updateEntireArray(newArr);
   };
+  
+  // addNewDoc = () => {
+  //
+  //   this.state.arrPath
+  //      .get()
+  //      .then((doc) => {
+  //        if (doc.exists) {
+  //          console.log("getGRDataFromFB DATA:");
+  //          // console.log(doc.data());
+  //          var x = doc.data();
+  //          if (x["goals&routines"] != undefined) {
+  //            x = x["goals&routines"];
+  //            console.log("this is the goals and routines", x);
+  //            this.setState({
+  //              grArr: x,
+  //            });
+  //          }
+  //
+  //          this.state.routineDocsPath
+  //             .add({
+  //               title: this.state.itemToEdit.title,
+  //               completed: false,
+  //               "actions&tasks": [],
+  //             })
+  //             .then((ref) => {
+  //               if (ref.id === null) {
+  //                 alert("Fail to add new routine / goal item");
+  //                 return;
+  //               }
+  //               console.log(ref);
+  //               //let newArr = this.props.ATArray;
+  //               let newArr = this.state.grArr;
+  //               let temp = this.state.itemToEdit;
+  //
+  //               temp.id = ref.id;
+  //               temp.available_start_time = this.state.itemToEdit.available_start_time;
+  //               temp.available_end_time = this.state.itemToEdit.available_end_time;
+  //               temp.is_displayed_today = this.calculateIsDisplayed(temp);
+  //
+  //               console.log(
+  //                  "this is the start day before ",
+  //                  this.state.itemToEdit.start_day_and_time
+  //               );
+  //               console.log(
+  //                  "this is the repeat end on before ",
+  //                  this.state.itemToEdit.repeat_ends_on
+  //               );
+  //               temp.start_day_and_time = new Date(
+  //                  this.state.itemToEdit.start_day_and_time
+  //               ).toLocaleString();
+  //               temp.end_day_and_time = new Date(
+  //                  this.state.itemToEdit.end_day_and_time
+  //               ).toLocaleString();
+  //
+  //               temp.repeat_ends_on = String(
+  //                  this.state.itemToEdit.repeat_ends_on
+  //               );
+  //
+  //               newArr.push(temp);
+  //
+  //               this.updateEntireArray(newArr);
+  //             });
+  //        } else {
+  //          // doc.data() will be undefined in this case
+  //          console.log("No such document! 2");
+  //        }
+  //      })
+  //      .catch(function (error) {
+  //        console.log("Error getting document:", error);
+  //        alert("Error getting document:");
+  //      });
+  // };
 
   //This function below will essentially take in a array and have a key map to it
   updateEntireArray = (newArr) => {

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import firebase from "./firebase";
 import { Button, Modal} from "react-bootstrap";
 import { storage } from './firebase';
+import axios from 'axios';
 
   export default class AddNewPeople extends Component {
     constructor(props) {
@@ -67,23 +68,52 @@ import { storage } from './firebase';
                 );     
             }}); 
     };
+   
+     newPersonInputSubmit = ( ) => {
+        
+        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addPeople"
+        
+        let body = {
+           user_id : this.props.currentUserId,
+           email_id: this.state.itemToEdit.email,
+           first_name: this.state.itemToEdit.name,
+           last_name: "",
+           employer: "",
+           relationship: this.state.itemToEdit.relationship,
+           phone_number: this.state.itemToEdit.phone_number,
+           picture: this.state.itemToEdit.pic
+        }
+        
+        console.log(body)
+        
+        axios.post(url, body)
+           .then((response) => {
+              console.log("Added new person Details")
+           })
+           .catch((err) => {
+              console.log("Fail to add new Person", err);
+           });
+   
+        this.props.closeModal();
+        this.props.newPersonAdded();
+     }
 
-    newPersonInputSubmit = ( ) => {
-        this.state.peopleDocsPath
-          .add(this.state.itemToEdit)
-          .then(ref => {
-            if (ref.id === null) {
-              alert("Fail to add new routine / goal item");
-              return;
-            }
-   
-            let temp = this.state.itemToEdit;
-            temp.unique_id = ref.id;
-            console.log("Added document with ID: ", ref.id);
-            this.updateWithId();
-   
-          });
-    }
+    // newPersonInputSubmit = ( ) => {
+    //     this.state.peopleDocsPath
+    //       .add(this.state.itemToEdit)
+    //       .then(ref => {
+    //         if (ref.id === null) {
+    //           alert("Fail to add new routine / goal item");
+    //           return;
+    //         }
+    //
+    //         let temp = this.state.itemToEdit;
+    //         temp.unique_id = ref.id;
+    //         console.log("Added document with ID: ", ref.id);
+    //         this.updateWithId();
+    //
+    //       });
+    // }
 
     updateWithId = ( ) => {
         this.state.peopleDocsPath.doc(this.state.itemToEdit.unique_id).update(this.state.itemToEdit).then(
@@ -213,4 +243,3 @@ import { storage } from './firebase';
   }
   
 
-  

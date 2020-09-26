@@ -10,6 +10,7 @@ import TimePicker from "./TimePicker";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
+import axios from 'axios';
 
 export default class editAT extends Component {
   constructor(props) {
@@ -25,58 +26,119 @@ export default class editAT extends Component {
       this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
     }
   }
-
+  
   newInputSubmit = () => {
     
     if (this.state.itemToEdit.title === "") {
       alert("Missing title");
       return "";
     }
-
+    
     if (!this.validateTime()) {
       return;
     }
-
+    
     let newArr = this.props.ATArray;
     
     // console.log("EditAt: ", this.state.itemToEdit);
-
+    
     if (this.state.itemToEdit.photo === "") {
       this.state.itemToEdit.photo =
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
+         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
     }
-
+    
     newArr[this.props.i] = this.state.itemToEdit;
-
+    
     //Add the below attributes in case they don't already exists
     if (!newArr[this.props.i]["datetime_completed"]) {
       newArr[this.props.i]["datetime_completed"] =
-        "Sun, 23 Feb 2020 00:08:43 GMT";
+         "Sun, 23 Feb 2020 00:08:43 GMT";
     }
     if (!newArr[this.props.i]["audio"]) {
       newArr[this.props.i]["audio"] = "";
     }
-
+    
     if (!newArr[this.props.i]["datetime_started"]) {
       newArr[this.props.i]["datetime_started"] =
-        "Sun, 23 Feb 2020 00:08:43 GMT";
+         "Sun, 23 Feb 2020 00:08:43 GMT";
     }
-   
+    
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAT"
+  
+    let body = JSON.parse(JSON.stringify(newArr[this.props.i]));
+  
+    // changes to request body to make it compatible with RDS
+    if (body.at_sequence) delete body.at_sequence;
+    if (body.goal_routine_id) delete body.goal_routine_id;
+    
+    if (body.at_title) delete body.at_title
+    
+    body.id = body.at_unique_id
+    if (body.goal_routine_id) delete body.at_unique_id
 
-    this.props.FBPath.update({ "actions&tasks": newArr }).then((doc) => {
-      console.log("this is the path ", this.props.FBPath.path.split('/')[3]);
-      this.props.updateWentThroughATListObj(this.props.FBPath.path.split('/')[3]);
-      // console.log('updateEntireArray Finished')
-      // console.log(doc);
-      if (this.props != null) {
-        // console.log("refreshing FireBasev2 from updating ISItem");
-        this.setState({ showEditModal: false });
-        this.props.refresh(newArr);
-      } else {
-        console.log("update failure");
-      }
-    });
+    // console.log(body)
+    axios.post(url, body)
+       .then(() => {
+         console.log("Updated Action/Task to Database")
+         this.setState({ showEditModal: false });
+             this.props.refresh(newArr);
+       })
+       .catch((err) => {
+         console.log("Error updating Action/Task", err);
+       });
   };
+
+  // newInputSubmit = () => {
+  //
+  //   if (this.state.itemToEdit.title === "") {
+  //     alert("Missing title");
+  //     return "";
+  //   }
+  //
+  //   if (!this.validateTime()) {
+  //     return;
+  //   }
+  //
+  //   let newArr = this.props.ATArray;
+  //
+  //   // console.log("EditAt: ", this.state.itemToEdit);
+  //
+  //   if (this.state.itemToEdit.photo === "") {
+  //     this.state.itemToEdit.photo =
+  //       "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
+  //   }
+  //
+  //   newArr[this.props.i] = this.state.itemToEdit;
+  //
+  //   //Add the below attributes in case they don't already exists
+  //   if (!newArr[this.props.i]["datetime_completed"]) {
+  //     newArr[this.props.i]["datetime_completed"] =
+  //       "Sun, 23 Feb 2020 00:08:43 GMT";
+  //   }
+  //   if (!newArr[this.props.i]["audio"]) {
+  //     newArr[this.props.i]["audio"] = "";
+  //   }
+  //
+  //   if (!newArr[this.props.i]["datetime_started"]) {
+  //     newArr[this.props.i]["datetime_started"] =
+  //       "Sun, 23 Feb 2020 00:08:43 GMT";
+  //   }
+  //
+  //
+  //   this.props.FBPath.update({ "actions&tasks": newArr }).then((doc) => {
+  //     console.log("this is the path ", this.props.FBPath.path.split('/')[3]);
+  //     this.props.updateWentThroughATListObj(this.props.FBPath.path.split('/')[3]);
+  //     // console.log('updateEntireArray Finished')
+  //     // console.log(doc);
+  //     if (this.props != null) {
+  //       // console.log("refreshing FireBasev2 from updating ISItem");
+  //       this.setState({ showEditModal: false });
+  //       this.props.refresh(newArr);
+  //     } else {
+  //       console.log("update failure");
+  //     }
+  //   });
+  // };
 
   validateTime = () => {
     let invalid = false;

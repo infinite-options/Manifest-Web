@@ -10,6 +10,7 @@ import TimePicker from "./TimePicker";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
+import axios from 'axios';
 
 export default class AddNewATItem extends Component {
   constructor(props) {
@@ -141,50 +142,145 @@ export default class AddNewATItem extends Component {
     }
     return invalid ? false : true;
   };
-
+  
   addNewDoc = () => {
-    this.props.ATItem.fbPath
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          var x = doc.data();
-          if (x["actions&tasks"] != undefined) {
-            x = x["actions&tasks"];
-            this.setState({
-              AT_arr: x,
-            });
-
-            this.props.ATItem.fbPath
-              .collection("actions&tasks")
-              .add({
-                title: this.state.itemToEdit.title,
-                "instructions&steps": [],
-              })
-              .then((ref) => {
-                if (ref.id === null) {
-                  alert("Fail to add new Action / Task item");
-                  return;
-                }
-                console.log("Added document with ID: ", ref.id);
-                //let newArr = this.props.ATArray;
-                let newArr = this.state.AT_arr;
-                let temp = this.state.itemToEdit;
-                temp.id = ref.id;
-                newArr.push(temp);
-                console.log(newArr);
-                console.log("adding new item");
-                this.updateEntireArray(newArr);
-              });
-          }
-        } else {
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-        alert("Error getting document:", error);
+  
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT";
+    
+    if (this.props.ATArray.length > 0) {
+      this.setState({
+        AT_arr: this.props.ATArray,
       });
+    }
+    
+    // console.log("in addNEwATITem")
+    // console.log(this.props.ATItem.id)
+    // console.log(this.props.ATArray)
+    
+    let body = JSON.parse(JSON.stringify(this.state.itemToEdit))
+  
+    // changes to request body to make it compatible with RDS
+  
+    // if (body.available_end_time) delete body.available_end_time;
+    // if (body.available_start_time) delete body.available_start_time;
+  
+    if (body.ta_notifications) delete body.ta_notifications;
+    if (body.user_notifications) delete body.user_notifications;
+    
+    if (body.id || body.id === "") delete body.id
+    body.gr_id = this.props.ATItem.id
+    
+    // console.log("BODY")
+    console.log(body)
+  
+    axios.post(url, body)
+       .then((response) => {
+         let newArr = this.state.AT_arr;
+         let temp = this.state.itemToEdit;
+         temp.id = response.data.result;
+         temp.at_unique_id = response.data.result;
+         
+         // console.log("*****")
+         // console.log(response.data.result)
+         // console.log(newArr)
+         newArr.push(temp);
+  
+         this.props.hideNewATModal();
+         this.props.refresh(newArr);
+         // this.updateEntireArray(newArr);
+         
+         console.log("Added Action/Task to Database")
+       })
+       .catch((err) => {
+         console.log("Error adding Action/Task", err);
+       });
+    
+    // this.props.ATItem.fbPath
+    //    .get()
+    //    .then((doc) => {
+    //      if (doc.exists) {
+    //        var x = doc.data();
+    //        if (x["actions&tasks"] != undefined) {
+    //          x = x["actions&tasks"];
+    //          this.setState({
+    //            AT_arr: x,
+    //          });
+    //
+    //          this.props.ATItem.fbPath
+    //             .collection("actions&tasks")
+    //             .add({
+    //               title: this.state.itemToEdit.title,
+    //               "instructions&steps": [],
+    //             })
+    //             .then((ref) => {
+    //               if (ref.id === null) {
+    //                 alert("Fail to add new Action / Task item");
+    //                 return;
+    //               }
+    //               console.log("Added document with ID: ", ref.id);
+    //               //let newArr = this.props.ATArray;
+    //               let newArr = this.state.AT_arr;
+    //               let temp = this.state.itemToEdit;
+    //               temp.id = ref.id;
+    //               newArr.push(temp);
+    //               console.log(newArr);
+    //               console.log("adding new item");
+    //               this.updateEntireArray(newArr);
+    //             });
+    //        }
+    //      } else {
+    //        console.log("No such document!");
+    //      }
+    //    })
+    //    .catch(function (error) {
+    //      console.log("Error getting document:", error);
+    //      alert("Error getting document:", error);
+    //    });
   };
+
+  // addNewDoc = () => {
+  //   this.props.ATItem.fbPath
+  //     .get()
+  //     .then((doc) => {
+  //       if (doc.exists) {
+  //         var x = doc.data();
+  //         if (x["actions&tasks"] != undefined) {
+  //           x = x["actions&tasks"];
+  //           this.setState({
+  //             AT_arr: x,
+  //           });
+  //
+  //           this.props.ATItem.fbPath
+  //             .collection("actions&tasks")
+  //             .add({
+  //               title: this.state.itemToEdit.title,
+  //               "instructions&steps": [],
+  //             })
+  //             .then((ref) => {
+  //               if (ref.id === null) {
+  //                 alert("Fail to add new Action / Task item");
+  //                 return;
+  //               }
+  //               console.log("Added document with ID: ", ref.id);
+  //               //let newArr = this.props.ATArray;
+  //               let newArr = this.state.AT_arr;
+  //               let temp = this.state.itemToEdit;
+  //               temp.id = ref.id;
+  //               newArr.push(temp);
+  //               console.log(newArr);
+  //               console.log("adding new item");
+  //               this.updateEntireArray(newArr);
+  //             });
+  //         }
+  //       } else {
+  //         console.log("No such document!");
+  //       }
+  //     })
+  //     .catch(function (error) {
+  //       console.log("Error getting document:", error);
+  //       alert("Error getting document:", error);
+  //     });
+  // };
 
   //This function will below will essentially take in a array and have a key map to it
   updateEntireArray = (newArr) => {

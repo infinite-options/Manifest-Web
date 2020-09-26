@@ -12,6 +12,7 @@ import DateAndTimePickers from "./DatePicker";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
+import axios from 'axios';
 
 export default class editGR extends Component {
   constructor(props) {
@@ -146,7 +147,7 @@ export default class editGR extends Component {
   };
 
   calculateIsDisplayed = (gr) => {
-    console.log(gr);
+    // console.log(gr);
     let CurrentDate = new Date(
       new Date().toLocaleString("en-US", {
         timeZone: "America/Los_Angeles",
@@ -250,10 +251,10 @@ export default class editGR extends Component {
     }
     return isDisplayedTodayCalculated;
   };
-
+  
   newInputSubmit = () => {
     status = this.newInputVerify();
-
+    
     if (status !== "") {
       alert(status);
       return;
@@ -266,58 +267,144 @@ export default class editGR extends Component {
     // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
     // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
     temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
-
+    
     // console.log("this is the start day and time before converting to string ",this.state.itemToEdit.start_day_and_time );
     temp.start_day_and_time = new Date(
-      this.state.itemToEdit.start_day_and_time
+       this.state.itemToEdit.start_day_and_time
     ).toLocaleString();
     temp.end_day_and_time = new Date(
-      this.state.itemToEdit.end_day_and_time
+       this.state.itemToEdit.end_day_and_time
     ).toLocaleString();
     // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
-
+    
     // newArr[this.props.i] = temp;
-
+    
     if (temp.photo === "") {
       if (temp.is_persistent) {
         temp.photo =
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Froutine2.png?alt=media&token=dec839c9-5558-49b9-a41b-76fbe3e29a81";
+           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Froutine2.png?alt=media&token=dec839c9-5558-49b9-a41b-76fbe3e29a81";
       } else {
         temp.photo =
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
+           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
       }
     }
-
+    
     temp.is_displayed_today = this.calculateIsDisplayed(temp);
-
+    
     // console.log(temp)
     newArr[this.props.i] = temp;
-
+    
     //Add the below attributes in case they don't already exists
-
+    
     if (!newArr[this.props.i]["audio"]) {
       newArr[this.props.i]["audio"] = "";
     }
     if (!newArr[this.props.i]["datetime_completed"]) {
       newArr[this.props.i]["datetime_completed"] =
-        "Sun, 23 Feb 2020 00:08:43 GMT";
+         "Sun, 23 Feb 2020 00:08:43 GMT";
     }
-
+    
     if (!newArr[this.props.i]["datetime_started"]) {
       newArr[this.props.i]["datetime_started"] =
-        "Sun, 23 Feb 2020 00:08:43 GMT";
+         "Sun, 23 Feb 2020 00:08:43 GMT";
     }
-
-    this.props.FBPath.update({ "goals&routines": newArr }).then((doc) => {
-      this.props.closeEditModal();
-      // this.setState({ showEditModal: false });
-      if (this.props != null) {
-        this.props.refresh(newArr);
-      } else {
-        console.log("update failure");
-      }
-    });
+  
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateGR"
+  
+    let body = JSON.parse(JSON.stringify(temp))
+  
+    // changes to request body to make it compatible with RDS
+  
+    body.user_id = this.props.theCurrentUserId;
+  
+    if (body.available_end_time) delete body.available_end_time;
+    if (body.available_start_time) delete body.available_start_time;
+  
+    body.ta_people_id = this.props.theCurrentTAID;
+  
+    axios.post(url, body)
+       .then(() => {
+         console.log("Updated Goal/Routine to Database")
+         if (this.props != null) {
+           this.props.closeEditModal();
+           this.props.refresh( newArr );
+         }
+       })
+       .catch((err) => {
+         console.log("Error updating Goal/Routine", err);
+       });
   };
+
+  // newInputSubmit = () => {
+  //   status = this.newInputVerify();
+  //
+  //   if (status !== "") {
+  //     alert(status);
+  //     return;
+  //   }
+  //   let newArr = this.props.ATArray;
+  //   let temp = this.state.itemToEdit;
+  //   if (!temp.repeat_ends_on) {
+  //     temp.repeat_ends_on = new Date();
+  //   }
+  //   // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
+  //   // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
+  //   temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
+  //
+  //   // console.log("this is the start day and time before converting to string ",this.state.itemToEdit.start_day_and_time );
+  //   temp.start_day_and_time = new Date(
+  //     this.state.itemToEdit.start_day_and_time
+  //   ).toLocaleString();
+  //   temp.end_day_and_time = new Date(
+  //     this.state.itemToEdit.end_day_and_time
+  //   ).toLocaleString();
+  //   // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
+  //
+  //   // newArr[this.props.i] = temp;
+  //
+  //   if (temp.photo === "") {
+  //     if (temp.is_persistent) {
+  //       temp.photo =
+  //         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Froutine2.png?alt=media&token=dec839c9-5558-49b9-a41b-76fbe3e29a81";
+  //     } else {
+  //       temp.photo =
+  //         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
+  //     }
+  //   }
+  //
+  //   temp.is_displayed_today = this.calculateIsDisplayed(temp);
+  //
+  //   // console.log(temp)
+  //   newArr[this.props.i] = temp;
+  //
+  //   //Add the below attributes in case they don't already exists
+  //
+  //   if (!newArr[this.props.i]["audio"]) {
+  //     newArr[this.props.i]["audio"] = "";
+  //   }
+  //   if (!newArr[this.props.i]["datetime_completed"]) {
+  //     newArr[this.props.i]["datetime_completed"] =
+  //       "Sun, 23 Feb 2020 00:08:43 GMT";
+  //   }
+  //
+  //   if (!newArr[this.props.i]["datetime_started"]) {
+  //     newArr[this.props.i]["datetime_started"] =
+  //       "Sun, 23 Feb 2020 00:08:43 GMT";
+  //   }
+  //
+  //   console.log("###")
+  //   console.log(newArr)
+  //
+  //   this.props.FBPath.update({ "goals&routines": newArr }).then((doc) => {
+  //     this.props.closeEditModal();
+  //     // this.setState({ showEditModal: false });
+  //     if (this.props != null) {
+  //       this.props.refresh(newArr);
+  //     } else {
+  //       console.log("update failure");
+  //     }
+  //   });
+  // };
 
   newInputVerify = () => {
     if (this.state.itemToEdit.title === "") {

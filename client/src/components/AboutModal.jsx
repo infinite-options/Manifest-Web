@@ -8,6 +8,7 @@ import {
   faImage
 } from "@fortawesome/free-solid-svg-icons";
 import { storage } from './firebase';
+import axios from 'axios';
 
 class AboutModal extends React.Component{
 
@@ -41,7 +42,10 @@ class AboutModal extends React.Component{
             showAddNewPeopleModal: false,
             showTimeModal: false,
             saveButtonEnabled: true,
-            enableDropDown: false
+            enableDropDown: false,
+    
+            allPeopleList : {},
+            nonImportantPeople: {}
         }
     }
 
@@ -222,116 +226,314 @@ class AboutModal extends React.Component{
                 );
             }});
     }
-
+    
+    
+    // Currently working on right now
     grabFireBaseAllPeopleNames = () => {
-        const db = firebase.firestore();
-        // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
-        db.collection('users').doc(this.props.theCurrentUserId).collection('people').get()
-        .then((peoplesArray) => {
-            let importantPeopleArray = [];
-            let importantPeopleReferencid = [];
-            let test = {};
-            let j = 0;
-        //    console.log("this is the peoples array", peoplesArray);
-            // grab the ID of all of the people in the firebase.
-            for(let i = 0; i<peoplesArray.docs.length; i++){
-                // console.log("should not go in here");
-                // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
-                db.collection('users').doc(this.props.theCurrentUserId).collection('people').doc(peoplesArray.docs[i].id).get()
-                .then( (doc) => {
-                    j++;
-                    if(doc.data().important === true){
-                        importantPeopleReferencid.push(peoplesArray.docs[i].id);
-                        importantPeopleArray.push(doc.data());
-                    }
-                    test[doc.data().unique_id] = doc.data().name;
-                    if(j === peoplesArray.docs.length){
-                        if(importantPeopleArray.length >= 3){
-                            this.setState({
-                                peopleNamesArray:test,
-                                enableDropDown: true,
-                                importantPoeplArrayLength: importantPeopleArray.length,
-                                importantPeople1: importantPeopleArray[0],
-                                importantPeople2: importantPeopleArray[1],
-                                importantPeople3: importantPeopleArray[2],
-                                importantPeople1id: importantPeopleReferencid[0],
-                                importantPeople2id: importantPeopleReferencid[1],
-                                importantPeople3id: importantPeopleReferencid[2],
-                            });
-                        }
-                        else if(importantPeopleArray.length === 2){
-                            this.setState({
-                                peopleNamesArray:test,
-                                enableDropDown: true,
-                                importantPoeplArrayLength: importantPeopleArray.length,
-                                importantPeople1: importantPeopleArray[0],
-                                importantPeople2: importantPeopleArray[1],
-                                importantPeople1id: importantPeopleReferencid[0],
-                                importantPeople2id: importantPeopleReferencid[1],
-                            });
-                        }
-                        else if(importantPeopleArray.length === 1){
-                            this.setState({
-                                peopleNamesArray:test,
-                                enableDropDown: true,
-                                importantPoeplArrayLength: importantPeopleArray.length,
-                                importantPeople1: importantPeopleArray[0],
-                                importantPeople1id: importantPeopleReferencid[0],
-                            });
-                        }
-                        else if(importantPeopleArray.length === 0){
-                            this.setState({
-                                peopleNamesArray:test,
-                                enableDropDown: true,
-                                importantPoeplArrayLength: importantPeopleArray.length
-                            });
-                        }
-                    }
-                })
-                .catch((err) => {
-                    console.log('Error getting documents', err);
-                })
-            }
-        })
-        .catch((err) => {
-            console.log('Error getting documents', err);
+    
+        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listPeople/";
+    
+        let allPeopleList = {};
+        let importantPeopleArray = [];
+        let nonImportantPeople = {};
+        let test = {};
+        let impCount = 0;
+    
+        // console.log(this.props.theCurrentUserId)
+        axios.get(url + this.props.theCurrentUserId).then(
+           (response) => {
+               let peopleList = response.data.result.result
+               if ( peopleList && ( peopleList.length !== 0 ) ) {
+                   // console.log( peopleList )
+                   peopleList.forEach( ( d, i ) => {
+                       // console.log(d)
+                       allPeopleList[d.ta_people_id] = d;
+                       if ( d.important.toLowerCase() === "true" ) {
+                           importantPeopleArray.push( d )
+                           impCount++;
+                       } else if ( d.important.toLowerCase() === "false" ) {
+                           test[ d.ta_people_id ] = d.name;
+                           nonImportantPeople[d.ta_people_id] = d
+                       }
+                   } )
+        
+                   if ( importantPeopleArray.length >= 3 ) {
+                       this.setState( {
+                           peopleNamesArray:          test,
+                           enableDropDown:            true,
+                           importantPoeplArrayLength: impCount,
+                           importantPeople1:          importantPeopleArray[ 0 ],
+                           importantPeople2:          importantPeopleArray[ 1 ],
+                           importantPeople3:          importantPeopleArray[ 2 ],
+                           nonImportantPeople: nonImportantPeople,
+                           allPeopleList: allPeopleList
+                       } )
+                       
+                   } else if(importantPeopleArray.length === 2){
+                         this.setState({
+                             peopleNamesArray:test,
+                             enableDropDown: true,
+                             importantPoeplArrayLength: importantPeopleArray.length,
+                             importantPeople1:          importantPeopleArray[ 0 ],
+                             importantPeople2:          importantPeopleArray[ 1 ],
+                             nonImportantPeople: nonImportantPeople,
+                             allPeopleList: allPeopleList
+                         });
+                     }
+                     else if(importantPeopleArray.length === 1){
+                         this.setState({
+                             peopleNamesArray:test,
+                             enableDropDown: true,
+                             importantPoeplArrayLength: importantPeopleArray.length,
+                             importantPeople1:          importantPeopleArray[ 0 ],
+                             nonImportantPeople: nonImportantPeople,
+                             allPeopleList: allPeopleList
+                         });
+                     }
+                     else if(importantPeopleArray.length === 0){
+                         this.setState({
+                             peopleNamesArray:test,
+                             enableDropDown: true,
+                             importantPoeplArrayLength: importantPeopleArray.length,
+                             nonImportantPeople: nonImportantPeople,
+                             allPeopleList: allPeopleList
+                         });
+                     }
+                     
+               } else {
+                   console.log( "No people list" )
+               }
+           }
+        ).catch((err) => {
+            console.log("Error getting all people list", err);
         });
+        
+        
+        // const db = firebase.firestore();
+        // // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
+        // db.collection('users').doc(this.props.theCurrentUserId).collection('people').get()
+        //    .then((peoplesArray) => {
+        //        let importantPeopleArray = [];
+        //        let importantPeopleReferencid = [];
+        //        let test = {};
+        //        let j = 0;
+        //        //    console.log("this is the peoples array", peoplesArray);
+        //        // grab the ID of all of the people in the firebase.
+        //        for(let i = 0; i<peoplesArray.docs.length; i++){
+        //            // console.log("should not go in here");
+        //            // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
+        //            db.collection('users').doc(this.props.theCurrentUserId).collection('people').doc(peoplesArray.docs[i].id).get()
+        //               .then( (doc) => {
+        //                   j++;
+        //                   if(doc.data().important === true){
+        //                       importantPeopleReferencid.push(peoplesArray.docs[i].id);
+        //                       importantPeopleArray.push(doc.data());
+        //                   }
+        //                   test[doc.data().unique_id] = doc.data().name;
+        //                   if(j === peoplesArray.docs.length){
+        //                       if(importantPeopleArray.length >= 3){
+        //                           this.setState({
+        //                               peopleNamesArray:test,
+        //                               enableDropDown: true,
+        //                               importantPoeplArrayLength: importantPeopleArray.length,
+        //                               importantPeople1: importantPeopleArray[0],
+        //                               importantPeople2: importantPeopleArray[1],
+        //                               importantPeople3: importantPeopleArray[2],
+        //                               importantPeople1id: importantPeopleReferencid[0],
+        //                               importantPeople2id: importantPeopleReferencid[1],
+        //                               importantPeople3id: importantPeopleReferencid[2],
+        //                           });
+        //                       }
+        //                       else if(importantPeopleArray.length === 2){
+        //                           this.setState({
+        //                               peopleNamesArray:test,
+        //                               enableDropDown: true,
+        //                               importantPoeplArrayLength: importantPeopleArray.length,
+        //                               importantPeople1: importantPeopleArray[0],
+        //                               importantPeople2: importantPeopleArray[1],
+        //                               importantPeople1id: importantPeopleReferencid[0],
+        //                               importantPeople2id: importantPeopleReferencid[1],
+        //                           });
+        //                       }
+        //                       else if(importantPeopleArray.length === 1){
+        //                           this.setState({
+        //                               peopleNamesArray:test,
+        //                               enableDropDown: true,
+        //                               importantPoeplArrayLength: importantPeopleArray.length,
+        //                               importantPeople1: importantPeopleArray[0],
+        //                               importantPeople1id: importantPeopleReferencid[0],
+        //                           });
+        //                       }
+        //                       else if(importantPeopleArray.length === 0){
+        //                           this.setState({
+        //                               peopleNamesArray:test,
+        //                               enableDropDown: true,
+        //                               importantPoeplArrayLength: importantPeopleArray.length
+        //                           });
+        //                       }
+        //                   }
+        //               })
+        //               .catch((err) => {
+        //                   console.log('Error getting documents', err);
+        //               })
+        //        }
+        //    })
+        //    .catch((err) => {
+        //        console.log('Error getting documents', err);
+        //    });
     }
 
+    // grabFireBaseAllPeopleNames = () => {
+    //     const db = firebase.firestore();
+    //     // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
+    //     db.collection('users').doc(this.props.theCurrentUserId).collection('people').get()
+    //     .then((peoplesArray) => {
+    //         let importantPeopleArray = [];
+    //         let importantPeopleReferencid = [];
+    //         let test = {};
+    //         let j = 0;
+    //     //    console.log("this is the peoples array", peoplesArray);
+    //         // grab the ID of all of the people in the firebase.
+    //         for(let i = 0; i<peoplesArray.docs.length; i++){
+    //             // console.log("should not go in here");
+    //             // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
+    //             db.collection('users').doc(this.props.theCurrentUserId).collection('people').doc(peoplesArray.docs[i].id).get()
+    //             .then( (doc) => {
+    //                 j++;
+    //                 if(doc.data().important === true){
+    //                     importantPeopleReferencid.push(peoplesArray.docs[i].id);
+    //                     importantPeopleArray.push(doc.data());
+    //                 }
+    //                 test[doc.data().unique_id] = doc.data().name;
+    //                 if(j === peoplesArray.docs.length){
+    //                     if(importantPeopleArray.length >= 3){
+    //                         this.setState({
+    //                             peopleNamesArray:test,
+    //                             enableDropDown: true,
+    //                             importantPoeplArrayLength: importantPeopleArray.length,
+    //                             importantPeople1: importantPeopleArray[0],
+    //                             importantPeople2: importantPeopleArray[1],
+    //                             importantPeople3: importantPeopleArray[2],
+    //                             importantPeople1id: importantPeopleReferencid[0],
+    //                             importantPeople2id: importantPeopleReferencid[1],
+    //                             importantPeople3id: importantPeopleReferencid[2],
+    //                         });
+    //                     }
+    //                     else if(importantPeopleArray.length === 2){
+    //                         this.setState({
+    //                             peopleNamesArray:test,
+    //                             enableDropDown: true,
+    //                             importantPoeplArrayLength: importantPeopleArray.length,
+    //                             importantPeople1: importantPeopleArray[0],
+    //                             importantPeople2: importantPeopleArray[1],
+    //                             importantPeople1id: importantPeopleReferencid[0],
+    //                             importantPeople2id: importantPeopleReferencid[1],
+    //                         });
+    //                     }
+    //                     else if(importantPeopleArray.length === 1){
+    //                         this.setState({
+    //                             peopleNamesArray:test,
+    //                             enableDropDown: true,
+    //                             importantPoeplArrayLength: importantPeopleArray.length,
+    //                             importantPeople1: importantPeopleArray[0],
+    //                             importantPeople1id: importantPeopleReferencid[0],
+    //                         });
+    //                     }
+    //                     else if(importantPeopleArray.length === 0){
+    //                         this.setState({
+    //                             peopleNamesArray:test,
+    //                             enableDropDown: true,
+    //                             importantPoeplArrayLength: importantPeopleArray.length
+    //                         });
+    //                     }
+    //                 }
+    //             })
+    //             .catch((err) => {
+    //                 console.log('Error getting documents', err);
+    //             })
+    //         }
+    //     })
+    //     .catch((err) => {
+    //         console.log('Error getting documents', err);
+    //     });
+    // }
+    
     grabFireBaseAboutMeData = () => {
-        const db = firebase.firestore();
-        // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
-        const docRef = db.collection("users").doc(this.props.theCurrentUserId);
-        docRef
-          .get()
-          .then(doc => {
-            //   console.log("this is the doc exists", doc.exists);
-            if (doc.exists) {
-              var x = doc.data();
-            //   console.log("this is the doc data",x)
-            //   console.log("this is x in the about modal", x);
-              var firstName = x.first_name;
-              var lastName = x.last_name;
-              if(x["about_me"] !== undefined){
-                x = x["about_me"];
-                this.setState({
-                    aboutMeObject: x, firstName:firstName, lastName:lastName
-                });
-              }else{
-                this.setState({
-                    firstName:firstName, lastName:lastName
-                });
-              }
+    
+        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/aboutme/";
+    
+        // console.log("!!")
+        // console.log(this.props.theCurrentUserId)
+        axios.get(url + this.props.theCurrentUserId).then(
+           (response) => {
+               if (response.data.result.length !== 0) {
+                   let details = response.data.result[0]
+                   // console.log(details)
+                   
+                   let x = {
+                       have_pic: details.user_have_pic || "",
+                       message_card: details.message_card,
+                       message_day: details.message_day,
+                       pic: details.pic || "",
+                       timeSettings: {
+                           morning: details.morning_time,
+                           afternoon: details.afternoon_time,
+                           evening: details.evening_time,
+                           night: details.night_time,
+                           dayStart: details.day_start,
+                           dayEnd: details.day_end,
+                           timeZone: details.time_zone
+                       }
+                   }
+                   
+                   console.log(x)
 
-
-            } else {
-              console.log("No such document!");
-            }
-          })
-          .catch(function(error) {
-            console.log("Error getting document:", error);
-          });
+                   this.setState({
+                       aboutMeObject: x, firstName:details.user_first_name, lastName: details.user_last_name
+                   });
+               } else {
+                   console.log("No user details");
+               }
+           }
+        ).catch((err) => {
+            console.log("Error getting user details", err);
+        });
     };
+
+    // grabFireBaseAboutMeData = () => {
+    //     const db = firebase.firestore();
+    //     // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    //     const docRef = db.collection("users").doc(this.props.theCurrentUserId);
+    //     docRef
+    //       .get()
+    //       .then(doc => {
+    //         //   console.log("this is the doc exists", doc.exists);
+    //         if (doc.exists) {
+    //           var x = doc.data();
+    //         //   console.log("this is the doc data",x)
+    //         //   console.log("this is x in the about modal", x);
+    //           var firstName = x.first_name;
+    //           var lastName = x.last_name;
+    //           if(x["about_me"] !== undefined){
+    //             x = x["about_me"];
+    //             this.setState({
+    //                 aboutMeObject: x, firstName:firstName, lastName:lastName
+    //             });
+    //           }else{
+    //             this.setState({
+    //                 firstName:firstName, lastName:lastName
+    //             });
+    //           }
+    //
+    //
+    //         } else {
+    //           console.log("No such document!");
+    //         }
+    //       })
+    //       .catch(function(error) {
+    //         console.log("Error getting document:", error);
+    //       });
+    // };
 
     hidePeopleModal = () => {
         this.setState({showAddNewPeopleModal: false});
@@ -351,125 +553,324 @@ class AboutModal extends React.Component{
         this.setState({ aboutMeObject: temp, showTimeModal: false  });
 
     }
-
-
+    
     changeImpPersonOne = (Reference) => {
-        //Set the new person as an important person.
-        this.state.firebaseRootPath.collection('people').doc(Reference).get()
-        .then((doc) => {
-           let temp  = {};
-           let temp2 = {};
-           temp = doc.data();
-           temp.important = true;
-           if(this.state.ImporPersonOneChange === false ){
-                temp2 = this.state.importantPeople1;
-                temp2.important = false;
-           }
-           else{
-               temp2 = this.state.importantPeople1Previous;
-           }
-           this.setState({ImporPersonOneChange: true,importantPeople1Previous: temp2 , importantPeople1DocRefChanged: doc.ref.id, importantPeople1: temp});
-        })
-        .catch((err) => {
-            console.log('Error getting documents', err);
+        let temp  = this.state.nonImportantPeople[Reference];
+        temp.important = true;
+        
+        let temp2 = {};
+        
+        if (this.state.ImporPersonOneChange === false ){
+            temp2 = this.state.importantPeople1;
+            temp2.important = false;
+        }
+        else{
+            temp2 = this.state.importantPeople1Previous;
+        }
+    
+        this.setState({
+            ImporPersonOneChange: true,
+            importantPeople1Previous: temp2,
+            importantPeople1: temp
         });
+        
+        console.log("Updated Important Person One in Client")
+        
     }
 
+
+    // changeImpPersonOne = (Reference) => {
+    //     //Set the new person as an important person.
+    //     this.state.firebaseRootPath.collection('people').doc(Reference).get()
+    //     .then((doc) => {
+    //        let temp  = {};
+    //        let temp2 = {};
+    //        temp = doc.data();
+    //        temp.important = true;
+    //        if(this.state.ImporPersonOneChange === false ){
+    //             temp2 = this.state.importantPeople1;
+    //             temp2.important = false;
+    //        }
+    //        else{
+    //            temp2 = this.state.importantPeople1Previous;
+    //        }
+    //        this.setState({ImporPersonOneChange: true,importantPeople1Previous: temp2 , importantPeople1DocRefChanged: doc.ref.id, importantPeople1: temp});
+    //     })
+    //     .catch((err) => {
+    //         console.log('Error getting documents', err);
+    //     });
+    // }
+    
     changeImpPersonTwo = (Reference) => {
-        //Set the new person as an important person.
-        this.state.firebaseRootPath.collection('people').doc(Reference).get()
-        .then((doc) => {
-           let temp  = {};
-           let temp2 = {};
-           temp = doc.data();
-           temp.important = true;
-           if(this.state.ImporPersonTwoChange === false ){
-                temp2 = this.state.importantPeople2;
-                temp2.important = false;
-           }
-           else{
-               temp2 = this.state.importantPeople2Previous;
-           }
-           this.setState({ImporPersonTwoChange: true,importantPeople2Previous: temp2 , importantPeople2DocRefChanged: doc.ref.id, importantPeople2: temp});
-        })
-        .catch((err) => {
-            console.log('Error getting documents', err);
+    
+        let temp  = this.state.nonImportantPeople[Reference];
+        temp.important = true;
+    
+        let temp2 = {};
+    
+        if (this.state.ImporPersonTwoChange === false ){
+            temp2 = this.state.importantPeople2;
+            temp2.important = false;
+        }
+        else{
+            temp2 = this.state.importantPeople2Previous;
+        }
+    
+        this.setState({
+            ImporPersonTwoChange: true,
+            importantPeople2Previous: temp2,
+            importantPeople2: temp
         });
+        console.log("Updated Important Person Two in Client")
     }
+
+    // changeImpPersonTwo = (Reference) => {
+    //     //Set the new person as an important person.
+    //     this.state.firebaseRootPath.collection('people').doc(Reference).get()
+    //     .then((doc) => {
+    //        let temp  = {};
+    //        let temp2 = {};
+    //        temp = doc.data();
+    //        temp.important = true;
+    //        if(this.state.ImporPersonTwoChange === false ){
+    //             temp2 = this.state.importantPeople2;
+    //             temp2.important = false;
+    //        }
+    //        else{
+    //            temp2 = this.state.importantPeople2Previous;
+    //        }
+    //        this.setState({ImporPersonTwoChange: true,importantPeople2Previous: temp2 , importantPeople2DocRefChanged: doc.ref.id, importantPeople2: temp});
+    //     })
+    //     .catch((err) => {
+    //         console.log('Error getting documents', err);
+    //     });
+    // }
+    
     changeImpPersonThree = (Reference) => {
-        //Set the new person as an important person.
-        this.state.firebaseRootPath.collection('people').doc(Reference).get()
-        .then((doc) => {
-           let temp  = {};
-           let temp2 = {};
-           temp = doc.data();
-           temp.important = true;
-           if(this.state.ImporPersonThreeChange === false ){
-                temp2 = this.state.importantPeople3;
-                temp2.important = false;
-           }
-           else{
-               temp2 = this.state.importantPeople3Previous;
-           }
-           this.setState({ImporPersonThreeChange: true,importantPeople3Previous: temp2 , importantPeople3DocRefChanged: doc.ref.id, importantPeople3: temp});
-        })
-        .catch((err) => {
-            console.log('Error getting documents', err);
+        let temp  = this.state.nonImportantPeople[Reference];
+        temp.important = true;
+    
+        let temp2 = {};
+    
+        if (this.state.ImporPersonThreeChange === false ){
+            temp2 = this.state.importantPeople3;
+            temp2.important = false;
+        }
+        else{
+            temp2 = this.state.importantPeople3Previous;
+        }
+    
+        this.setState({
+            ImporPersonThreeChange: true,
+            importantPeople3Previous: temp2,
+            importantPeople3: temp
         });
+        console.log("Updated Important Person Three in Client")
     }
+    
+    // changeImpPersonThree = (Reference) => {
+    //     //Set the new person as an important person.
+    //     this.state.firebaseRootPath.collection('people').doc(Reference).get()
+    //     .then((doc) => {
+    //        let temp  = {};
+    //        let temp2 = {};
+    //        temp = doc.data();
+    //        temp.important = true;
+    //        if(this.state.ImporPersonThreeChange === false ){
+    //             temp2 = this.state.importantPeople3;
+    //             temp2.important = false;
+    //        }
+    //        else{
+    //            temp2 = this.state.importantPeople3Previous;
+    //        }
+    //        this.setState({ImporPersonThreeChange: true,importantPeople3Previous: temp2 , importantPeople3DocRefChanged: doc.ref.id, importantPeople3: temp});
+    //     })
+    //     .catch((err) => {
+    //         console.log('Error getting documents', err);
+    //     });
+    // }
 
     newInputSubmit = () => {
+        // if(this.state.importantPeople1.important === true){
+        //     if(this.state.ImporPersonOneChange === true){
+        //         if(this.state.importantPeople1id != null){
+        //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1Previous);
+        //         }
+        //         if(this.state.importantPeople1DocRefChanged != null){
+        //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1DocRefChanged).update(this.state.importantPeople1);
+        //         }
+        //     }
+        //     else{
+        //         this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1);
+        //     }
+        // }
+        // if(this.state.importantPeople2.important === true){
+        //     if(this.state.ImporPersonTwoChange === true){
+        //         if(this.state.importantPeople2id != null){
+        //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2Previous);
+        //         }
+        //         if(this.state.importantPeople2DocRefChanged != null){
+        //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2DocRefChanged).update(this.state.importantPeople2);
+        //         }
+        //     }
+        //     else{
+        //         this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2);
+        //     }
+        // }
+        // if(this.state.importantPeople3.important === true){
+        //     if(this.state.ImporPersonThreeChange === true){
+        //         if(this.state.importantPeople3id != null){
+        //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3Previous);
+        //         }
+        //         if(this.state.importantPeople3DocRefChanged != null){
+        //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3DocRefChanged).update(this.state.importantPeople3);
+        //         }
+        //     }
+        //     else{
+        //         this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3);
+        //     }
+        // }
+    
+        // let x = {
+        //     have_pic: details.have_pic,
+        //     message_card: details.message_card,
+        //     message_day: details.message_day,
+        //     pic: details.pic,
+        //     timeSettings: {
+        //         morning: details.morning_time,
+        //         afternoon: details.afternoon_time,
+        //         evening: details.evening_time,
+        //         night: details.night_time,
+        //         dayStart: details.day_start,
+        //         dayEnd: details.day_end,
+        //         timeZone: details.time_zone
+        //     }
+        // }
+        
+        let people = Object.values(this.state.allPeopleList)
+        
+        people.forEach((d, i) => {
+            delete d.email;
+            delete d.phone_number;
+            delete d.user_id;
+            delete d.user_name;
+            if (!d.pic) d.pic = "";
+        })
+    
         if(this.state.importantPeople1.important === true){
             if(this.state.ImporPersonOneChange === true){
-                if(this.state.importantPeople1id != null){
-                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1Previous);
-                }
-                if(this.state.importantPeople1DocRefChanged != null){
-                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1DocRefChanged).update(this.state.importantPeople1);
-                }
-            }
-            else{
-                this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1);
+                this.state.allPeopleList[this.state.importantPeople1Previous.ta_people_id].important = "FALSE"
+                this.state.allPeopleList[this.state.importantPeople1.ta_people_id].important = "TRUE"
             }
         }
+    
         if(this.state.importantPeople2.important === true){
             if(this.state.ImporPersonTwoChange === true){
-                if(this.state.importantPeople2id != null){
-                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2Previous);
-                }
-                if(this.state.importantPeople2DocRefChanged != null){
-                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2DocRefChanged).update(this.state.importantPeople2);
-                }
-            }
-            else{
-                this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2);
+                this.state.allPeopleList[this.state.importantPeople2Previous.ta_people_id].important = "FALSE"
+                this.state.allPeopleList[this.state.importantPeople2.ta_people_id].important = "TRUE"
             }
         }
+    
         if(this.state.importantPeople3.important === true){
             if(this.state.ImporPersonThreeChange === true){
-                if(this.state.importantPeople3id != null){
-                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3Previous);
-                }
-                if(this.state.importantPeople3DocRefChanged != null){
-                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3DocRefChanged).update(this.state.importantPeople3);
-                }
-            }
-            else{
-                this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3);
+                this.state.allPeopleList[this.state.importantPeople3Previous.ta_people_id].important = "FALSE"
+                this.state.allPeopleList[this.state.importantPeople3.ta_people_id].important = "TRUE"
             }
         }
-        this.state.firebaseRootPath.update({'first_name': this.state.firstName});
-        this.state.firebaseRootPath.update({'last_name': this.state.lastName});
-        let newArr = this.state.aboutMeObject;
-        let name = this.state.firstName + " " + this.state.lastName;
-        this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
-           (doc) => {
-               this.props.updateProfilePic(name, this.state.aboutMeObject.pic);
-               this.props.updateProfileTimeZone(this.state.aboutMeObject.timeSettings.timeZone);
+        
+        // console.log(people)
+        
+        let body = {
+            user_id : this.props.theCurrentUserId,
+            first_name : this.state.firstName,
+            last_name : this.state.lastName,
+            have_pic : this.state.aboutMeObject.have_pic,
+            message_card : this.state.aboutMeObject.message_card,
+            message_day : this.state.aboutMeObject.message_day,
+            picture : this.state.aboutMeObject.pic || "",
+            people : people,
+            timeSettings : this.state.aboutMeObject.timeSettings
+        }
+        
+        console.log(body)
+        
+        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAboutMe"
+    
+        axios.post(url, body)
+           .then(() => {
+               console.log("Updated Details")
                this.hideAboutForm();
-           }
-       )
+           })
+           .catch((err) => {
+               console.log("Error updating Details", err);
+               result.json(false);
+           });
+        
+        // this.state.firebaseRootPath.update({'first_name': this.state.firstName});
+        // this.state.firebaseRootPath.update({'last_name': this.state.lastName});
+       //  let newArr = this.state.aboutMeObject;
+       //  let name = this.state.firstName + " " + this.state.lastName;
+       //  this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
+       //     (doc) => {
+       //         this.props.updateProfilePic(name, this.state.aboutMeObject.pic);
+       //         this.props.updateProfileTimeZone(this.state.aboutMeObject.timeSettings.timeZone);
+       //         this.hideAboutForm();
+       //     }
+       // )
    }
+    
+    // newInputSubmit = () => {
+    //     if(this.state.importantPeople1.important === true){
+    //         if(this.state.ImporPersonOneChange === true){
+    //             if(this.state.importantPeople1id != null){
+    //                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1Previous);
+    //             }
+    //             if(this.state.importantPeople1DocRefChanged != null){
+    //                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1DocRefChanged).update(this.state.importantPeople1);
+    //             }
+    //         }
+    //         else{
+    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1);
+    //         }
+    //     }
+    //     if(this.state.importantPeople2.important === true){
+    //         if(this.state.ImporPersonTwoChange === true){
+    //             if(this.state.importantPeople2id != null){
+    //                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2Previous);
+    //             }
+    //             if(this.state.importantPeople2DocRefChanged != null){
+    //                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2DocRefChanged).update(this.state.importantPeople2);
+    //             }
+    //         }
+    //         else{
+    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2);
+    //         }
+    //     }
+    //     if(this.state.importantPeople3.important === true){
+    //         if(this.state.ImporPersonThreeChange === true){
+    //             if(this.state.importantPeople3id != null){
+    //                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3Previous);
+    //             }
+    //             if(this.state.importantPeople3DocRefChanged != null){
+    //                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3DocRefChanged).update(this.state.importantPeople3);
+    //             }
+    //         }
+    //         else{
+    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3);
+    //         }
+    //     }
+    //     this.state.firebaseRootPath.update({'first_name': this.state.firstName});
+    //     this.state.firebaseRootPath.update({'last_name': this.state.lastName});
+    //     let newArr = this.state.aboutMeObject;
+    //     let name = this.state.firstName + " " + this.state.lastName;
+    //     this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
+    //        (doc) => {
+    //            this.props.updateProfilePic(name, this.state.aboutMeObject.pic);
+    //            this.props.updateProfileTimeZone(this.state.aboutMeObject.timeSettings.timeZone);
+    //            this.hideAboutForm();
+    //        }
+    //     )
+    // }
 
 
     render(){
