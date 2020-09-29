@@ -84,18 +84,18 @@ import axios from 'axios';
            picture: this.state.itemToEdit.pic
         }
         
-        console.log(body)
+        // console.log(body)
         
         axios.post(url, body)
            .then((response) => {
               console.log("Added new person Details")
+              this.props.closeModal();
+              this.props.newPersonAdded();
            })
            .catch((err) => {
               console.log("Fail to add new Person", err);
            });
-   
-        this.props.closeModal();
-        this.props.newPersonAdded();
+        
      }
 
     // newPersonInputSubmit = ( ) => {

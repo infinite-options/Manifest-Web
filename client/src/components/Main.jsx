@@ -547,18 +547,21 @@ export default class MainPage extends React.Component {
       let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       if(response.data.length != 0) {
+        // console.log(response.data)
         response.data.forEach((d, i) => {
           // console.log(d)
           let id = d.user_unique_id;
-          profilePicURLArray.push(d.picture);
+          profilePicURLArray.push(d.user_picture);
           nameIdObject[id] = d.user_name;
           timeZoneObject[id] = d.time_zone;
-          emailIdObject[id] = d.email_id;
+          emailIdObject[id] = d.user_email_id;
         });
+        
         theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
         theCurrentUserPic = profilePicURLArray[0];
         theCurrentUserId = Object.keys(nameIdObject)[0];
         theCurrentUserEmail = Object.keys(emailIdObject)[0];
+        theTimeZone = timeZoneObject[Object.keys(timeZoneObject)[0]];
       }
 
       this.setState(
@@ -579,6 +582,7 @@ export default class MainPage extends React.Component {
           this.grabFireBaseRoutinesGoalsData();
           this.updateEventsArray();
           this.listAllTAs();
+  
         }
       );
     });

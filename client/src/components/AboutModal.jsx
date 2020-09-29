@@ -163,7 +163,7 @@ class AboutModal extends React.Component{
                     function progress(snapshot){
                         //get percentage uplaoded
                         var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
-                        console.log(percentage);
+                        // console.log(percentage);
 
                     },
                     function error(err){
@@ -205,7 +205,7 @@ class AboutModal extends React.Component{
                     function progress(snapshot){
                         //get percentage uplaoded
                         var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
-                        console.log(percentage);
+                        // console.log(percentage);
 
                     },
                     function error(err){
@@ -471,10 +471,10 @@ class AboutModal extends React.Component{
                    // console.log(details)
                    
                    let x = {
-                       have_pic: details.user_have_pic || "",
+                       have_pic: details.user_have_pic ? details.user_have_pic.toLowerCase() === "true" : false,
                        message_card: details.message_card,
                        message_day: details.message_day,
-                       pic: details.pic || "",
+                       pic: details.user_picture || "",
                        timeSettings: {
                            morning: details.morning_time,
                            afternoon: details.afternoon_time,
@@ -486,7 +486,7 @@ class AboutModal extends React.Component{
                        }
                    }
                    
-                   console.log(x)
+                   // console.log(x)
 
                    this.setState({
                        aboutMeObject: x, firstName:details.user_first_name, lastName: details.user_last_name
@@ -750,30 +750,39 @@ class AboutModal extends React.Component{
         let people = Object.values(this.state.allPeopleList)
         
         people.forEach((d, i) => {
-            delete d.email;
-            delete d.phone_number;
-            delete d.user_id;
-            delete d.user_name;
+            if (d.email) delete d.email;
+            // delete d.phone_number;
+            if (d.user_id) delete d.user_id;
+            if (d.user_name) delete d.user_name;
+            if (d.user_uid) delete d.user_uid;
             if (!d.pic) d.pic = "";
         })
+        
+        // console.log(this.state)
     
         if(this.state.importantPeople1.important === true){
             if(this.state.ImporPersonOneChange === true){
-                this.state.allPeopleList[this.state.importantPeople1Previous.ta_people_id].important = "FALSE"
+                if (this.state.importantPeople1Previous.ta_people_id) {
+                    this.state.allPeopleList[this.state.importantPeople1Previous.ta_people_id].important = "FALSE"
+                }
                 this.state.allPeopleList[this.state.importantPeople1.ta_people_id].important = "TRUE"
             }
         }
     
         if(this.state.importantPeople2.important === true){
             if(this.state.ImporPersonTwoChange === true){
-                this.state.allPeopleList[this.state.importantPeople2Previous.ta_people_id].important = "FALSE"
+                if (this.state.importantPeople2Previous.ta_people_id) {
+                    this.state.allPeopleList[this.state.importantPeople2Previous.ta_people_id].important = "FALSE"
+                }
                 this.state.allPeopleList[this.state.importantPeople2.ta_people_id].important = "TRUE"
             }
         }
     
         if(this.state.importantPeople3.important === true){
             if(this.state.ImporPersonThreeChange === true){
-                this.state.allPeopleList[this.state.importantPeople3Previous.ta_people_id].important = "FALSE"
+                if (this.state.importantPeople3Previous.ta_people_id) {
+                    this.state.allPeopleList[this.state.importantPeople3Previous.ta_people_id].important = "FALSE"
+                }
                 this.state.allPeopleList[this.state.importantPeople3.ta_people_id].important = "TRUE"
             }
         }
