@@ -739,10 +739,17 @@ function formatEmail(email) {
 
 app.post("/updateNewUser", function (req, result) {
   let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
+  // let body = {
+  //   ta_people_id: req.body.ta_people_id,
+  //   ta_email: req.body.ta_email,
+  //   email: formatEmail(req.body.email),
+  //   first_name: req.body.first_name,
+  //   last_name: req.body.last_name,
+  //   timeZone: req.body.timeZone,
+  // };
   let body = {
     ta_people_id: req.body.ta_people_id,
-    ta_email: req.body.ta_email,
-    email: formatEmail(req.body.email),
+    user_unique_id: req.body.currentUserId,
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     timeZone: req.body.timeZone,
@@ -973,8 +980,11 @@ app.get("/adduser", function (req, result) {
             last_name: "User",
           };
           axios.post(url, body)
-          .then(() => {
-            result.redirect("/main?createUser=true&email=" + emailId);
+          .then((response) => {
+            console.log("After addNewUser, before UpdateNewUser")
+            console.log(response.data.result)
+            // www.yoursite.com?myparam1={id1}&myparam2={id2}
+            result.redirect("/main?createUser=true&email=" + emailId + "&userID=" + response.data.result);
           })
           .catch((err) => {
             console.log("Error getting firebase documents", err);

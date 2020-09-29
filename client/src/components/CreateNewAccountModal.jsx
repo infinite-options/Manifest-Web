@@ -34,7 +34,8 @@ export default class AddNewPeople extends Component {
       first_name: this.state.itemToEdit.first_name,
       last_name: this.state.itemToEdit.last_name,
       timeZone: this.state.timeZone,
-      ta_people_id: this.props.theCurrentTAID
+      ta_people_id: this.props.theCurrentTAID,
+      currentUserId: this.props.currentUserId
     })
     .then((result) => {
        this.props.newUserAdded();

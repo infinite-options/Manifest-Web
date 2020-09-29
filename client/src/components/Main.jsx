@@ -522,10 +522,12 @@ export default class MainPage extends React.Component {
     let query = window.location.href;
     let createUserParam = this.getUrlParam("createUser", query) == "true";
     let email = this.getUrlParam("email", query);
+    let userID = this.getUrlParam("userID", query);
     if (createUserParam) {
       this.setState({
         showNewAccountmodal: createUserParam,
         newAccountEmail: email,
+        currentUserId: userID
       });
     }
   };
@@ -3024,6 +3026,7 @@ this will close repeat modal.
                     email={this.state.newAccountEmail}
                     loggedInEmail={this.state.loggedIn}
                     theCurrentTAID={this.state.ta_people_id}
+                    currentUserId={this.state.currentUserId}
                   />
                 )}
               </Col>
