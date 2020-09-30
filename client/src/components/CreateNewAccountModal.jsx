@@ -26,6 +26,8 @@ export default class AddNewPeople extends Component {
   };
 
   newUserInputSubmit = () => {
+    console.log("In newUserInputSubmit");
+    console.log("newAccountID from Props: ", this.props.newAccountID)
     axios
     .post("/updateNewUser",
     {
@@ -35,7 +37,7 @@ export default class AddNewPeople extends Component {
       last_name: this.state.itemToEdit.last_name,
       timeZone: this.state.timeZone,
       ta_people_id: this.props.theCurrentTAID,
-      currentUserId: this.props.currentUserId
+      currentUserId: this.props.newAccountID
     })
     .then((result) => {
        this.props.newUserAdded();

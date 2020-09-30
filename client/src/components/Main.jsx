@@ -143,6 +143,7 @@ export default class MainPage extends React.Component {
       ta_people_id: "",
       emailIdObject: {},
       theCurrentUserEmail: {},
+      newAccountID: "",
       
       
       versionNumber: this.getVersionNumber(),
@@ -158,258 +159,6 @@ export default class MainPage extends React.Component {
 
   //   }
   // }
-  
-  grabFireBaseRoutinesGoalsData = () => {
-    
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/"
-  
-    let routine = [];
-    let routine_ids = [];
-    let goal = [];
-    let goal_ids = [];
-  
-    axios.get(url + this.state.currentUserId)
-       .then((response) => {
-       
-         if(response.data.result && (response.data.result.length !== 0)) {
-           
-           let x = response.data.result;
-           
-           x.sort((a, b) => {
-             let datetimeA = new Date(a["start_day_and_time"]);
-             let datetimeB = new Date(b["start_day_and_time"]);
-             let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
-             let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
-             return timeA - timeB;
-           });
-           
-           
-           let gr_array = [];
-  
-           for (let i = 0; i < x.length; ++i) {
-  
-             let gr = {};
-             gr.audio =  "";
-             // gr.available_end_time = "23:59:59";
-             // gr.available_start_time = "00:00:00";
-             gr.datetime_completed = x[i].datetime_completed;
-             gr.datetime_started = x[i].datetime_started;
-             gr.end_day_and_time =  x[i].end_day_and_time;
-             gr.expected_completion_time = x[i].expected_completion_time;
-             gr.id = x[i].gr_unique_id;
-  
-             gr.is_available = x[i].is_available.toLowerCase() === "true"
-             gr.is_complete = x[i].is_complete.toLowerCase() === "true"
-             gr.is_displayed_today = x[i].is_displayed_today.toLowerCase() === "true"
-             gr.is_in_progress = x[i].is_in_progress.toLowerCase() === "true"
-             gr.is_persistent = x[i].is_persistent.toLowerCase() === "true"
-             gr.is_sublist_available = x[i].is_sublist_available.toLowerCase() === "true"
-             gr.is_timed = x[i].is_timed.toLowerCase() === "true"
-  
-             gr.photo = x[i].photo
-             gr.repeat = x[i].repeat.toLowerCase() === "true"
-             gr.repeat_ends = x[i].repeat_ends || "Never"
-             gr.repeat_ends_on = x[i].repeat_ends_on
-             gr.repeat_every = x[i].repeat_every
-             gr.repeat_frequency = x[i].repeat_frequency
-             gr.repeat_occurences = x[i].repeat_occurences
-  
-             const repeat_week_days_json = JSON.parse(x[i].repeat_week_days)
-  
-             if (repeat_week_days_json) {
-               gr.repeat_week_days = {
-                 0: ( repeat_week_days_json.Sunday && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
-                 1: ( repeat_week_days_json.Monday && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
-                 2: ( repeat_week_days_json.Tuesday && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
-                 3: ( repeat_week_days_json.Wednesday && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
-                 4: ( repeat_week_days_json.Thursday && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
-                 5: ( repeat_week_days_json.Friday && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
-                 6: ( repeat_week_days_json.Saturday && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
-               }
-             } else {
-               gr.repeat_week_days = {
-                 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: ""
-               }
-             }
-  
-             // gr.repeat_week_days = {
-             //   0 : (repeat_week_days_json && repeat_week_days_json.Sunday.toLowerCase() === "true") ? "Sunday" : "",
-             //   1 : (repeat_week_days_json && repeat_week_days_json.Monday.toLowerCase() === "true") ? "Monday" : "",
-             //   2 : (repeat_week_days_json && repeat_week_days_json.Tuesday.toLowerCase() === "true") ? "Tuesday" : "",
-             //   3 : (repeat_week_days_json && repeat_week_days_json.Wednesday.toLowerCase() === "true") ? "Wednesday" : "",
-             //   4 : (repeat_week_days_json && repeat_week_days_json.Thursday.toLowerCase() === "true") ? "Thursday" : "",
-             //   5 : (repeat_week_days_json && repeat_week_days_json.Friday.toLowerCase() === "true") ? "Friday" : "",
-             //   6 : (repeat_week_days_json && repeat_week_days_json.Saturday.toLowerCase() === "true") ? "Saturday" : ""
-             // }
-  
-             gr.start_day_and_time = x[i].start_day_and_time
-  
-             
-             // Need to update assignments
-             gr.ta_notifications = {
-               before :{
-                 is_enabled :"",
-                 is_set: "",
-                 message: "",
-                 time: ""
-               },
-               during:{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               },
-               after :{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               }
-             }
-  
-             gr.user_notifications = {
-               before :{
-                 is_enabled :"",
-                 is_set: "",
-                 message: "",
-                 time: ""
-               },
-               during:{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               },
-               after :{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               }
-             }
-  
-             gr.title = x[i].gr_title
-             
-             gr_array.push(gr)
-             
-             if (x[i]["is_persistent"].toLowerCase() === "true") {
-               
-               // routine_ids.push(i);
-               
-               // routine_ids.push(x[i]["gr_unique_id"]);
-               // routine.push(x[i]);
-               
-               routine_ids.push(gr["id"]);
-               routine.push(gr);
-             } else if (x[i]["is_persistent"].toLowerCase() === "false") {
-               // goal_ids.push(i);
-               
-               // goal_ids.push(x[i]["gr_unique_id"]);
-               // goal.push(x[i]);
-  
-               goal_ids.push(gr["id"]);
-               goal.push(gr);
-             }
-           }
-  
-           this.setState({
-             originalGoalsAndRoutineArr: gr_array,
-             goals: goal,
-             addNewGRModalShow: false,
-             routine_ids: routine_ids,
-             goal_ids: goal_ids,
-             routines: routine,
-           });
-           
-         } else {
-           this.setState({
-             originalGoalsAndRoutineArr: [],
-             goals: goal,
-             addNewGRModalShow: false,
-             routine_ids: routine_ids,
-             goal_ids: goal_ids,
-             routines: routine,
-           });
-         }
-  
-         console.log(this.state)
-       })
-       .catch((error) => {
-         console.log('Error in getting goals and routines ' + error);
-    });
-  };
-  
-  
-  /**
-   * grabFireBaseRoutinesGoalsData:
-   * this function grabs the goals&routines array from the path located in this function
-   * which will then populate the goals, routines,originalGoalsAndRoutineArr array
-   * separately. The arrays will be used for display and data manipulation later.
-   *
-   */
-  // grabFireBaseRoutinesGoalsData = () => {
-  //   const db = firebase.firestore();
-  //   if (this.state.currentUserId !== "") {
-  //     const docRef = db.collection("users").doc(this.state.currentUserId);
-  //     docRef
-  //       .get()
-  //       .then((doc) => {
-  //         if (doc.exists) {
-  //           var x = doc.data();
-  //           let routine = [];
-  //           let routine_ids = [];
-  //           let goal = [];
-  //           let goal_ids = [];
-  //           if (x["goals&routines"] !== undefined) {
-  //             x = x["goals&routines"];
-  //             // console.log("this is the goals and routines", x);
-  //             x.sort((a, b) => {
-  //               let datetimeA = new Date(a["start_day_and_time"]);
-  //               let datetimeB = new Date(b["start_day_and_time"]);
-  //               let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
-  //               let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
-  //               return timeA - timeB;
-  //             });
-  //             for (let i = 0; i < x.length; ++i) {
-  //               if (x[i]["is_persistent"]) {
-  //                 // console.log("routine " + x[i]["title"]);
-  //                 // console.log("is the is the id ", x[i].id);
-  //                 routine_ids.push(i);
-  //                 routine.push(x[i]);
-  //               } else if (!x[i]["is_persistent"]) {
-  //                 // console.log("not routine " + x[i]["title"]);
-  //                 goal_ids.push(i);
-  //                 goal.push(x[i]);
-  //               }
-  //             }
-  //             this.setState({
-  //               originalGoalsAndRoutineArr: x,
-  //               goals: goal,
-  //               addNewGRModalShow: false,
-  //               routine_ids: routine_ids,
-  //               goal_ids: goal_ids,
-  //               routines: routine,
-  //             });
-  //           } else {
-  //             this.setState({
-  //               originalGoalsAndRoutineArr: [],
-  //               goals: goal,
-  //               addNewGRModalShow: false,
-  //               routine_ids: routine_ids,
-  //               goal_ids: goal_ids,
-  //               routines: routine,
-  //             });
-  //           }
-  //         } else {
-  //           // doc.data() will be undefined in this case
-  //           console.log("No such document!");
-  //         }
-  //       })
-  //       .catch(function (error) {
-  //         console.log("Error getting document:", error);
-  //       });
-  //   }
-  // };
 
   handleRepeatDropDown = (eventKey, week_days) => {
     if (eventKey === "WEEK") {
@@ -523,11 +272,13 @@ export default class MainPage extends React.Component {
     let createUserParam = this.getUrlParam("createUser", query) == "true";
     let email = this.getUrlParam("email", query);
     let userID = this.getUrlParam("userID", query);
+    console.log("In updateStatesByQuery");
+    console.log("UserId : ", userID)
     if (createUserParam) {
       this.setState({
         showNewAccountmodal: createUserParam,
         newAccountEmail: email,
-        currentUserId: userID
+        newAccountID: userID
       });
     }
   };
@@ -705,6 +456,258 @@ export default class MainPage extends React.Component {
          }
        });
   }
+  
+  grabFireBaseRoutinesGoalsData = () => {
+    
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/"
+    
+    let routine = [];
+    let routine_ids = [];
+    let goal = [];
+    let goal_ids = [];
+    
+    axios.get(url + this.state.currentUserId)
+       .then((response) => {
+         
+         if(response.data.result && (response.data.result.length !== 0)) {
+           
+           let x = response.data.result;
+           
+           x.sort((a, b) => {
+             let datetimeA = new Date(a["start_day_and_time"]);
+             let datetimeB = new Date(b["start_day_and_time"]);
+             let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
+             let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
+             return timeA - timeB;
+           });
+           
+           
+           let gr_array = [];
+           
+           for (let i = 0; i < x.length; ++i) {
+             
+             let gr = {};
+             gr.audio =  "";
+             // gr.available_end_time = "23:59:59";
+             // gr.available_start_time = "00:00:00";
+             gr.datetime_completed = x[i].datetime_completed;
+             gr.datetime_started = x[i].datetime_started;
+             gr.end_day_and_time =  x[i].end_day_and_time;
+             gr.expected_completion_time = x[i].expected_completion_time;
+             gr.id = x[i].gr_unique_id;
+             
+             gr.is_available = x[i].is_available.toLowerCase() === "true"
+             gr.is_complete = x[i].is_complete.toLowerCase() === "true"
+             gr.is_displayed_today = x[i].is_displayed_today.toLowerCase() === "true"
+             gr.is_in_progress = x[i].is_in_progress.toLowerCase() === "true"
+             gr.is_persistent = x[i].is_persistent.toLowerCase() === "true"
+             gr.is_sublist_available = x[i].is_sublist_available.toLowerCase() === "true"
+             gr.is_timed = x[i].is_timed.toLowerCase() === "true"
+             
+             gr.photo = x[i].photo
+             gr.repeat = x[i].repeat.toLowerCase() === "true"
+             gr.repeat_ends = x[i].repeat_ends || "Never"
+             gr.repeat_ends_on = x[i].repeat_ends_on
+             gr.repeat_every = x[i].repeat_every
+             gr.repeat_frequency = x[i].repeat_frequency
+             gr.repeat_occurences = x[i].repeat_occurences
+             
+             const repeat_week_days_json = JSON.parse(x[i].repeat_week_days)
+             
+             if (repeat_week_days_json) {
+               gr.repeat_week_days = {
+                 0: ( repeat_week_days_json.Sunday && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
+                 1: ( repeat_week_days_json.Monday && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
+                 2: ( repeat_week_days_json.Tuesday && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
+                 3: ( repeat_week_days_json.Wednesday && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
+                 4: ( repeat_week_days_json.Thursday && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
+                 5: ( repeat_week_days_json.Friday && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
+                 6: ( repeat_week_days_json.Saturday && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
+               }
+             } else {
+               gr.repeat_week_days = {
+                 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: ""
+               }
+             }
+             
+             // gr.repeat_week_days = {
+             //   0 : (repeat_week_days_json && repeat_week_days_json.Sunday.toLowerCase() === "true") ? "Sunday" : "",
+             //   1 : (repeat_week_days_json && repeat_week_days_json.Monday.toLowerCase() === "true") ? "Monday" : "",
+             //   2 : (repeat_week_days_json && repeat_week_days_json.Tuesday.toLowerCase() === "true") ? "Tuesday" : "",
+             //   3 : (repeat_week_days_json && repeat_week_days_json.Wednesday.toLowerCase() === "true") ? "Wednesday" : "",
+             //   4 : (repeat_week_days_json && repeat_week_days_json.Thursday.toLowerCase() === "true") ? "Thursday" : "",
+             //   5 : (repeat_week_days_json && repeat_week_days_json.Friday.toLowerCase() === "true") ? "Friday" : "",
+             //   6 : (repeat_week_days_json && repeat_week_days_json.Saturday.toLowerCase() === "true") ? "Saturday" : ""
+             // }
+             
+             gr.start_day_and_time = x[i].start_day_and_time
+             
+             
+             // Need to update assignments
+             gr.ta_notifications = {
+               before :{
+                 is_enabled :"",
+                 is_set: "",
+                 message: "",
+                 time: ""
+               },
+               during:{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               },
+               after :{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               }
+             }
+             
+             gr.user_notifications = {
+               before :{
+                 is_enabled :"",
+                 is_set: "",
+                 message: "",
+                 time: ""
+               },
+               during:{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               },
+               after :{
+                 is_enabled : "",
+                 is_set : "",
+                 message : "",
+                 time : ""
+               }
+             }
+             
+             gr.title = x[i].gr_title
+             
+             gr_array.push(gr)
+             
+             if (x[i]["is_persistent"].toLowerCase() === "true") {
+               
+               // routine_ids.push(i);
+               
+               // routine_ids.push(x[i]["gr_unique_id"]);
+               // routine.push(x[i]);
+               
+               routine_ids.push(gr["id"]);
+               routine.push(gr);
+             } else if (x[i]["is_persistent"].toLowerCase() === "false") {
+               // goal_ids.push(i);
+               
+               // goal_ids.push(x[i]["gr_unique_id"]);
+               // goal.push(x[i]);
+               
+               goal_ids.push(gr["id"]);
+               goal.push(gr);
+             }
+           }
+           
+           this.setState({
+             originalGoalsAndRoutineArr: gr_array,
+             goals: goal,
+             addNewGRModalShow: false,
+             routine_ids: routine_ids,
+             goal_ids: goal_ids,
+             routines: routine,
+           });
+           
+         } else {
+           this.setState({
+             originalGoalsAndRoutineArr: [],
+             goals: goal,
+             addNewGRModalShow: false,
+             routine_ids: routine_ids,
+             goal_ids: goal_ids,
+             routines: routine,
+           });
+         }
+         
+         console.log(this.state)
+       })
+       .catch((error) => {
+         console.log('Error in getting goals and routines ' + error);
+       });
+  };
+  
+  
+  /**
+   * grabFireBaseRoutinesGoalsData:
+   * this function grabs the goals&routines array from the path located in this function
+   * which will then populate the goals, routines,originalGoalsAndRoutineArr array
+   * separately. The arrays will be used for display and data manipulation later.
+   *
+   */
+  // grabFireBaseRoutinesGoalsData = () => {
+  //   const db = firebase.firestore();
+  //   if (this.state.currentUserId !== "") {
+  //     const docRef = db.collection("users").doc(this.state.currentUserId);
+  //     docRef
+  //       .get()
+  //       .then((doc) => {
+  //         if (doc.exists) {
+  //           var x = doc.data();
+  //           let routine = [];
+  //           let routine_ids = [];
+  //           let goal = [];
+  //           let goal_ids = [];
+  //           if (x["goals&routines"] !== undefined) {
+  //             x = x["goals&routines"];
+  //             // console.log("this is the goals and routines", x);
+  //             x.sort((a, b) => {
+  //               let datetimeA = new Date(a["start_day_and_time"]);
+  //               let datetimeB = new Date(b["start_day_and_time"]);
+  //               let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
+  //               let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
+  //               return timeA - timeB;
+  //             });
+  //             for (let i = 0; i < x.length; ++i) {
+  //               if (x[i]["is_persistent"]) {
+  //                 // console.log("routine " + x[i]["title"]);
+  //                 // console.log("is the is the id ", x[i].id);
+  //                 routine_ids.push(i);
+  //                 routine.push(x[i]);
+  //               } else if (!x[i]["is_persistent"]) {
+  //                 // console.log("not routine " + x[i]["title"]);
+  //                 goal_ids.push(i);
+  //                 goal.push(x[i]);
+  //               }
+  //             }
+  //             this.setState({
+  //               originalGoalsAndRoutineArr: x,
+  //               goals: goal,
+  //               addNewGRModalShow: false,
+  //               routine_ids: routine_ids,
+  //               goal_ids: goal_ids,
+  //               routines: routine,
+  //             });
+  //           } else {
+  //             this.setState({
+  //               originalGoalsAndRoutineArr: [],
+  //               goals: goal,
+  //               addNewGRModalShow: false,
+  //               routine_ids: routine_ids,
+  //               goal_ids: goal_ids,
+  //               routines: routine,
+  //             });
+  //           }
+  //         } else {
+  //           // doc.data() will be undefined in this case
+  //           console.log("No such document!");
+  //         }
+  //       })
+  //       .catch(function (error) {
+  //         console.log("Error getting document:", error);
+  //       });
+  //   }
+  // };
 
   /*
 getThisMonthEvents:
@@ -3026,7 +3029,7 @@ this will close repeat modal.
                     email={this.state.newAccountEmail}
                     loggedInEmail={this.state.loggedIn}
                     theCurrentTAID={this.state.ta_people_id}
-                    currentUserId={this.state.currentUserId}
+                    newAccountID={this.state.newAccountID}
                   />
                 )}
               </Col>
