@@ -24,13 +24,13 @@ export default class AddNewPeople extends Component {
     .collection("users"),
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
   };
-
+  
   newUserInputSubmit = () => {
     console.log("In newUserInputSubmit");
     console.log("newAccountID from Props: ", this.props.newAccountID)
-    axios
-    .post("/updateNewUser",
-    {
+    console.log("ta_people_id from Props: ", this.props.theCurrentTAID)
+    
+    let body = {
       ta_email: this.props.loggedInEmail,
       email: this.props.email,
       first_name: this.state.itemToEdit.first_name,
@@ -38,13 +38,18 @@ export default class AddNewPeople extends Component {
       timeZone: this.state.timeZone,
       ta_people_id: this.props.theCurrentTAID,
       currentUserId: this.props.newAccountID
-    })
-    .then((result) => {
-       this.props.newUserAdded();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    }
+    
+    console.log("body in newUserInputSubmit")
+    console.log(body)
+    axios
+       .post("/updateNewUser", body)
+       .then((result) => {
+         this.props.newUserAdded();
+       })
+       .catch((err) => {
+         console.log(err);
+       });
   }
 
     handleTimeZoneChange = (e) => {

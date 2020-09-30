@@ -829,7 +829,14 @@ app.post("/TASocialLogIn", function (req, result) {
     (response) => {
       if (response.data.result) {
         req.session.user = req.body.username;
-        result.json(req.body.username);
+        req.session.ta_people_id = response.data.result;
+  
+        let result_body = {
+          ta_people_id: response.data.result,
+          username: req.body.username
+        }
+        
+        result.json(result_body);
         return;
       } else {
         console.log("no user");
