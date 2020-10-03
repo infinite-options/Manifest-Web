@@ -448,9 +448,9 @@ export default class MainPage extends React.Component {
          if(response.data.result.length !== 0) {
            response.data.result.forEach( ( d, i ) => {
              this.state.advisorIdAndNames[i] = {
-               first_name: d.first_name,
-               last_name: d.last_name,
-               uid: d.unique_id
+               first_name: d.ta_first_name,
+               last_name: d.ta_last_name,
+               uid: d.ta_unique_id
              };
            });
          }

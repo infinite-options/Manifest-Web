@@ -47,11 +47,17 @@ export default class DatePicker extends React.Component {
     console.log("handle change", dateString);
     if (dateString.length !== 0) {
       let newDate = new Date();
+      console.log("Unformatted", newDate)
       newDate.setFullYear(dateString.substring(0, 4));
-      newDate.setMonth(parseInt(dateString.substring(6, 8)) - 1);
+      console.log("Year", dateString.substring(0, 4))
+      newDate.setMonth(parseInt(dateString.substring(5, 7)) - 1);
+      console.log("Month", parseInt(dateString.substring(5, 7)) - 1)
       newDate.setDate(dateString.substring(8, 10));
+      console.log("Date", dateString.substring(8, 10))
       newDate.setHours(dateString.substring(11, 13));
-      newDate.setMinutes(dateString.substring(14, 17));
+      console.log("Hour", dateString.substring(11, 13))
+      newDate.setMinutes(dateString.substring(14, 16));
+      console.log("Minutes", dateString.substring(14, 16))
       console.log("formatted time: ", newDate);
 
       this.props.set_day_and_time(event.target.id, newDate);
