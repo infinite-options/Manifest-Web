@@ -43,7 +43,7 @@ class AboutModal extends React.Component{
             showTimeModal: false,
             saveButtonEnabled: true,
             enableDropDown: false,
-    
+            url: "",
             allPeopleList : {},
             nonImportantPeople: {}
         }
@@ -61,45 +61,29 @@ class AboutModal extends React.Component{
     handleFileSelected = event => {
         event.preventDefault();
         event.stopPropagation();
-        const file = event.target.files[0];
+        
+        const file = event.target.files[0]; //stores file uploaded in file
+        console.log(file)
+
         this.setState({
             saveButtonEnabled: false
-        }, ()=>{
-            let targetFile = file
+        })
+
+        let targetFile = file
             if(targetFile !== null && Object.keys(this.state.aboutMeObject).length !== 0 ){
                 let temp = this.state.aboutMeObject;
-
-                // Create a reference to the firebase storage.
-                var storageRef = storage.ref('Profile_Pics/' + targetFile.name);
-                //upload file to firebase storage
-                var task = storageRef.put(targetFile);
-                //check on the the upload progress
-                task.on('state_changed',
-                    function progress(snapshot){
-                        //get percentage uplaoded
-                        var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
-                        console.log(percentage);
-
-                    },
-                    function error(err){
-                        console.log(err);
-                    },
-                    (snapshot) =>{
-                        temp.have_pic = true;
-                        console.log("completed");
-                        storage.ref('Profile_Pics').child(targetFile.name).getDownloadURL().then(url => {
-                            temp.pic = url;
-                            this.setState({
-                                aboutMeObject: temp,
-                                saveButtonEnabled: true
-                            });
-                        });
-                    }
-                );
-            }});
+                temp.have_pic = true;
+                temp.pic = file
+                this.setState({
+                    aboutMeObject: temp,
+                    saveButtonEnabled: true,
+                    url: URL.createObjectURL(event.target.files[0])
+                });
+                console.log(this.state.url)
+            }
+        console.log(this.state.aboutMeObject.pic)
+        console.log(event.target.files[0].name)
     };
-
-
 
     handleImpPeople1 = (event) =>{
         event.preventDefault();
@@ -789,7 +773,7 @@ class AboutModal extends React.Component{
         
         // console.log(people)
         
-        let body = {
+        const body = {
             user_id : this.props.theCurrentUserId,
             first_name : this.state.firstName,
             last_name : this.state.lastName,
@@ -800,19 +784,35 @@ class AboutModal extends React.Component{
             people : people,
             timeSettings : this.state.aboutMeObject.timeSettings
         }
+                
+        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/update"
+        
+        let formData = new FormData();
+        Object.entries(body).forEach(entry => {
+            console.log(entry[1].name)
+            if (typeof entry[1].name == 'string'){
+            
+                formData.append(entry[0], entry[1]);
+            }
+            else if (entry[1] instanceof Object) {
+                entry[1] = JSON.stringify(entry[1])
+                formData.append(entry[0], entry[1]);
+            }
+            
+            else{
+                formData.append(entry[0], entry[1]);
+            }
+        });
         
         console.log(body)
-        
-        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAboutMe"
-    
-        axios.post(url, body)
+        axios.post(url, formData)
            .then(() => {
                console.log("Updated Details")
                this.hideAboutForm();
            })
            .catch((err) => {
                console.log("Error updating Details", err);
-               result.json(false);
+            //    result.json(false);
            });
         
         // this.state.firebaseRootPath.update({'first_name': this.state.firstName});
@@ -944,6 +944,7 @@ class AboutModal extends React.Component{
                         <Col>
                             {(this.state.aboutMeObject.have_pic === false  ?
                             <FontAwesomeIcon icon={faImage} size="6x"/> :
+                            (this.state.url === '' ?
                             <img style =
                                 {{display: "block",
                                 marginLeft: "auto",
@@ -953,7 +954,17 @@ class AboutModal extends React.Component{
                                 }}
                                 src={this.state.aboutMeObject.pic}
                                 alt="Profile"
-                            /> )
+                            /> :
+                            <img style =
+                                {{display: "block",
+                                marginLeft: "auto",
+                                marginRight:"auto" ,
+                                width: "100%",
+                                height:"70px",
+                                }}
+                                src={this.state.url}
+                                alt="Profile"
+                            />))
                             }
                         </Col>
                         <Col xs={8}>

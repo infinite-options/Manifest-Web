@@ -120,7 +120,7 @@ const calendarID = "iodevcalendar@gmail.com"; //Change here for someone else's c
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 const SCOPEUSERS = [
   "https://www.googleapis.com/auth/calendar",
-  "https://www.googleapis.com/auth/userinfo.email",
+  "https://www.googleapis.com/auth/userinfo.email"
 ];
 // The file token.json stores the user's acalendar"ccess and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
@@ -977,7 +977,8 @@ app.get("/adduser", function (req, result) {
           console.log(res.data)
           let emailId = res.data.email;
           emailId = formatEmail(emailId);
-
+          let socialId = oAuth2Client.client_id
+          console.log(socialId)
           let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
           let body = {
             email_id: emailId,
