@@ -20,6 +20,7 @@ export default class editGR extends Component {
     this.state = {
       // showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
+      photo_url: this.props.ATArray[this.props.i].photo,
       showRepeatModal: false,
       repeatOption:
         this.props.ATArray[this.props.i].repeat === (true || "1")
@@ -139,10 +140,11 @@ export default class editGR extends Component {
     });
   }
 
-  setPhotoURLFunction = (photo_url) => {
+  setPhotoURLFunction = (photo, photo_url) => {
     let temp = this.state.itemToEdit;
-    temp.photo = photo_url;
-    this.setState({ itemToEdit: temp });
+    temp.photo = photo;
+    console.log(photo_url)
+    this.setState({ itemToEdit: temp, photo_url: photo_url });
     // this.props.changePhoto(photo_url);
   };
 
@@ -259,8 +261,10 @@ export default class editGR extends Component {
       alert(status);
       return;
     }
+
     let newArr = this.props.ATArray;
     let temp = this.state.itemToEdit;
+    console.log(temp)
     if (!temp.repeat_ends_on) {
       temp.repeat_ends_on = new Date();
     }
@@ -279,13 +283,11 @@ export default class editGR extends Component {
     
     // newArr[this.props.i] = temp;
     
-    if (temp.photo === "") {
+    if (this.state.photo_url === "") {
       if (temp.is_persistent) {
-        temp.photo =
-           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Froutine2.png?alt=media&token=dec839c9-5558-49b9-a41b-76fbe3e29a81";
+        this.state.photo_url = "https://manifest-image-db.s3-us-west-1.amazonaws.com/routine.png";      
       } else {
-        temp.photo =
-           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
+        this.state.photo_url = "https://manifest-image-db.s3-us-west-1.amazonaws.com/goal.png";
       }
     }
     
@@ -309,22 +311,39 @@ export default class editGR extends Component {
          "Sun, 23 Feb 2020 00:08:43 GMT";
     }
   
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateGR"
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateGR2"
   
-    let body = JSON.parse(JSON.stringify(temp))
+    let body = temp
   
     // changes to request body to make it compatible with RDS
   
     body.user_id = this.props.theCurrentUserId;
-  
+    body.photo_url = this.state.photo_url
     if (body.available_end_time) delete body.available_end_time;
     if (body.available_start_time) delete body.available_start_time;
   
     body.ta_people_id = this.props.theCurrentTAID;
-  
-    axios.post(url, body)
+    console.log(body)
+    let formData = new FormData();
+        Object.entries(body).forEach(entry => {
+            if (typeof entry[1].name == 'string'){
+            
+                formData.append(entry[0], entry[1]);
+            }
+            else if (entry[1] instanceof Object) {
+                entry[1] = JSON.stringify(entry[1])
+                formData.append(entry[0], entry[1]);
+            }
+            
+            else{
+                formData.append(entry[0], entry[1]);
+            }
+        });
+    console.log(formData)
+    axios.post(url, formData)
        .then(() => {
          console.log("Updated Goal/Routine to Database")
+         
          if (this.props != null) {
            this.props.closeEditModal();
            this.props.refresh( newArr );
@@ -955,7 +974,7 @@ export default class editGR extends Component {
 
             <img
               alt="None"
-              src={this.state.itemToEdit.photo}
+              src={this.state.photo_url}
               height="70"
               width="auto"
             ></img>

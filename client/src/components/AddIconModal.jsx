@@ -15,17 +15,18 @@ export default class AddIconModal extends Component {
   onHandleShowClick = () => {
     let toggle = this.state.show;
     this.setState({ show: !toggle });
+    console.log(toggle)
   };
 
   onPhotoClick = (e) => {
-    // console.log("this is the E: ", e);
+    console.log("this is the E: ", e);
     this.setState({ photo_url: e });
   };
 
   onSubmitIcon = () => {
     let toggle = this.state.show;
     this.setState({ show: !toggle });
-    this.props.parentFunction(this.state.photo_url);
+    this.props.parentFunction("", this.state.photo_url);
   };
 
   render() {

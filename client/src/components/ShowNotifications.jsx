@@ -4,7 +4,7 @@ import { Form, Row, Col } from "react-bootstrap";
 class ShowNotifications extends React.Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props)
     this.state = {};
   }
 

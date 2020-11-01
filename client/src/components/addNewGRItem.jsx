@@ -19,13 +19,9 @@ export default class AddNewGRItem extends Component {
 
     if (this.state.itemToEdit.photo === "") {
       if (this.props.isRoutine) {
-        this.state.itemToEdit.photo =
-          //"https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Froutine2.png?alt=media&token=dec839c9-5558-49b9-a41b-76fbe3e29a81";
+        this.state.itemToEdit.photo_url = "https://manifest-image-db.s3-us-west-1.amazonaws.com/routine.png";
       } else {
-        this.state.itemToEdit.photo =
-          //"https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
+        this.state.itemToEdit.photo_url = "https://manifest-image-db.s3-us-west-1.amazonaws.com/goal.png";
       }
     }
 
@@ -38,6 +34,7 @@ export default class AddNewGRItem extends Component {
       id: "",
       is_persistent: this.props.isRoutine,
       photo: "",
+      photo_url: "",
       is_complete: false,
       is_available: true,
 
@@ -176,7 +173,7 @@ export default class AddNewGRItem extends Component {
        .then((response) => {
          if(response.data.result && (response.data.result.length !== 0)) {
            let x = response.data.result;
-  
+            console.log(x)
            x.sort((a, b) => {
              let datetimeA = new Date(a["start_day_and_time"]);
              let datetimeB = new Date(b["start_day_and_time"]);
@@ -233,61 +230,104 @@ export default class AddNewGRItem extends Component {
                }
              }
   
-             // gr.repeat_week_days = {
-             //   0: ( repeat_week_days_json && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
-             //   1: ( repeat_week_days_json && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
-             //   2: ( repeat_week_days_json && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
-             //   3: ( repeat_week_days_json && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
-             //   4: ( repeat_week_days_json && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
-             //   5: ( repeat_week_days_json && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
-             //   6: ( repeat_week_days_json && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
-             // }
-  
              gr.start_day_and_time = x[ i ].start_day_and_time
-  
-  
-             // Need to update assignments
-             gr.ta_notifications = {
-               before: {
-                 is_enabled: "",
-                 is_set:    "",
-                 message:   "",
-                 time:      ""
-               },
-               during: {
-                 is_enabled: "",
-                 is_set:    "",
-                 message:   "",
-                 time:      ""
-               },
-               after:  {
-                 is_enabled: "",
-                 is_set:    "",
-                 message:   "",
-                 time:      ""
-               }
+             const first_notifications = (x[i].notifications[0])
+             const second_notifications = (x[i].notifications[1])
+
+             if ((first_notifications.user_ta_id.charAt(0)) === '1') {
+              gr.user_notifications = {
+                before: {
+                  is_enabled: first_notifications.before_is_enable.toLowerCase(),
+                  is_set:    first_notifications.before_is_set.toLowerCase(),
+                  message:   first_notifications.before_message,
+                  time:      first_notifications.before_time
+                },
+                during: {
+                  is_enabled: first_notifications.during_is_enable.toLowerCase(),
+                  is_set:    first_notifications.during_is_set.toLowerCase(),
+                  message:   first_notifications.during_message,
+                  time:      first_notifications.during_time
+                },
+                after:  {
+                  is_enabled: first_notifications.after_is_enable.toLowerCase(),
+                  is_set:    first_notifications.after_is_set.toLowerCase(),
+                  message:   first_notifications.after_message,
+                  time:      first_notifications.after_time
+                }
+              }
              }
-  
-             gr.user_notifications = {
-               before: {
-                 is_enabled: "",
-                 is_set:    "",
-                 message:   "",
-                 time:      ""
-               },
-               during: {
-                 is_enabled: "",
-                 is_set:    "",
-                 message:   "",
-                 time:      ""
-               },
-               after:  {
-                 is_enabled: "",
-                 is_set:    "",
-                 message:   "",
-                 time:      ""
-               }
+
+             if ((first_notifications.user_ta_id.charAt(0)) === '2') {
+              gr.ta_notifications = {
+                before: {
+                  is_enabled: first_notifications.before_is_enable.toLowerCase(),
+                  is_set:    first_notifications.before_is_set.toLowerCase(),
+                  message:   first_notifications.before_message,
+                  time:      first_notifications.before_time
+                },
+                during: {
+                  is_enabled: first_notifications.during_is_enable.toLowerCase(),
+                  is_set:    first_notifications.during_is_set.toLowerCase(),
+                  message:   first_notifications.during_message,
+                  time:      first_notifications.during_time
+                },
+                after:  {
+                  is_enabled: first_notifications.after_is_enable.toLowerCase(),
+                  is_set:    first_notifications.after_is_set.toLowerCase(),
+                  message:   first_notifications.after_message,
+                  time:      first_notifications.after_time
+                }
+              }
              }
+
+             if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+              gr.user_notifications = {
+                before: {
+                  is_enabled: second_notifications.before_is_enable,
+                  is_set:    second_notifications.before_is_set,
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                during: {
+                  is_enabled: second_notifications.before_is_enable,
+                  is_set:    second_notifications.before_is_set,
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                after:  {
+                  is_enabled: second_notifications.before_is_enable,
+                  is_set:    second_notifications.before_is_set,
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                }
+              }
+             }
+
+             if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+              gr.user_notifications = {
+                before: {
+                  is_enabled: second_notifications.before_is_enable,
+                  is_set:    second_notifications.before_is_set,
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                during: {
+                  is_enabled: second_notifications.before_is_enable,
+                  is_set:    second_notifications.before_is_set,
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                after:  {
+                  is_enabled: second_notifications.before_is_enable,
+                  is_set:    second_notifications.before_is_set,
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                }
+              }
+             }
+
+             
+            
   
              gr.title = x[ i ].gr_title
   
@@ -360,10 +400,12 @@ export default class AddNewGRItem extends Component {
     return "";
   };
 
-  setPhotoURLFunction = (photo_url) => {
+  setPhotoURLFunction = (photo, photo_url) => {
     let temp = this.state.itemToEdit;
-    temp.photo = photo_url;
+    temp.photo = photo;
+    temp.photo_url = photo_url;
     this.setState({ itemToEdit: temp });
+    console.log(this.state.itemToEdit.photo)
   };
 
   set_day_and_time = (id, dateString) => {
@@ -380,11 +422,11 @@ export default class AddNewGRItem extends Component {
   
   addNewDoc = () => {
     
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR"
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR2"
   
     let newArr = this.state.grArr;
     let temp = this.state.itemToEdit;
-    
+    console.log(temp);
     temp.available_start_time = this.state.itemToEdit.available_start_time;
     temp.available_end_time = this.state.itemToEdit.available_end_time;
     temp.is_displayed_today = this.calculateIsDisplayed(temp);
@@ -400,21 +442,36 @@ export default class AddNewGRItem extends Component {
        this.state.itemToEdit.repeat_ends_on
     );
     
-    let body = JSON.parse(JSON.stringify(temp))
+    // let body = JSON.parse(JSON.stringify(temp))
+    let body = temp;
     
     // changes to request body to make it compatible with RDS
-    
+    console.log(this.props)
     body.user_id = this.props.theCurrentUserId;
-    if (body.id) delete body.id;
-  
+    delete body.id;
+
     if (body.available_end_time) delete body.available_end_time;
     if (body.available_start_time) delete body.available_start_time;
-    
     body.ta_people_id = this.props.theCurrentTAID;
-    
-    // console.log(body)
-  
-    axios.post(url, body)
+    console.log(body)
+
+    let formData = new FormData();
+        Object.entries(body).forEach(entry => {
+            if (typeof entry[1].name == 'string'){
+            
+                formData.append(entry[0], entry[1]);
+            }
+            else if (entry[1] instanceof Object) {
+                entry[1] = JSON.stringify(entry[1])
+                formData.append(entry[0], entry[1]);
+            }
+            
+            else{
+                formData.append(entry[0], entry[1]);
+            }
+        });
+    console.log(formData)
+    axios.post(url, formData)
        .then(() => {
          console.log("Added Goal/Routine to Database")
          newArr.push(temp);
@@ -1381,7 +1438,7 @@ this will close repeat modal.
               <label>Icon: </label>
               <img
                 alt="None"
-                src={this.state.itemToEdit.photo}
+                src={this.state.itemToEdit.photo_url}
                 height="70"
                 width="auto"
               ></img>

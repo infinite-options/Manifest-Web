@@ -18,6 +18,7 @@ export default class editAT extends Component {
     this.state = {
       showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
+      photo_url: this.props.ATArray[this.props.i].photo
     };
   }
  
@@ -42,9 +43,8 @@ export default class editAT extends Component {
     
     // console.log("EditAt: ", this.state.itemToEdit);
     
-    if (this.state.itemToEdit.photo === "") {
-      this.state.itemToEdit.photo =
-         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
+    if (this.state.photo_url === "") {
+      this.state.photo_url = "https://manifest-image-db.s3-us-west-1.amazonaws.com/action.png"
     }
     
     newArr[this.props.i] = this.state.itemToEdit;
@@ -63,10 +63,11 @@ export default class editAT extends Component {
          "Sun, 23 Feb 2020 00:08:43 GMT";
     }
     
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAT"
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAT2"
   
-    let body = JSON.parse(JSON.stringify(newArr[this.props.i]));
+    // let body = JSON.parse(JSON.stringify(newArr[this.props.i]));
   
+    let body = newArr[this.props.i];
     // changes to request body to make it compatible with RDS
     if (body.at_sequence) delete body.at_sequence;
     if (body.goal_routine_id) delete body.goal_routine_id;
@@ -74,10 +75,28 @@ export default class editAT extends Component {
     if (body.at_title) delete body.at_title
     
     body.id = body.at_unique_id
-    if (body.goal_routine_id) delete body.at_unique_id
+    if (body.at_unique_id) delete body.at_unique_id
+    body.photo_url = this.state.photo_url;
+    console.log(body)
+    let formData = new FormData();
+    Object.entries(body).forEach(entry => {
+        if (typeof entry[1].name == 'string'){
+        
+            formData.append(entry[0], entry[1]);
+        }
+        else if (entry[1] instanceof Object) {
+            entry[1] = JSON.stringify(entry[1])
+            formData.append(entry[0], entry[1]);
+        }
+        
+        else{
+            formData.append(entry[0], entry[1]);
+        }
+    });
+    console.log(formData)
 
     // console.log(body)
-    axios.post(url, body)
+    axios.post(url, formData)
        .then(() => {
          console.log("Updated Action/Task to Database")
          this.setState({ showEditModal: false });
@@ -217,10 +236,11 @@ export default class editAT extends Component {
     // console.log(temp);
     this.setState({ itemToEdit: temp });
   };
-  setPhotoURLFunction = (photo_url) => {
+  setPhotoURLFunction = (photo, photo_url) => {
     let temp = this.state.itemToEdit;
-    temp.photo = photo_url;
-    this.setState({ itemToEdit: temp });
+    temp.photo = photo;
+    this.setState({ itemToEdit: temp, photo_url: photo_url });
+    console.log(this.state.photo_url)
   };
 
   setTime = (name, time) => {
@@ -282,7 +302,7 @@ export default class editAT extends Component {
 
             <img
               alt="None"
-              src={this.state.itemToEdit.photo}
+              src={this.state.photo_url}
               height="70"
               width="auto"
             ></img>

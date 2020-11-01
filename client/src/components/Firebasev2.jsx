@@ -284,7 +284,6 @@ export default class FirebaseV2 extends React.Component {
              x[i].is_sublist_available = x[i].is_sublist_available.toLowerCase() === "true";
              x[i].is_timed = x[i].is_timed.toLowerCase() === "true";
              x[i].title = x[i].at_title;
-             
            }
            
            let singleGR = {

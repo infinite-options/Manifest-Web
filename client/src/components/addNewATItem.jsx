@@ -22,8 +22,8 @@ export default class AddNewATItem extends Component {
       itemToEdit: {
         id: "",
         title: "",
-        photo:
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=a4f03983-d2ed-4382-b8bb-0b1361d1e209",
+        photo: "",
+        photo_url: "https://manifest-image-db.s3-us-west-1.amazonaws.com/action.png",
         audio: "",
         is_must_do: true,
         is_complete: false,
@@ -87,9 +87,9 @@ export default class AddNewATItem extends Component {
       alert("Missing title");
       return;
     }
-    if (this.state.itemToEdit.photo === "") {
-      this.state.itemToEdit.photo =
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917";
+    if (this.state.itemToEdit.photo_url === "") {
+      this.state.itemToEdit.photo_url =
+        "https://manifest-image-db.s3-us-west-1.amazonaws.com/action.png";
     }
     if (!this.validateTime()) {
       return;
@@ -145,7 +145,7 @@ export default class AddNewATItem extends Component {
   
   addNewDoc = () => {
   
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT";
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT2";
     
     if (this.props.ATArray.length > 0) {
       this.setState({
@@ -157,13 +157,16 @@ export default class AddNewATItem extends Component {
     // console.log(this.props.ATItem.id)
     // console.log(this.props.ATArray)
     
-    let body = JSON.parse(JSON.stringify(this.state.itemToEdit))
+    // let body = JSON.parse(JSON.stringify(this.state.itemToEdit))
   
     // changes to request body to make it compatible with RDS
   
     // if (body.available_end_time) delete body.available_end_time;
     // if (body.available_start_time) delete body.available_start_time;
   
+
+    let body = this.state.itemToEdit
+
     if (body.ta_notifications) delete body.ta_notifications;
     if (body.user_notifications) delete body.user_notifications;
     
@@ -172,8 +175,25 @@ export default class AddNewATItem extends Component {
     
     // console.log("BODY")
     console.log(body)
+
+    let formData = new FormData();
+    Object.entries(body).forEach(entry => {
+        if (typeof entry[1].name == 'string'){
+        
+            formData.append(entry[0], entry[1]);
+        }
+        else if (entry[1] instanceof Object) {
+            entry[1] = JSON.stringify(entry[1])
+            formData.append(entry[0], entry[1]);
+        }
+        
+        else{
+            formData.append(entry[0], entry[1]);
+        }
+    });
+    console.log(formData)
   
-    axios.post(url, body)
+    axios.post(url, formData)
        .then((response) => {
          let newArr = this.state.AT_arr;
          let temp = this.state.itemToEdit;
@@ -300,9 +320,10 @@ export default class AddNewATItem extends Component {
     });
   };
 
-  setPhotoURLFunction = (photo_url) => {
+  setPhotoURLFunction = (photo, photo_url) => {
     let temp = this.state.itemToEdit;
-    temp.photo = photo_url;
+    temp.photo = photo;
+    temp.photo_url = photo_url;
     this.setState({ itemToEdit: temp });
   };
 
@@ -391,7 +412,7 @@ export default class AddNewATItem extends Component {
               <label>Icon: </label>
               <img
                 alt="None"
-                src={this.state.itemToEdit.photo}
+                src={this.state.itemToEdit.photo_url}
                 height="70"
                 width="auto"
               ></img>

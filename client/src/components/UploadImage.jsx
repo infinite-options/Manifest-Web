@@ -23,8 +23,12 @@ export default class UploadImage extends Component {
   onChange = (e) => {
     if (e.target.files[0]) {
       const image = e.target.files[0];
+      console.log(image);
       this.setState({ image: image });
     }
+
+    console.log(this.state)
+
   };
 
   onClickUpload = () => {
@@ -39,47 +43,37 @@ export default class UploadImage extends Component {
     let image_name = this.state.image.name;
     image_name = image_name + salt.toString();
     this.setState({ saltedImageName: image_name });
-    const uploadTask = storage
-      .ref(`UploadIcon/${image_name}`)
-      .put(this.state.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // progrss function ....
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        this.setState({ progress });
-      },
-      (error) => {
-        // error function ....
-        console.log(error);
-      },
-      () => {
-        // complete function ....
-        storage
-          .ref("UploadIcon")
-          .child(this.state.saltedImageName)
-          .getDownloadURL()
-          .then((url) => {
-            this.setState({ url });
-          });
-      }
-    );
+    // const uploadTask = storage
+    //   .ref(`UploadIcon/${image_name}`)
+    //   .put(this.state.image);
+    // uploadTask.on(
+    //   "state_changed",
+    //   (snapshot) => {
+    //     // progrss function ....
+    //     const progress = Math.round(
+    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+    //     );
+        this.setState({url: URL.createObjectURL(this.state.image)});
+      // },
+      // (error) => {
+      //   // error function ....
+      //   console.log(error);
+      // });
+      console.log(this.state)
   };
 
   onClickConfirm = () => {
-    if (this.state.progress === 100) {
+    // if (this.state.progress === 100) {
       this.setState({ progress: 0 });
-      this.props.parentFunction(this.state.url);
+      this.props.parentFunction(this.state.image, this.state.url);
       this.onHandleShowClick();
-    } else if (this.state.progress !== 100 && this.state.progress > 0) {
-      alert("Image is still uploading");
-      return;
-    } else {
-      alert("Please upload an image");
-      return;
-    }
+    // } else if (this.state.progress !== 100 && this.state.progress > 0) {
+    //   alert("Image is still uploading");
+    //   return;
+    // } else {
+    //   alert("Please upload an image");
+    //   return;
+    // }
   };
 
   render() {

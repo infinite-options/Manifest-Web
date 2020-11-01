@@ -472,7 +472,7 @@ export default class MainPage extends React.Component {
          if(response.data.result && (response.data.result.length !== 0)) {
            
            let x = response.data.result;
-           
+           console.log(x)
            x.sort((a, b) => {
              let datetimeA = new Date(a["start_day_and_time"]);
              let datetimeB = new Date(b["start_day_and_time"]);
@@ -542,48 +542,99 @@ export default class MainPage extends React.Component {
              
              gr.start_day_and_time = x[i].start_day_and_time
              
-             
-             // Need to update assignments
-             gr.ta_notifications = {
-               before :{
-                 is_enabled :"",
-                 is_set: "",
-                 message: "",
-                 time: ""
-               },
-               during:{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               },
-               after :{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               }
+      
+             const first_notifications = (x[i].notifications[0])
+             const second_notifications = (x[i].notifications[1])
+             if ((first_notifications.user_ta_id.charAt(0)) === '1') {
+              gr.user_notifications = {
+                before: {
+                  is_enabled: first_notifications.before_is_enable.toLowerCase(),
+                  is_set:    first_notifications.before_is_set.toLowerCase(),
+                  message:   first_notifications.before_message,
+                  time:      first_notifications.before_time
+                },
+                during: {
+                  is_enabled: first_notifications.during_is_enable.toLowerCase(),
+                  is_set:    first_notifications.during_is_set.toLowerCase(),
+                  message:   first_notifications.during_message,
+                  time:      first_notifications.during_time
+                },
+                after:  {
+                  is_enabled: first_notifications.after_is_enable.toLowerCase(),
+                  is_set:    first_notifications.after_is_set.toLowerCase(),
+                  message:   first_notifications.after_message,
+                  time:      first_notifications.after_time
+                }
+              }
              }
-             
-             gr.user_notifications = {
-               before :{
-                 is_enabled :"",
-                 is_set: "",
-                 message: "",
-                 time: ""
-               },
-               during:{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               },
-               after :{
-                 is_enabled : "",
-                 is_set : "",
-                 message : "",
-                 time : ""
-               }
+
+             if ((first_notifications.user_ta_id.charAt(0)) === '2') {
+              gr.ta_notifications = {
+                before: {
+                  is_enabled: first_notifications.before_is_enable.toLowerCase(),
+                  is_set:    first_notifications.before_is_set.toLowerCase(),
+                  message:   first_notifications.before_message,
+                  time:      first_notifications.before_time
+                },
+                during: {
+                  is_enabled: first_notifications.during_is_enable.toLowerCase(),
+                  is_set:    first_notifications.during_is_set.toLowerCase(),
+                  message:   first_notifications.during_message,
+                  time:      first_notifications.during_time
+                },
+                after:  {
+                  is_enabled: first_notifications.after_is_enable.toLowerCase(),
+                  is_set:    first_notifications.after_is_set.toLowerCase(),
+                  message:   first_notifications.after_message,
+                  time:      first_notifications.after_time
+                }
+              }
+             }
+
+             if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+              gr.user_notifications = {
+                before: {
+                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                  is_set:    second_notifications.before_is_set.toLowerCase(),
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                during: {
+                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                  is_set:    second_notifications.during_is_set.toLowerCase(),
+                  message:   second_notifications.during_message,
+                  time:      second_notifications.during_time
+                },
+                after:  {
+                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                  is_set:    second_notifications.after_is_set.toLowerCase(),
+                  message:   second_notifications.after_message,
+                  time:      second_notifications.after_time
+                }
+              }
+             }
+
+             if ((second_notifications.user_ta_id.charAt(0)) === '2') {
+              gr.ta_notifications = {
+                before: {
+                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                  is_set:    second_notifications.before_is_set.toLowerCase(),
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                during: {
+                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                  is_set:    second_notifications.during_is_set.toLowerCase(),
+                  message:   second_notifications.during_message,
+                  time:      second_notifications.during_time
+                },
+                after:  {
+                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                  is_set:    second_notifications.after_is_set.toLowerCase(),
+                  message:   second_notifications.after_message,
+                  time:      second_notifications.after_time
+                }
+              }
              }
              
              gr.title = x[i].gr_title
