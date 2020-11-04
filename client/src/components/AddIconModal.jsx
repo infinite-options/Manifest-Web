@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
+import axios from 'axios';
+
 
 export default class AddIconModal extends Component {
   constructor(props) {
@@ -9,19 +11,37 @@ export default class AddIconModal extends Component {
     this.state = {
       show: false,
       photo_url: null,
+      iconList: []
     };
   }
-
-  onHandleShowClick = () => {
-    let toggle = this.state.show;
-    this.setState({ show: !toggle });
-    console.log(toggle)
-  };
 
   onPhotoClick = (e) => {
     console.log("this is the E: ", e);
     this.setState({ photo_url: e });
   };
+
+  onHandleShowClick = () => {
+    let url  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIcons";
+    let iconList = []
+
+    axios.get(url).then(
+      (response) => {
+          iconList = response.data.result;
+          console.log(iconList)
+          this.setState({iconList: iconList})
+      }
+   ).catch((err) => {
+       console.log("Error getting icons list", err);
+   });
+
+   let toggle = this.state.show;
+   this.setState({ show: !toggle});
+
+   console.log(toggle)
+   
+  };
+
+  
 
   onSubmitIcon = () => {
     let toggle = this.state.show;
@@ -30,6 +50,15 @@ export default class AddIconModal extends Component {
   };
 
   render() {
+    var arrButtons = []
+    for (let i = 0; i < this.state.iconList.length; i++) { 
+         arrButtons.push(<button  onClick={(e) =>  this.onPhotoClick(this.state.iconList[i].url)}><img
+         height="70px"
+         width="auto"
+         src={this.state.iconList[i].url}
+       ></img></button>)
+  }
+
     return (
       <>
         <Button
@@ -39,8 +68,32 @@ export default class AddIconModal extends Component {
         >
           Change Icon
         </Button>
-
         <Modal show={this.state.show} onHide={this.onHandleShowClick}>
+          <Modal.Header closeButton>
+            <Modal.Title>Icon List</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <div>
+              <div>Hygiene</div>
+              {arrButtons}
+              
+              </div> 
+              </Modal.Body>
+
+              <Modal.Footer>
+                <Button variant="secondary" onClick={this.onHandleShowClick}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={this.onSubmitIcon}>
+                  Add Icon
+                </Button>
+              </Modal.Footer>
+              </Modal>
+              </>
+
+
+         /* <Modal show={this.state.show} onHide={this.onHandleShowClick}>
           <Modal.Header closeButton>
             <Modal.Title>Icon List</Modal.Title>
           </Modal.Header>
@@ -2748,7 +2801,7 @@ export default class AddIconModal extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
-      </>
+       </>  */
     );
   }
 }
