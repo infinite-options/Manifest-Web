@@ -27,9 +27,9 @@ class AboutModal extends React.Component{
             lastName: "",
             peopleNamesArray: {},
             importantPoeplArrayLength: "0",
-            importantPeople1: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
-            importantPeople2: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
-            importantPeople3: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
+            importantPeople1: {have_pic: false, important:false, name: "", email:"", phone_number:"",pic:"",relationship:"", unique_id:""},
+            importantPeople2: {have_pic: false, important:false, name: "", email:"", phone_number:"",pic:"",relationship:"", unique_id:""},
+            importantPeople3: {have_pic: false, important:false, name: "", email:"", phone_number:"",pic:"",relationship:"", unique_id:""},
             ImporPersonOneChange: false,
             ImporPersonTwoChange: false,
             ImporPersonThreeChange: false,
@@ -98,6 +98,7 @@ class AboutModal extends React.Component{
 
                 // Create a reference to the firebase storage.
                 var storageRef = storage.ref('Important_People/' + targetFile.name);
+                console.log(storageRef);
                 //upload file to firebase storage
                 var task = storageRef.put(targetFile);
                 //check on the the upload progress
@@ -1102,6 +1103,11 @@ class AboutModal extends React.Component{
                                             value = ""
                                             disabled
                                         />
+                                        <Form.Control 
+                                        type="text"
+                                        placeholder="Email"
+                                        value=""
+                                        />
                                     </div>:
                                     <div>
                                         <Form.Control
@@ -1119,6 +1125,12 @@ class AboutModal extends React.Component{
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.phone_number = e.target.value; this.setState({ importantPeople1: temp }) }
                                             }
+                                        />
+                                        <Form.Control
+                                        type="text"
+                                        placeholder="Email"
+                                        value= {this.state.importantPeople1.email || ''}
+                                        onChange={(e) => {e.stopPropagation(); let temp = this.state.importantPeople1; temp.email = e.target.value; this.setState({ importantPeople1: temp})}}
                                         />
                                     </div>
                                 }
@@ -1220,6 +1232,11 @@ class AboutModal extends React.Component{
                                             value = ""
                                             disabled
                                         />
+                                         <Form.Control 
+                                        type="text"
+                                        placeholder="Email"
+                                        value=""
+                                        />
                                     </div>:
                                     <div>
                                         <Form.Control
@@ -1237,6 +1254,12 @@ class AboutModal extends React.Component{
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.phone_number = e.target.value; this.setState({ importantPeople2: temp }) }
                                             }
+                                        />
+                                        <Form.Control
+                                        type="text"
+                                        placeholder="Email"
+                                        value= {this.state.importantPeople2.email || ''}
+                                        onChange={(e) => {e.stopPropagation(); let temp = this.state.importantPeople2; temp.email = e.target.value; this.setState({ importantPeople2: temp})}}
                                         />
                                     </div>
                                 )}
@@ -1337,6 +1360,11 @@ class AboutModal extends React.Component{
                                             value = ""
                                             disabled
                                         />
+                                         <Form.Control 
+                                        type="text"
+                                        placeholder="Email"
+                                        value=""
+                                        />
                                     </div>:
                                     <div>
                                         <Form.Control
@@ -1354,6 +1382,12 @@ class AboutModal extends React.Component{
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.phone_number = e.target.value; this.setState({ importantPeople3: temp }) }
                                             }
+                                        />
+                                        <Form.Control
+                                        type="text"
+                                        placeholder="Email"
+                                        value= {this.state.importantPeople3.email || ''}
+                                        onChange={(e) => {e.stopPropagation(); let temp = this.state.importantPeople3; temp.email = e.target.value; this.setState({ importantPeople3: temp})}}
                                         />
                                     </div>
                                 )}

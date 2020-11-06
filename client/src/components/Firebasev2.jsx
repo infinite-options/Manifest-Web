@@ -2596,6 +2596,8 @@ shows entire list of goals and routines
           </Table>
         );
         this.setState({ historyItems: historyItems });
+        
+  console.log(historyItems)
       });
   };
 

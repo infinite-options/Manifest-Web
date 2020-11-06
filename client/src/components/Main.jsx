@@ -300,7 +300,7 @@ export default class MainPage extends React.Component {
       let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       if(response.data.length != 0) {
-        // console.log(response.data)
+        console.log(response.data)
         response.data.forEach((d, i) => {
           // console.log(d)
           let id = d.user_unique_id;
@@ -471,9 +471,12 @@ export default class MainPage extends React.Component {
          
          if(response.data.result && (response.data.result.length !== 0)) {
            
+          
            let x = response.data.result;
            console.log(x)
            x.sort((a, b) => {
+             console.log(a);
+             console.log(b);
              let datetimeA = new Date(a["start_day_and_time"]);
              let datetimeB = new Date(b["start_day_and_time"]);
              let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
@@ -545,6 +548,8 @@ export default class MainPage extends React.Component {
       
              const first_notifications = (x[i].notifications[0])
              const second_notifications = (x[i].notifications[1])
+             console.log(first_notifications);
+             console.log(second_notifications);
              if ((first_notifications.user_ta_id.charAt(0)) === '1') {
               gr.user_notifications = {
                 before: {
@@ -566,6 +571,55 @@ export default class MainPage extends React.Component {
                   time:      first_notifications.after_time
                 }
               }
+               if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+              gr.user_notifications = {
+                before: {
+                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                  is_set:    second_notifications.before_is_set.toLowerCase(),
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                during: {
+                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                  is_set:    second_notifications.during_is_set.toLowerCase(),
+                  message:   second_notifications.during_message,
+                  time:      second_notifications.during_time
+                },
+                after:  {
+                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                  is_set:    second_notifications.after_is_set.toLowerCase(),
+                  message:   second_notifications.after_message,
+                  time:      second_notifications.after_time
+                }
+              }
+             }
+
+           else if ((second_notifications.user_ta_id.charAt(0)) === '2') {
+              gr.ta_notifications = {
+                before: {
+                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                  is_set:    second_notifications.before_is_set.toLowerCase(),
+                  message:   second_notifications.before_message,
+                  time:      second_notifications.before_time
+                },
+                during: {
+                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                  is_set:    second_notifications.during_is_set.toLowerCase(),
+                  message:   second_notifications.during_message,
+                  time:      second_notifications.during_time
+                },
+                after:  {
+                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                  is_set:    second_notifications.after_is_set.toLowerCase(),
+                  message:   second_notifications.after_message,
+                  time:      second_notifications.after_time
+                }
+              }
+             }
+             else{
+               return;
+             }
+             
              }
 
              if ((first_notifications.user_ta_id.charAt(0)) === '2') {
@@ -589,9 +643,7 @@ export default class MainPage extends React.Component {
                   time:      first_notifications.after_time
                 }
               }
-             }
-
-             if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+                 if ((second_notifications.user_ta_id.charAt(0)) === '1') {
               gr.user_notifications = {
                 before: {
                   is_enabled: second_notifications.before_is_enable.toLowerCase(),
@@ -614,7 +666,7 @@ export default class MainPage extends React.Component {
               }
              }
 
-             if ((second_notifications.user_ta_id.charAt(0)) === '2') {
+           else if ((second_notifications.user_ta_id.charAt(0)) === '2') {
               gr.ta_notifications = {
                 before: {
                   is_enabled: second_notifications.before_is_enable.toLowerCase(),
@@ -636,7 +688,13 @@ export default class MainPage extends React.Component {
                 }
               }
              }
+             else{
+               return
+             }
              
+             }
+
+          
              gr.title = x[i].gr_title
              
              gr_array.push(gr)
@@ -2746,6 +2804,7 @@ this will close repeat modal.
     axios.post(url, body)
        .then(() => {
          console.log("Updated Relationship")
+         alert("Updated Relationship Success");
        })
        .catch((err) => {
          console.log("Error updating relationship", err);
