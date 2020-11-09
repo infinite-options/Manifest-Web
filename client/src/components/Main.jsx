@@ -696,26 +696,35 @@ export default class MainPage extends React.Component {
 
           
              gr.title = x[i].gr_title
-             
+             var goalDate = new Date(gr.end_day_and_time);
+             var currentDate = new Date();
+             console.log(currentDate);
+             if(goalDate.getTime() >  currentDate.getTime()){
              gr_array.push(gr)
-             
+             };
+             console.log(gr_array);
              if (x[i]["is_persistent"].toLowerCase() === "true") {
                
                // routine_ids.push(i);
                
                // routine_ids.push(x[i]["gr_unique_id"]);
                // routine.push(x[i]);
+               if(goalDate.getTime() >  currentDate.getTime()){
+                routine_ids.push(gr["id"]);
+                routine.push(gr);
+               }
                
-               routine_ids.push(gr["id"]);
-               routine.push(gr);
              } else if (x[i]["is_persistent"].toLowerCase() === "false") {
                // goal_ids.push(i);
                
                // goal_ids.push(x[i]["gr_unique_id"]);
                // goal.push(x[i]);
+
+               if(goalDate.getTime() >  currentDate.getTime()){
+                goal_ids.push(gr["id"]);
+                goal.push(gr);
+              }
                
-               goal_ids.push(gr["id"]);
-               goal.push(gr);
              }
            }
            
@@ -739,7 +748,8 @@ export default class MainPage extends React.Component {
            });
          }
          
-         console.log(this.state)
+         console.log(this.state);
+         
        })
        .catch((error) => {
          console.log('Error in getting goals and routines ' + error);
@@ -3609,10 +3619,12 @@ this will close repeat modal.
             this.setState(
               {
                 showAboutModal: false,
-                // dayEventSelected: !this.state.dayEventSelected
               },
               () => {
                 this.showEventsFormbyCreateNewEventButton();
+                this.setState({
+                  dayEventSelected: !this.state.dayEventSelected
+                })
               }
             );
           }}
