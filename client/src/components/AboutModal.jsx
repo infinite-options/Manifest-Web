@@ -5,10 +5,11 @@ import SettingPage from "./SettingPage";
 import { Form,Row,Col ,Modal,Button,Container,Dropdown,DropdownButton,} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faImage
+  faImage, faTemperatureHigh
 } from "@fortawesome/free-solid-svg-icons";
 import { storage } from './firebase';
 import axios from 'axios';
+import UploadPeopleImages from "./UploadPeopleImages";
 
 class AboutModal extends React.Component{
 
@@ -27,9 +28,9 @@ class AboutModal extends React.Component{
             lastName: "",
             peopleNamesArray: {},
             importantPoeplArrayLength: "0",
-            importantPeople1: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
-            importantPeople2: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
-            importantPeople3: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
+            importantPeople1: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:"", url:""},
+            importantPeople2: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:"", url:""},
+            importantPeople3: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:"", url:""},
             ImporPersonOneChange: false,
             ImporPersonTwoChange: false,
             ImporPersonThreeChange: false,
@@ -85,130 +86,109 @@ class AboutModal extends React.Component{
         console.log(event.target.files[0].name)
     };
 
+    setPhotoURLFunction1 = (photo, photo_url) => {
+        let temp = this.state.importantPeople1;
+        temp.pic = photo;
+        temp.url = photo_url;
+        this.setState({ importantPeople1: temp});
+      };
+
+      setPhotoURLFunction2 = (photo, photo_url) => {
+        let temp = this.state.importantPeople2;
+        temp.pic = photo;
+        temp.url = photo_url;
+        this.setState({ importantPeople2: temp});
+        console.log(this.state.importantPeople2)
+      };
+
+      setPhotoURLFunction3 = (photo, photo_url) => {
+        let temp = this.state.importantPeople3;
+        temp.pic = photo;
+        temp.url = photo_url;
+        this.setState({ importantPeople3: temp});
+      };
+
     handleImpPeople1 = (event) =>{
+        
         event.preventDefault();
         event.stopPropagation();
-        const file2 = event.target.files[0];
+        
+        const file2 = event.target.files[0]; //stores file uploaded in file
+        console.log(file2)
+
         this.setState({
             saveButtonEnabled: false
-        }, ()=>{
-            let targetFile = file2
+        })
+
+        let targetFile = file2
             if(targetFile !== null && Object.keys(this.state.importantPeople1).length !== 0 ){
                 let temp = this.state.importantPeople1;
+                temp.have_pic = true;
+                temp.pic = file2;
+                temp.url = URL.createObjectURL(event.target.files[0]);
+                this.setState({
+                    importantPeople1: temp,
+                    saveButtonEnabled: true
+                });
+                console.log(this.state.url)
+            }
+        console.log(this.state.importantPeople1.url)
+        console.log(event.target.files[0].name)
 
-                // Create a reference to the firebase storage.
-                var storageRef = storage.ref('Important_People/' + targetFile.name);
-                //upload file to firebase storage
-                var task = storageRef.put(targetFile);
-                //check on the the upload progress
-                task.on('state_changed',
-                    function progress(snapshot){
-                        //get percentage uplaoded
-                        var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
-                        console.log(percentage);
-
-                    },
-                    function error(err){
-                        console.log(err);
-                    },
-                    (snapshot) =>{
-                        temp.have_pic = true;
-                        console.log("completed");
-                        storage.ref('Important_People').child(targetFile.name).getDownloadURL().then(url => {
-                            // console.log(url);
-                            temp.pic = url;
-                            this.setState({
-                                importantPeople1: temp,
-                                saveButtonEnabled: true
-                            });
-                        });
-                    }
-                );
-            }});
     }
 
     handleImpPeople2 = (event) =>{
         event.preventDefault();
         event.stopPropagation();
-        const file3 = event.target.files[0];
+        
+        const file3 = event.target.files[0]; //stores file uploaded in file
+        console.log(file3)
+
         this.setState({
             saveButtonEnabled: false
-        }, ()=>{
-            let targetFile = file3
+        })
+
+        let targetFile = file3
             if(targetFile !== null && Object.keys(this.state.importantPeople2).length !== 0 ){
                 let temp = this.state.importantPeople2;
-
-                // Create a reference to the firebase storage.
-                var storageRef = storage.ref('Important_People/' + targetFile.name);
-                //upload file to firebase storage
-                var task = storageRef.put(targetFile);
-                //check on the the upload progress
-                task.on('state_changed',
-                    function progress(snapshot){
-                        //get percentage uplaoded
-                        var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
-                        // console.log(percentage);
-
-                    },
-                    function error(err){
-                        console.log(err);
-                    },
-                    (snapshot) =>{
-                        temp.have_pic = true;
-                        console.log("completed");
-                        storage.ref('Important_People').child(targetFile.name).getDownloadURL().then(url => {
-                            // console.log(url);
-                            temp.pic = url;
-                            this.setState({
-                                importantPeople2: temp,
-                                saveButtonEnabled: true
-                            });
-                        });
-                    }
-                );
-            }});
+                temp.have_pic = true;
+                temp.pic = file3;
+                temp.url = URL.createObjectURL(event.target.files[0]);
+                this.setState({
+                    importantPeople2: temp,
+                    saveButtonEnabled: true,
+                });
+                console.log(this.state.url)
+            }
+        console.log(this.state.importantPeople2.pic)
+        console.log(event.target.files[0].name)
     }
 
     handleImpPeople3 = (event) =>{
         event.preventDefault();
         event.stopPropagation();
-        const file4 = event.target.files[0];
+        
+        const file4 = event.target.files[0]; //stores file uploaded in file
+        console.log(file4)
+
         this.setState({
             saveButtonEnabled: false
-        }, ()=>{
-            let targetFile = file4
+        })
+
+        let targetFile = file4
             if(targetFile !== null && Object.keys(this.state.importantPeople3).length !== 0 ){
                 let temp = this.state.importantPeople3;
-
-                // Create a reference to the firebase storage.
-                var storageRef = storage.ref('Important_People/' + targetFile.name);
-                //upload file to firebase storage
-                var task = storageRef.put(targetFile);
-                //check on the the upload progress
-                task.on('state_changed',
-                    function progress(snapshot){
-                        //get percentage uplaoded
-                        var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
-                        // console.log(percentage);
-
-                    },
-                    function error(err){
-                        console.log(err);
-                    },
-                    (snapshot) =>{
-                        temp.have_pic = true;
-                        console.log("completed");
-                        storage.ref('Important_People').child(targetFile.name).getDownloadURL().then(url => {
-                            // console.log(url);
-                            temp.pic = url;
-                            this.setState({
-                                importantPeople3: temp,
-                                saveButtonEnabled: true
-                            });
-                        });
-                    }
-                );
-            }});
+                temp.have_pic = true;
+                temp.pic = file4;
+                temp.url = URL.createObjectURL(event.target.files[0]);
+                this.setState({
+                    importantPeople3: temp,
+                    saveButtonEnabled: true,
+                });
+                console.log(this.state.url)
+            }
+        console.log(this.state.importantPeople3.pic)
+        console.log(event.target.files[0].name)
     }
     
     
@@ -223,14 +203,12 @@ class AboutModal extends React.Component{
         let test = {};
         let impCount = 0;
     
-        // console.log(this.props.theCurrentUserId)
         axios.get(url + this.props.theCurrentUserId).then(
            (response) => {
                let peopleList = response.data.result.result
                if ( peopleList && ( peopleList.length !== 0 ) ) {
-                   // console.log( peopleList )
+                   console.log( peopleList )
                    peopleList.forEach( ( d, i ) => {
-                       // console.log(d)
                        allPeopleList[d.ta_people_id] = d;
                        if ( d.important.toLowerCase() === "true" ) {
                            importantPeopleArray.push( d )
@@ -251,8 +229,23 @@ class AboutModal extends React.Component{
                            importantPeople3:          importantPeopleArray[ 2 ],
                            nonImportantPeople: nonImportantPeople,
                            allPeopleList: allPeopleList
-                       } )
-                       
+                       })
+                       let temp1 = this.state.importantPeople1;
+                       temp1.url = "";
+                       temp1.have_pic = this.state.importantPeople1.have_pic ? this.state.importantPeople1.have_pic.toLowerCase() === "true" : false;
+                       let temp2 = this.state.importantPeople2;
+                       temp2.url = "";
+                       temp2.have_pic = this.state.importantPeople2.have_pic ? this.state.importantPeople2.have_pic.toLowerCase() === "true" : false;
+                       let temp3 = this.state.importantPeople3;
+                       temp3.url = "";
+                       temp3.have_pic = this.state.importantPeople3.have_pic ? this.state.importantPeople3.have_pic.toLowerCase() === "true" : false;
+
+                       this.setState({
+                           importantPeople1: temp1,
+                           importantPeople2: temp2,
+                           importantPeople3: temp3
+                       })
+                     
                    } else if(importantPeopleArray.length === 2){
                          this.setState({
                              peopleNamesArray:test,
@@ -263,6 +256,16 @@ class AboutModal extends React.Component{
                              nonImportantPeople: nonImportantPeople,
                              allPeopleList: allPeopleList
                          });
+                         let temp1 = this.state.importantPeople1;
+                         temp1.url = "";
+                         temp1.have_pic = this.state.importantPeople1.have_pic ? this.state.importantPeople1.have_pic.toLowerCase() === "true" : false;
+                         let temp2 = this.state.importantPeople2;
+                         temp2.url = "";
+                         temp2.have_pic = this.state.importantPeople2.have_pic ? this.state.importantPeople2.have_pic.toLowerCase() === "true" : false;
+                        
+                         this.setState({
+                             importantPeople1: temp1,
+                             importantPeople2: temp2                         })
                      }
                      else if(importantPeopleArray.length === 1){
                          this.setState({
@@ -273,6 +276,13 @@ class AboutModal extends React.Component{
                              nonImportantPeople: nonImportantPeople,
                              allPeopleList: allPeopleList
                          });
+                         let temp1 = this.state.importantPeople1;
+                         temp1.url = "";
+                         temp1.have_pic = this.state.importantPeople1.have_pic ? this.state.importantPeople1.have_pic.toLowerCase() === "true" : false;
+                        
+                         this.setState({
+                             importantPeople1: temp1
+                         })
                      }
                      else if(importantPeopleArray.length === 0){
                          this.setState({
@@ -292,7 +302,7 @@ class AboutModal extends React.Component{
             console.log("Error getting all people list", err);
         });
         
-        
+    }
         // const db = firebase.firestore();
         // // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
         // db.collection('users').doc(this.props.theCurrentUserId).collection('people').get()
@@ -365,7 +375,7 @@ class AboutModal extends React.Component{
         //    .catch((err) => {
         //        console.log('Error getting documents', err);
         //    });
-    }
+    
 
     // grabFireBaseAllPeopleNames = () => {
     //     const db = firebase.firestore();
@@ -473,7 +483,7 @@ class AboutModal extends React.Component{
                    // console.log(x)
 
                    this.setState({
-                       aboutMeObject: x, firstName:details.user_first_name, lastName: details.user_last_name
+                       aboutMeObject: x, firstName:details.user_first_name, lastName: details.user_last_name, url: ""
                    });
                } else {
                    console.log("No user details");
@@ -526,6 +536,7 @@ class AboutModal extends React.Component{
     hideTimeModal = () =>{
         this.setState({showTimeModal: false});
     }
+
     updatePeopleArray = () => {
         this.grabFireBaseAllPeopleNames();
     }
@@ -533,7 +544,6 @@ class AboutModal extends React.Component{
     updateTimeSetting = (time) =>{
         let temp = this.state.aboutMeObject;
         temp.timeSettings = time;
-
         this.setState({ aboutMeObject: temp, showTimeModal: false  });
 
     }
@@ -541,7 +551,8 @@ class AboutModal extends React.Component{
     changeImpPersonOne = (Reference) => {
         let temp  = this.state.nonImportantPeople[Reference];
         temp.important = true;
-        
+        temp.url = "";
+        temp.have_pic = temp.have_pic ? temp.have_pic.toLowerCase() === "true" : false;
         let temp2 = {};
         
         if (this.state.ImporPersonOneChange === false ){
@@ -589,7 +600,8 @@ class AboutModal extends React.Component{
     
         let temp  = this.state.nonImportantPeople[Reference];
         temp.important = true;
-    
+        temp.url = "";
+        temp.have_pic = temp.have_pic ? temp.have_pic.toLowerCase() === "true" : false;
         let temp2 = {};
     
         if (this.state.ImporPersonTwoChange === false ){
@@ -633,7 +645,8 @@ class AboutModal extends React.Component{
     changeImpPersonThree = (Reference) => {
         let temp  = this.state.nonImportantPeople[Reference];
         temp.important = true;
-    
+        temp.url = "";
+        temp.have_pic = temp.have_pic ? temp.have_pic.toLowerCase() === "true" : false;
         let temp2 = {};
     
         if (this.state.ImporPersonThreeChange === false ){
@@ -732,7 +745,7 @@ class AboutModal extends React.Component{
         // }
         
         let people = Object.values(this.state.allPeopleList)
-        
+
         people.forEach((d, i) => {
             if (d.email) delete d.email;
             // delete d.phone_number;
@@ -771,8 +784,58 @@ class AboutModal extends React.Component{
             }
         }
         
-        // console.log(people)
         
+        for (let i = 0; i < people.length; ++i) {
+
+            let currentPeople = {};
+            currentPeople.user_id = this.props.theCurrentUserId;
+            currentPeople.ta_people_id = people[i].ta_people_id;
+            currentPeople.have_pic = people[i].have_pic;
+            if(typeof people[i].pic === 'string'){
+                currentPeople.photo_url = people[i].pic;
+                currentPeople.pic = "";
+            }
+            else{
+                currentPeople.pic = people[i].pic;
+                currentPeople.photo_url = "";
+            }
+            currentPeople.pic = people[i].pic;
+            currentPeople.important = people[i].important;
+            currentPeople.name = people[i].name;
+            currentPeople.relationship = people[i].relationship;
+            currentPeople.phone_number = people[i].phone_number;
+            currentPeople.ta_id = this.props.theCurrentTAId
+            let peopleUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updatePeople"
+
+            let peopleFormData = new FormData();
+            Object.entries(currentPeople).forEach(entry => {
+                if (entry[1].name != undefined){
+                    console.log(entry[1].name)
+                    if (typeof entry[1].name == 'string'){
+                
+                        peopleFormData.append(entry[0], entry[1]);
+                    }
+                }
+                else if (entry[1] instanceof Object) {
+                    entry[1] = JSON.stringify(entry[1])
+                    peopleFormData.append(entry[0], entry[1]);
+                }
+                else{
+                    peopleFormData.append(entry[0], entry[1]);
+                }
+            });
+
+            axios.post(peopleUrl, peopleFormData)
+            .then(() => {
+                console.log("Updated Details")
+            })
+            .catch((err) => {
+                console.log("Error updating Details", err);
+           });
+        }
+
+       
+
         const body = {
             user_id : this.props.theCurrentUserId,
             first_name : this.state.firstName,
@@ -780,19 +843,27 @@ class AboutModal extends React.Component{
             have_pic : this.state.aboutMeObject.have_pic,
             message_card : this.state.aboutMeObject.message_card,
             message_day : this.state.aboutMeObject.message_day,
-            picture : this.state.aboutMeObject.pic || "",
-            people : people,
+            picture : this.state.aboutMeObject.pic,
             timeSettings : this.state.aboutMeObject.timeSettings
         }
+
+        if(typeof body.picture === 'string'){
+            body.photo_url = body.picture;
+            body.picture = "";
+        }
+        else{
+            body.photo_url = "";
+        }
                 
-        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/update"
+        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAboutMe"
         
         let formData = new FormData();
         Object.entries(body).forEach(entry => {
-            console.log(entry[1].name)
-            if (typeof entry[1].name == 'string'){
+            if (entry[1].name != undefined){
+                if (typeof entry[1].name === 'string'){
             
-                formData.append(entry[0], entry[1]);
+                    formData.append(entry[0], entry[1]);
+                }
             }
             else if (entry[1] instanceof Object) {
                 entry[1] = JSON.stringify(entry[1])
@@ -1011,41 +1082,46 @@ class AboutModal extends React.Component{
 
                         <Row>
                             <Col>
-                                {(this.state.importantPeople1.have_pic === false ?
+                                {this.state.importantPeople1.have_pic === false ?
                                 <div >
                                     <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} />
-                                    {(this.state.importantPeople1.important === false ?
+                                    {this.state.importantPeople1.important === false ?
                                     <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
                                         type= "file"
                                         accept="image/*"
                                         disabled/>:
-                                    <input
-                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file"
-                                        accept="image/*"
-                                        onChange={this.handleImpPeople1}
-                                    />
-                                    )}
+                                        <UploadPeopleImages parentFunction={this.setPhotoURLFunction1} 
+                                        currentTAId={this.props.theCurrentTAId}/>
+                                    }
                                 </div>:
                                 <div>
-                                    <img style =
-                                        {{display: "block",
-                                         width: "80%",
-                                         height:"70px",
-                                         marginTop:"10px",
-                                         marginLeft:"5px"
-                                        }}
-                                        src={this.state.importantPeople1.pic }
-                                        alt="Important Person 1"
-                                    />
-                                     <input
-                                      style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                      // style = {{color: "transparent", marginTop:"10px"}}
-                                      type= "file" accept="image/*"
-                                      onChange={this.handleImpPeople1}
-                                    />
-                                </div>)}
+                                     {this.state.importantPeople1.url === "" ? 
+                                    <img 
+                                            style =
+                                            {{display: "block",
+                                            width: "80%",
+                                            height:"70px",
+                                            marginTop:"10px",
+                                            marginLeft:"5px"
+                                            }}           
+                                            src={this.state.importantPeople1.pic}
+                                            alt="Important People 1"
+                                        />   :
+                                    <img 
+                                            style =
+                                            {{display: "block",
+                                            width: "80%",
+                                            height:"70px",
+                                            marginTop:"10px",
+                                            marginLeft:"5px"
+                                            }}           
+                                        src={this.state.importantPeople1.url}
+                                        alt="Important People 1"
+                                    /> }
+                                     <UploadPeopleImages parentFunction={this.setPhotoURLFunction1} 
+                                    currentTAId={this.props.theCurrentTAId}/>
+                                </div>}
                             </Col>
                             <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
                                 <div className="d-flex flex-row">
@@ -1136,31 +1212,36 @@ class AboutModal extends React.Component{
                                         type= "file"
                                         accept="image/*"
                                         disabled/>:
-                                    <input
-                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file"
-                                        accept="image/*"
-                                        onChange={this.handleImpPeople2}
-                                    />
+                                        <UploadPeopleImages parentFunction={this.setPhotoURLFunction2} 
+                                        currentTAId={this.props.theCurrentTAId}/>
                                     )}
                                 </div>:
                                 <div>
-                                    <img style =
-                                        {{display: "block",
-                                        width: "80%",
-                                        height:"70px",
-                                        marginTop:"10px",
-                                        marginLeft:"5px"
-                                       }}
-                                        src={this.state.importantPeople2.pic }
+                                     {this.state.importantPeople2.url === "" ? 
+                                    <img 
+                                            style =
+                                            {{display: "block",
+                                            width: "80%",
+                                            height:"70px",
+                                            marginTop:"10px",
+                                            marginLeft:"5px"
+                                            }}           
+                                            src={this.state.importantPeople2.pic}
+                                            alt="Important People 2"
+                                        />   :
+                                    <img 
+                                            style =
+                                            {{display: "block",
+                                            width: "80%",
+                                            height:"70px",
+                                            marginTop:"10px",
+                                            marginLeft:"5px"
+                                            }}           
+                                        src={this.state.importantPeople2.url}
                                         alt="Important People 2"
-                                    />
-                                    <input
-                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file"
-                                        accept="image/*"
-                                        onChange={this.handleImpPeople2}
-                                    />
+                                    /> }
+                                    <UploadPeopleImages parentFunction={this.setPhotoURLFunction2} 
+                                    currentTAId={this.props.theCurrentTAId}/>
                                 </div>)}
 
                             </Col>
@@ -1245,43 +1326,49 @@ class AboutModal extends React.Component{
                         </Row>
                         <Row style={{ marginTop: "20px" }}>
                             <Col>
-                                {(this.state.importantPeople3.have_pic === false ?
+                                {this.state.importantPeople3.have_pic === false ?
                                 <div>
                                     <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} />
-                                    {(this.state.importantPeople3.important === false ?
+                                    {this.state.importantPeople3.important === false ?
                                     <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
                                         type= "file"
                                         accept="image/*"
                                         disabled/>:
-                                    <input
-                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file"
-                                        accept="image/*"
-                                        onChange={this.handleImpPeople3}
-                                    />
-                                    )}
+                                        <UploadPeopleImages parentFunction={this.setPhotoURLFunction3} 
+                                        currentTAId={this.props.theCurrentTAId}/>
+                                    }
                                 </div>:
                                 <div>
-                                    <img style =
-                                        {{display: "block",
-                                        width: "80%",
-                                        height:"70px",
-                                        marginTop:"10px",
-                                        marginLeft:"5px"
-                                       }}
-                                        src={this.state.importantPeople3.pic }
+                                     {this.state.importantPeople3.url === "" ? 
+                                    <img 
+                                            style =
+                                            {{display: "block",
+                                            width: "80%",
+                                            height:"70px",
+                                            marginTop:"10px",
+                                            marginLeft:"5px"
+                                            }}           
+                                            src={this.state.importantPeople3.pic}
+                                            alt="Important People 3"
+                                        />   :
+                                    <img 
+                                            style =
+                                            {{display: "block",
+                                            width: "80%",
+                                            height:"70px",
+                                            marginTop:"10px",
+                                            marginLeft:"5px"
+                                            }}           
+                                        src={this.state.importantPeople3.url}
                                         alt="Important People 3"
-                                    />
-                                    <input
-                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file"
-                                        accept="image/*"
-                                        onChange={this.handleImpPeople3}
-                                    />
-                                </div>)}
+                                    /> }
+              
+                                    <UploadPeopleImages parentFunction={this.setPhotoURLFunction3} 
+                                    currentTAId={this.props.theCurrentTAId}/>
+                                </div>}
                             </Col>
-                            <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
+                            <Col xs={7} style = {{paddingLeft:"0px", marginTop:"15px"}}>
                                 <div className="d-flex flex-row">
                                     {(this.state.importantPeople3.important === false?
                                       <Form.Control

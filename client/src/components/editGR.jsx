@@ -21,6 +21,7 @@ export default class editGR extends Component {
       // showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
       photo_url: this.props.ATArray[this.props.i].photo,
+      type: "",
       showRepeatModal: false,
       repeatOption:
         this.props.ATArray[this.props.i].repeat === (true || "1")
@@ -140,11 +141,11 @@ export default class editGR extends Component {
     });
   }
 
-  setPhotoURLFunction = (photo, photo_url) => {
+  setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo;
     console.log(photo_url)
-    this.setState({ itemToEdit: temp, photo_url: photo_url });
+    this.setState({ itemToEdit: temp, photo_url: photo_url, type: type });
     // this.props.changePhoto(photo_url);
   };
 
@@ -311,7 +312,7 @@ export default class editGR extends Component {
          "Sun, 23 Feb 2020 00:08:43 GMT";
     }
   
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateGR2"
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateGR"
   
     let body = temp
   
@@ -319,6 +320,7 @@ export default class editGR extends Component {
   
     body.user_id = this.props.theCurrentUserId;
     body.photo_url = this.state.photo_url
+    body.type = this.state.type
     if (body.available_end_time) delete body.available_end_time;
     if (body.available_start_time) delete body.available_start_time;
   
@@ -965,7 +967,8 @@ export default class editGR extends Component {
           <Form.Label> Photo </Form.Label>
           <Row>
             <AddIconModal parentFunction={this.setPhotoURLFunction} />
-            <UploadImage parentFunction={this.setPhotoURLFunction} />
+            <UploadImage parentFunction={this.setPhotoURLFunction}
+            currentUserId={this.props.theCurrentUserId} />
             <br />
           </Row>
 
@@ -978,6 +981,8 @@ export default class editGR extends Component {
               height="70"
               width="auto"
             ></img>
+            </div>
+            <div style={{ marginTop: "10px" }}>
           </div>
         </Form.Group>
         <Form.Group>

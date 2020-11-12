@@ -538,6 +538,7 @@ export default class FirebaseV2 extends React.Component {
                       updateWentThroughATListObj={
                         this.handleWentThroughATListObj
                       }
+                      currentUserId={this.props.theCurrentUserID}
                     />
                   </Row>
                 </Col>
@@ -599,6 +600,7 @@ export default class FirebaseV2 extends React.Component {
                     FBPath={this.state.singleGR.fbPath} //holds the path to the array data
                     refresh={this.refreshATItem} //function to refresh AT data
                     updateWentThroughATListObj={this.handleWentThroughATListObj}
+                    currentUserId={this.props.theCurrentUserID}
                   />
                 </Row>
               </div>
@@ -2745,6 +2747,7 @@ shows entire list of goals and routines
                 }}
                 width={this.state.modalWidth}
                 updateNewWentThroughATListObj={this.handleWentThroughATListObj}
+                currentUserId = {this.props.theCurrentUserID}
               />
             ) : (
               <div></div>

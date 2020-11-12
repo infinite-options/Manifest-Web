@@ -4,7 +4,7 @@ import { Form, Row, Col } from "react-bootstrap";
 import axios from 'axios';
 
 
-export default class UploadImage extends Component {
+export default class UploadPeopleImages extends Component {
   constructor(props) {
     super(props);
     // console.log(props.parentFunction);
@@ -47,14 +47,16 @@ export default class UploadImage extends Component {
 
   onClickConfirm = () => {
       this.setState({ progress: 0 });
+    
       this.props.parentFunction(this.state.image, this.state.photo_url, this.state.type);
       this.onHandleShowClick();
   };
 
   onHandleShowClick = () => {
-    let url  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getImages/";
+    let url  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getPeopleImages/";
     let imageList = []
-    axios.get(url+this.props.currentUserId).then(
+    console.log(this.props.currentTAId)
+    axios.get(url+this.props.currentTAId).then(
       (response) => {
           imageList = response.data.result;
           console.log(imageList)
@@ -75,33 +77,39 @@ export default class UploadImage extends Component {
 
   onSubmitImage = () => {
     let toggle = this.state.show;
+    if(!this.state.image){
+
+      const pic = this.state.photo_url;
+      this.setState({image: pic})
+      console.log(this.state.image)
+    }
     this.setState({ show: !toggle });
-    this.props.parentFunction("", this.state.photo_url, this.state.type);
+    this.props.parentFunction(this.state.photo_url, this.state.photo_url, this.state.type);
   };
 
   render() {
     var arrButtons = []
     if(this.state.imageList.length > 0){
-      for (let i = 0; i < this.state.imageList.length; i++) { 
-        arrButtons.push(<button style={{borderRadius:"12px", borderWidth:"0px"}} onClick={(e) =>  this.onPhotoClick(this.state.imageList[i].url)}><img
-        style ={{ width: "100px", height:"70px"}}
-        
-        src={this.state.imageList[i].url}
-      ></img></button>)
+    for (let i = 0; i < this.state.imageList.length; i++) { 
+         arrButtons.push(<button style={{borderRadius:"12px", borderWidth:"0px"}} onClick={(e) =>  this.onPhotoClick(this.state.imageList[i].url)}><img
+         style ={{ width: "100px", height:"70px"}}
+         
+         src={this.state.imageList[i].url}
+       ></img></button>)
   }}
 
     return (
       <>
         <Button
           variant="outline-primary"
-          style={{ marginRight: "15px", marginLeft: "15px"}}
+          style={{ marginRight: "0px", marginTop: "15px", width: "100px", overflow:"hidden", fontSize : "10px"}}
           onClick={this.onHandleShowClick}
         >
           Change Image
         </Button>
         <Modal show={this.state.show} onHide={this.onHandleShowClick}>
           <Modal.Header closeButton>
-            <Modal.Title>Image List</Modal.Title>
+            <Modal.Title>Choose or Upload Image</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>

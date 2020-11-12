@@ -29,44 +29,29 @@ import axios from 'axios';
     };
   
     handleFileSelected = event => {
-        event.preventDefault(); 
-        event.stopPropagation();                
-        const file = event.target.files[0];
-        this.setState({
-            saveChangesButtonEnabled: false
-        }, ()=>{
-            let targetFile = file
-            if(targetFile != null ){
-                let temp = this.state.itemToEdit;
-    
-                // Create a reference to the firebase storage. 
-                var storageRef = storage.ref('People/' + targetFile.name);
-                //upload file to firebase storage
-                var task = storageRef.put(targetFile);
-                //check on the the upload progress
-                task.on('state_changed',
-                    function progress(snapshot){
-                        //get percentage uplaoded 
-                        var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
-                        console.log(percentage);
-    
-                    },
-                    function error(err){
-                        console.log(err);
-                    },
-                    (snapshot) =>{
-                        temp.have_pic = true;
-                        console.log("completed");
-                        storage.ref('People').child(targetFile.name).getDownloadURL().then(url => {
-                            temp.pic = url;
-                            this.setState({
-                                itemToEdit: temp,
-                                saveChangesButtonEnabled: true
-                            }); 
-                        });
-                    }
-                );     
-            }}); 
+         
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const file2 = event.target.files[0]; //stores file uploaded in file
+      console.log(file2)
+
+      this.setState({
+        saveChangesButtonEnabled: false
+      })
+
+      let targetFile = file2
+          if(targetFile !== null){
+              let temp = this.state.itemToEdit;
+              temp.have_pic = true;
+              temp.pic = file2;
+              this.setState({
+                  itemToEdit: temp,
+                  saveChangesButtonEnabled: true
+              });
+          }
+      console.log(event.target.files[0].name)
+
     };
    
      newPersonInputSubmit = ( ) => {
@@ -76,24 +61,38 @@ import axios from 'axios';
         let body = {
            user_id : this.props.currentUserId,
            email_id: this.state.itemToEdit.email,
-           first_name: this.state.itemToEdit.name,
-           last_name: "",
-           employer: "",
+           name: this.state.itemToEdit.name,
            relationship: this.state.itemToEdit.relationship,
            phone_number: this.state.itemToEdit.phone_number,
            picture: this.state.itemToEdit.pic
         }
         
-        // console.log(body)
+        let formData = new FormData();
+        Object.entries(body).forEach(entry => {
+            if (entry[1].name != undefined){
+                if (typeof entry[1].name === 'string'){
+            
+                    formData.append(entry[0], entry[1]);
+                }
+            }
+            else if (entry[1] instanceof Object) {
+                entry[1] = JSON.stringify(entry[1])
+                formData.append(entry[0], entry[1]);
+            }
+            
+            else{
+                formData.append(entry[0], entry[1]);
+            }
+        });
         
-        axios.post(url, body)
-           .then((response) => {
-              console.log("Added new person Details")
-              this.props.closeModal();
-              this.props.newPersonAdded();
+        axios.post(url, formData)
+           .then(() => {
+               console.log("Added new person Details")
+               this.props.closeModal();
+               this.props.newPersonAdded();
            })
            .catch((err) => {
-              console.log("Fail to add new Person", err);
+               console.log("Error adding new person Details", err);
            });
         
      }

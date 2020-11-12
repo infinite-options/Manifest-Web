@@ -2844,6 +2844,7 @@ this will close repeat modal.
             updateProfileTimeZone={this.updateTimeZone}
             // {console.log("this is the id is it undefined at first", )}
             theCurrentUserId={this.state.currentUserId}
+            theCurrentTAId={this.state.ta_people_id}
           />
         )
       );
