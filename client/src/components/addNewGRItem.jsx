@@ -37,6 +37,7 @@ export default class AddNewGRItem extends Component {
       is_persistent: this.props.isRoutine,
       photo: "",
       photo_url: "",
+      type: "",
       is_complete: false,
       is_available: true,
 
@@ -483,10 +484,11 @@ export default class AddNewGRItem extends Component {
     return "";
   };
 
-  setPhotoURLFunction = (photo, photo_url) => {
+  setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo;
     temp.photo_url = photo_url;
+    temp.type = type;
     this.setState({ itemToEdit: temp });
     console.log(this.state.itemToEdit.photo);
   };
@@ -505,7 +507,7 @@ export default class AddNewGRItem extends Component {
 
   addNewDoc = () => {
     let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR2";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR";
 
     let newArr = this.state.grArr;
     let temp = this.state.itemToEdit;
@@ -534,6 +536,7 @@ export default class AddNewGRItem extends Component {
     if (body.available_end_time) delete body.available_end_time;
     if (body.available_start_time) delete body.available_start_time;
     body.ta_people_id = this.props.theCurrentTAID;
+
     console.log(body);
 
     let formData = new FormData();
@@ -1505,7 +1508,10 @@ this will close repeat modal.
             <Form.Label> Photo </Form.Label>
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
-              <UploadImage parentFunction={this.setPhotoURLFunction} />
+              <UploadImage
+                parentFunction={this.setPhotoURLFunction}
+                currentUserId={this.props.theCurrentUserId}
+              />
               <br />
             </Row>
             <div style={{ marginTop: "10px", marginBottom: "10px" }}>

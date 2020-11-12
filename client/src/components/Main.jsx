@@ -302,7 +302,7 @@ export default class MainPage extends React.Component {
       if(response.data.length != 0) {
         console.log(response.data)
         response.data.forEach((d, i) => {
-          // console.log(d)
+          console.log(d)
           let id = d.user_unique_id;
           profilePicURLArray.push(d.user_picture);
           nameIdObject[id] = d.user_name;
@@ -442,6 +442,7 @@ export default class MainPage extends React.Component {
     // Fetching all TA's to populate advisorIdAndNames
     
     console.log("User ID: " + this.state.currentUserId)
+    console.log(this.state.currentUserPicUrl)
     axios.get("https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
        .then((response) => {
 
@@ -2845,6 +2846,7 @@ this will close repeat modal.
             updateProfileTimeZone={this.updateTimeZone}
             // {console.log("this is the id is it undefined at first", )}
             theCurrentUserId={this.state.currentUserId}
+            theCurrentTAId={this.state.ta_people_id}
           />
         )
       );

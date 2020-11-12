@@ -16,6 +16,7 @@ export default class editAT extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      type: "",
       showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
       photo_url: this.props.ATArray[this.props.i].photo
@@ -63,7 +64,7 @@ export default class editAT extends Component {
          "Sun, 23 Feb 2020 00:08:43 GMT";
     }
     
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAT2"
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAT"
   
     // let body = JSON.parse(JSON.stringify(newArr[this.props.i]));
   
@@ -73,7 +74,7 @@ export default class editAT extends Component {
     if (body.goal_routine_id) delete body.goal_routine_id;
     
     if (body.at_title) delete body.at_title
-    
+    body.type = this.state.type
     body.id = body.at_unique_id
     if (body.at_unique_id) delete body.at_unique_id
     body.photo_url = this.state.photo_url;
@@ -236,10 +237,11 @@ export default class editAT extends Component {
     // console.log(temp);
     this.setState({ itemToEdit: temp });
   };
-  setPhotoURLFunction = (photo, photo_url) => {
+
+  setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo;
-    this.setState({ itemToEdit: temp, photo_url: photo_url });
+    this.setState({ itemToEdit: temp, photo_url: photo_url, type: type });
     console.log(this.state.photo_url)
   };
 
@@ -293,7 +295,8 @@ export default class editAT extends Component {
           <Form.Label> Photo </Form.Label>
           <Row>
             <AddIconModal parentFunction={this.setPhotoURLFunction} />
-            <UploadImage parentFunction={this.setPhotoURLFunction} />
+            <UploadImage parentFunction={this.setPhotoURLFunction} 
+              currentUserId = {this.props.currentUserId}/>
             <br />
           </Row>
 

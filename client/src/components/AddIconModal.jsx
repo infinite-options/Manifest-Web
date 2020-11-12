@@ -1,46 +1,167 @@
 import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
+import axios from 'axios';
+
 
 export default class AddIconModal extends Component {
   constructor(props) {
     super(props);
     // console.log(props.parentFunction);
     this.state = {
+      saltedImageName: "",
       show: false,
+      modal: false,
       photo_url: null,
+      iconList: [],
+      image: null,
+      type: 'icon'
     };
   }
-
-  onHandleShowClick = () => {
-    let toggle = this.state.show;
-    this.setState({ show: !toggle });
-    console.log(toggle)
-  };
 
   onPhotoClick = (e) => {
     console.log("this is the E: ", e);
     this.setState({ photo_url: e });
   };
 
+  onChange = (e) => {
+    if (e.target.files[0]) {
+      const image = e.target.files[0];
+      console.log(image);
+      this.setState({ image: image });
+    }
+  }
+
+  onClickUpload = () => {
+    if (this.state.image === null) {
+      alert("Please select an image to upload");
+      return;
+    }
+    const salt = Math.floor(Math.random() * 9999999999);
+    let image_name = this.state.image.name;
+    image_name = image_name + salt.toString();
+    this.setState({ saltedImageName: image_name });
+    this.setState({photo_url: URL.createObjectURL(this.state.image)});
+     console.log(this.state)
+  };
+
+  onClickConfirm = () => {
+      this.setState({ progress: 0 });
+      this.props.parentFunction(this.state.image, this.state.photo_url, this.state.type);
+      this.onHandleShowClick();
+  };
+
+  onHandleShowClick = () => {
+    let url  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIcons";
+    let iconList = []
+
+    axios.get(url).then(
+      (response) => {
+          iconList = response.data.result;
+          console.log(iconList)
+          this.setState({iconList: iconList})
+      }
+   ).catch((err) => {
+       console.log("Error getting icons list", err);
+   });
+
+   let toggle = this.state.show;
+   this.setState({ show: !toggle});
+
+   console.log(toggle)
+   
+  };
+
+  onUploadIcon = () => {
+    let toggle = this.state.modal;
+    this.setState({ modal: !toggle });
+  };
+
   onSubmitIcon = () => {
     let toggle = this.state.show;
     this.setState({ show: !toggle });
-    this.props.parentFunction("", this.state.photo_url);
+    this.props.parentFunction("", this.state.photo_url, this.state.type);
   };
 
   render() {
+    var arrButtons = []
+    for (let i = 0; i < this.state.iconList.length; i++) { 
+         arrButtons.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconList[i].url)}><img
+         height="70px"
+         width="70px"
+         src={this.state.iconList[i].url}
+       ></img></button>)
+  }
+
     return (
       <>
         <Button
           variant="outline-primary"
-          style={{ marginRight: "15px", marginLeft: "15px" }}
+          style={{ marginRight: "15px", marginLeft: "15px"}}
           onClick={this.onHandleShowClick}
         >
           Change Icon
         </Button>
-
         <Modal show={this.state.show} onHide={this.onHandleShowClick}>
+          <Modal.Header closeButton>
+            <Modal.Title>Icon List</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <div>
+              <div>Hygiene</div>
+              {arrButtons}
+              
+              </div> 
+              </Modal.Body>
+
+              <Modal.Footer>
+                
+                <Button variant="secondary" onClick={this.onHandleShowClick}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={this.onUploadIcon}>
+                  Upload Icon
+                </Button>
+                  <Modal show={this.state.modal} onHide={this.onUploadIcon}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Upload Image</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                      <div>Upload Image</div>
+                      <input type="file" onChange={this.onChange} />
+                      <Button variant="dark" onClick={this.onClickUpload}>
+                        Upload
+                      </Button>
+                      <img
+                        src={this.state.photo_url || "http://via.placeholder.com/400x300"}
+                        alt="Uploaded images"
+                        height="300"
+                        width="400"
+                      />
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                      <Button variant="secondary" onClick={this.onUploadIcon}>
+                        Close
+                      </Button>
+                      <Button variant="primary" onClick={this.onClickConfirm}>
+                        Confirm
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                <Button variant="primary" onClick={this.onSubmitIcon}>
+                  Add Icon
+                </Button>
+              </Modal.Footer>
+              </Modal>
+              </>
+
+              
+
+
+         /* <Modal show={this.state.show} onHide={this.onHandleShowClick}>
           <Modal.Header closeButton>
             <Modal.Title>Icon List</Modal.Title>
           </Modal.Header>
@@ -2748,7 +2869,7 @@ export default class AddIconModal extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
-      </>
+       </>  */
     );
   }
 }

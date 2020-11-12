@@ -20,6 +20,7 @@ export default class AddNewATItem extends Component {
       AT_arr: [], // Actions & Tasks array
       newActionTitle: "", //Old delete Later
       itemToEdit: {
+        type: "",
         id: "",
         title: "",
         photo: "",
@@ -145,7 +146,7 @@ export default class AddNewATItem extends Component {
   
   addNewDoc = () => {
   
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT2";
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT";
     
     if (this.props.ATArray.length > 0) {
       this.setState({
@@ -320,10 +321,11 @@ export default class AddNewATItem extends Component {
     });
   };
 
-  setPhotoURLFunction = (photo, photo_url) => {
+  setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo;
     temp.photo_url = photo_url;
+    temp.type = type;
     this.setState({ itemToEdit: temp });
   };
 
@@ -405,7 +407,8 @@ export default class AddNewATItem extends Component {
             <Form.Label> Photo </Form.Label>
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
-              <UploadImage parentFunction={this.setPhotoURLFunction} />
+              <UploadImage parentFunction={this.setPhotoURLFunction} 
+               currentUserId = {this.props.currentUserId}/>
               <br />
             </Row>
             <div style={{ marginTop: "10px", marginBottom: "10px" }}>
