@@ -696,10 +696,17 @@ export default class MainPage extends React.Component {
 
           
              gr.title = x[i].gr_title
+             var start = new Date();
+             start.setHours(0,0,0,0);
+             var end = new Date();
+             end.setHours(23,59,59,999); 
+             console.log(start); 
+             console.log(end);            
+            
              var goalDate = new Date(gr.end_day_and_time);
              var currentDate = new Date();
              console.log(currentDate);
-             if(goalDate.getTime() >  currentDate.getTime()){
+             if(goalDate.getTime() >  start.getTime() && goalDate.getTime() < end.getTime() ){
              gr_array.push(gr)
              };
              console.log(gr_array);
@@ -2814,87 +2821,13 @@ this will close repeat modal.
     axios.post(url, body)
        .then(() => {
          console.log("Updated Relationship")
-         alert("Updated Relationship Success");
+         alert("Trusted Advisor Granted Access");
        })
        .catch((err) => {
          console.log("Error updating relationship", err);
          result.json(false);
        });
-    
-    // const db = firebase.firestore();
-    
-    // db.collection("users")
-    //    .doc(this.state.currentUserId)
-    //    .get()
-    //    .then((doc) => {
-    //      db.collection("trusted_advisor")
-    //         .doc(this.state.currentAdvisorCandidateId)
-    //         .get()
-    //         .then((snapshot) => {
-    //           let found = false;
-    //           snapshot.data().users.forEach((user) => {
-    //             if (user.id == this.state.currentUserId) {
-    //               found = true;
-    //             }
-    //           });
-    //           if (!found) {
-    //             db.collection("trusted_advisor")
-    //                .doc(this.state.currentAdvisorCandidateId)
-    //                .update({
-    //                  users: firebase.firestore.FieldValue.arrayUnion({
-    //                    Relationship: "advisor",
-    //                    User: doc.ref,
-    //                  }),
-    //                })
-    //                .then(() => {
-    //                  alert("Succeed");
-    //                });
-    //           } else {
-    //             console.log("The trusted advisor already has access to the user");
-    //           }
-    //         });
-    //    });
   };
-
-  // giveAcessToTA = () => {
-  //   console.log("inside giveAccess")
-  //   console.log(this.state.currentAdvisorCandidateId);
-  //   console.log(this.state.currentUserId);
-  //   const db = firebase.firestore();
-  //
-  //   db.collection("users")
-  //     .doc(this.state.currentUserId)
-  //     .get()
-  //     .then((doc) => {
-  //       db.collection("trusted_advisor")
-  //         .doc(this.state.currentAdvisorCandidateId)
-  //         .get()
-  //         .then((snapshot) => {
-  //           let found = false;
-  //           snapshot.data().users.forEach((user) => {
-  //             if (user.id == this.state.currentUserId) {
-  //               found = true;
-  //             }
-  //           });
-  //           if (!found) {
-  //             db.collection("trusted_advisor")
-  //               .doc(this.state.currentAdvisorCandidateId)
-  //               .update({
-  //                 users: firebase.firestore.FieldValue.arrayUnion({
-  //                   Relationship: "advisor",
-  //                   User: doc.ref,
-  //                 }),
-  //               })
-  //               .then(() => {
-  //                 alert("Succeed");
-  //               });
-  //           } else {
-  //             console.log("The trusted advisor already has access to the user");
-  //           }
-  //         });
-  //     });
-  // };
-  
   
 
   showDayViewOrAboutView = () => {

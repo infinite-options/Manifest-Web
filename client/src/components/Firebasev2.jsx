@@ -2376,6 +2376,7 @@ shows entire list of goals and routines
       .collection("goals&routines")
       .get()
       .then(async (snapshot) => {
+        console.log(snapshot);
         let logs = [];
         snapshot.forEach((log) => {
           log.data().log.forEach((gr) => {
@@ -2385,6 +2386,7 @@ shows entire list of goals and routines
             }
           });
         });
+
 
         // push data for current date
         let date = new Date();

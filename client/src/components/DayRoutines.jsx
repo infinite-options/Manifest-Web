@@ -37,7 +37,7 @@ export default class DayRoutines extends Component {
   };
 
   RoutineClicked = () => {
-    this.props.dayRoutineClick();
+    console.log(this.props.dayRoutineClick());
   };
 
   /**

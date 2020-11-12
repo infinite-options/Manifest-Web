@@ -234,6 +234,7 @@ export default class AddNewGRItem extends Component {
              const first_notifications = (x[i].notifications[0])
              const second_notifications = (x[i].notifications[1])
 
+             console.log(first_notifications);
              if ((first_notifications.user_ta_id.charAt(0)) === '1') {
               gr.user_notifications = {
                 before: {
@@ -255,6 +256,55 @@ export default class AddNewGRItem extends Component {
                   time:      first_notifications.after_time
                 }
               }
+              if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  after:  {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  }
+                }
+               }
+               else 
+               if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  after:  {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  }
+                }
+               }
+
+               else{
+                 return;
+               }
              }
 
              if ((first_notifications.user_ta_id.charAt(0)) === '2') {
@@ -278,53 +328,59 @@ export default class AddNewGRItem extends Component {
                   time:      first_notifications.after_time
                 }
               }
+              if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  after:  {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  }
+                }
+               }
+               else 
+               if ((second_notifications.user_ta_id.charAt(0)) === '1') {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  },
+                  after:  {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set:    second_notifications.before_is_set,
+                    message:   second_notifications.before_message,
+                    time:      second_notifications.before_time
+                  }
+                }
+               }
+
+               else{
+                 return;
+               }
              }
 
-             if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-              gr.user_notifications = {
-                before: {
-                  is_enabled: second_notifications.before_is_enable,
-                  is_set:    second_notifications.before_is_set,
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                },
-                during: {
-                  is_enabled: second_notifications.before_is_enable,
-                  is_set:    second_notifications.before_is_set,
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                },
-                after:  {
-                  is_enabled: second_notifications.before_is_enable,
-                  is_set:    second_notifications.before_is_set,
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                }
-              }
-             }
+           
 
-             if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-              gr.user_notifications = {
-                before: {
-                  is_enabled: second_notifications.before_is_enable,
-                  is_set:    second_notifications.before_is_set,
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                },
-                during: {
-                  is_enabled: second_notifications.before_is_enable,
-                  is_set:    second_notifications.before_is_set,
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                },
-                after:  {
-                  is_enabled: second_notifications.before_is_enable,
-                  is_set:    second_notifications.before_is_set,
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                }
-              }
-             }
 
              
             
@@ -1230,7 +1286,6 @@ this will close repeat modal.
         </div>
       </>
     );
-
     return (
       <Modal.Dialog style={modalStyle}>
         <Modal.Header closeButton onHide={this.closeRepeatModal}>
@@ -1238,7 +1293,6 @@ this will close repeat modal.
             <h5 className="normalfancytext">Repeating Options</h5>
           </Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
           <Form>
             <Form.Group
@@ -1388,7 +1442,6 @@ this will close repeat modal.
             </Form.Group>
           </Form>
         </Modal.Body>
-
         <Modal.Footer>
           <Button variant="secondary" onClick={this.closeRepeatModal}>
             Cancel
@@ -1400,7 +1453,6 @@ this will close repeat modal.
       </Modal.Dialog>
     );
   };
-
   render() {
     return (
       <Modal.Dialog style={{ marginLeft: "0", width: this.props.width }}>
@@ -1443,7 +1495,6 @@ this will close repeat modal.
                 width="auto"
               ></img>
             </div>
-
             <Form.Label>
               Start Time
               <DateAndTimePickers
@@ -1452,7 +1503,6 @@ this will close repeat modal.
                 set_day_and_time={this.set_day_and_time}
               />
             </Form.Label>
-
             <Form.Label>
               End Time
               <DateAndTimePickers
@@ -1462,7 +1512,6 @@ this will close repeat modal.
               />
               <br />
             </Form.Label>
-
             <div>
               <label>Repeating Options</label>
               <DropdownButton
@@ -1506,7 +1555,6 @@ this will close repeat modal.
                 </Dropdown.Item>
               </DropdownButton>
             </div>
-
             <div style={{ marginTop: "20px" }}>
               <label>This Takes Me</label>
               <Row>
@@ -1533,7 +1581,6 @@ this will close repeat modal.
                 </Col>
               </Row>
             </div>
-
             <div className="input-group mb-3" style={{ marginTop: "10px" }}>
               <label className="form-check-label">Time?</label>
               <input
@@ -1549,7 +1596,6 @@ this will close repeat modal.
                 }}
               />
             </div>
-
             <div className="input-group mb-3">
               <label className="form-check-label">Available to the user?</label>
               <input
@@ -1565,7 +1611,6 @@ this will close repeat modal.
                 }}
               />
             </div>
-
             {this.state.itemToEdit.is_available && (
               <ShowNotifications
                 itemToEditPassedIn={this.state.itemToEdit}

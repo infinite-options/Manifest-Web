@@ -11,6 +11,7 @@ export default class MustDoAT extends React.Component {
     };
   }
 
+  
   /*
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.Array !== this.props.Array) {
@@ -26,6 +27,7 @@ export default class MustDoAT extends React.Component {
   componentDidMount() {
     console.log("Enter componentDidMount");
     let items = [...this.props.Array];
+    console.log(items);
     this.setState({
       iconShow: items[this.props.Index]["is_must_do"],
     });
