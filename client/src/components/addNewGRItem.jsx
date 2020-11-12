@@ -10,7 +10,7 @@ import { firestore, storage } from "firebase";
 import DateAndTimePickers from "./DatePicker";
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
-import axios from 'axios';
+import axios from "axios";
 
 export default class AddNewGRItem extends Component {
   constructor(props) {
@@ -19,9 +19,11 @@ export default class AddNewGRItem extends Component {
 
     if (this.state.itemToEdit.photo === "") {
       if (this.props.isRoutine) {
-        this.state.itemToEdit.photo_url = "https://manifest-image-db.s3-us-west-1.amazonaws.com/routine.png";
+        this.state.itemToEdit.photo_url =
+          "https://manifest-image-db.s3-us-west-1.amazonaws.com/routine.png";
       } else {
-        this.state.itemToEdit.photo_url = "https://manifest-image-db.s3-us-west-1.amazonaws.com/goal.png";
+        this.state.itemToEdit.photo_url =
+          "https://manifest-image-db.s3-us-west-1.amazonaws.com/goal.png";
       }
     }
 
@@ -164,241 +166,267 @@ export default class AddNewGRItem extends Component {
 
     this.getGRDataFromFB();
   }
-  
-  getGRDataFromFB = () => {
-  
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/"
-  
-    axios.get(url + this.props.theCurrentUserId)
-       .then((response) => {
-         if(response.data.result && (response.data.result.length !== 0)) {
-           let x = response.data.result;
-            console.log(x)
-           x.sort((a, b) => {
-             let datetimeA = new Date(a["start_day_and_time"]);
-             let datetimeB = new Date(b["start_day_and_time"]);
-             let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
-             let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
-             return timeA - timeB;
-           });
-  
-           let gr_array = [];
-  
-           for (let i = 0; i < x.length; ++i) {
-  
-             let gr = {};
-             gr.audio = "";
-             // gr.available_end_time = "23:59:59";
-             // gr.available_start_time = "00:00:00";
-             gr.datetime_completed = x[ i ].datetime_completed;
-             gr.datetime_started = x[ i ].datetime_started;
-             gr.end_day_and_time = x[ i ].end_day_and_time;
-             gr.expected_completion_time = x[ i ].expected_completion_time;
-             gr.id = x[ i ].gr_unique_id;
-  
-             gr.is_available = x[ i ].is_available.toLowerCase() === "true"
-             gr.is_complete = x[ i ].is_complete.toLowerCase() === "true"
-             gr.is_displayed_today = x[ i ].is_displayed_today.toLowerCase() === "true"
-             gr.is_in_progress = x[ i ].is_in_progress.toLowerCase() === "true"
-             gr.is_persistent = x[ i ].is_persistent.toLowerCase() === "true"
-             gr.is_sublist_available = x[ i ].is_sublist_available.toLowerCase() === "true"
-             gr.is_timed = x[ i ].is_timed.toLowerCase() === "true"
-  
-             gr.photo = x[ i ].photo
-             gr.repeat = x[ i ].repeat.toLowerCase() === "true"
-             gr.repeat_ends = x[ i ].repeat_ends || "Never"
-             gr.repeat_ends_on = x[ i ].repeat_ends_on
-             gr.repeat_every = x[ i ].repeat_every
-             gr.repeat_frequency = x[ i ].repeat_frequency
-             gr.repeat_occurences = x[ i ].repeat_occurences
-  
-             const repeat_week_days_json = JSON.parse( x[ i ].repeat_week_days )
-             
-             if (repeat_week_days_json) {
-               gr.repeat_week_days = {
-                 0: ( repeat_week_days_json.Sunday && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
-                 1: ( repeat_week_days_json.Monday && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
-                 2: ( repeat_week_days_json.Tuesday && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
-                 3: ( repeat_week_days_json.Wednesday && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
-                 4: ( repeat_week_days_json.Thursday && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
-                 5: ( repeat_week_days_json.Friday && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
-                 6: ( repeat_week_days_json.Saturday && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
-               }
-             } else {
-               gr.repeat_week_days = {
-                 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: ""
-               }
-             }
-  
-             gr.start_day_and_time = x[ i ].start_day_and_time
-             const first_notifications = (x[i].notifications[0])
-             const second_notifications = (x[i].notifications[1])
 
-             console.log(first_notifications);
-             if ((first_notifications.user_ta_id.charAt(0)) === '1') {
+  getGRDataFromFB = () => {
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
+
+    axios
+      .get(url + this.props.theCurrentUserId)
+      .then((response) => {
+        if (response.data.result && response.data.result.length !== 0) {
+          let x = response.data.result;
+          console.log(x);
+          x.sort((a, b) => {
+            let datetimeA = new Date(a["start_day_and_time"]);
+            let datetimeB = new Date(b["start_day_and_time"]);
+            let timeA =
+              new Date(datetimeA).getHours() * 60 +
+              new Date(datetimeA).getMinutes();
+            let timeB =
+              new Date(datetimeB).getHours() * 60 +
+              new Date(datetimeB).getMinutes();
+            return timeA - timeB;
+          });
+
+          let gr_array = [];
+
+          for (let i = 0; i < x.length; ++i) {
+            let gr = {};
+            gr.audio = "";
+            // gr.available_end_time = "23:59:59";
+            // gr.available_start_time = "00:00:00";
+            gr.datetime_completed = x[i].datetime_completed;
+            gr.datetime_started = x[i].datetime_started;
+            gr.end_day_and_time = x[i].end_day_and_time;
+            gr.expected_completion_time = x[i].expected_completion_time;
+            gr.id = x[i].gr_unique_id;
+
+            gr.is_available = x[i].is_available.toLowerCase() === "true";
+            gr.is_complete = x[i].is_complete.toLowerCase() === "true";
+            gr.is_displayed_today =
+              x[i].is_displayed_today.toLowerCase() === "true";
+            gr.is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
+            gr.is_persistent = x[i].is_persistent.toLowerCase() === "true";
+            gr.is_sublist_available =
+              x[i].is_sublist_available.toLowerCase() === "true";
+            gr.is_timed = x[i].is_timed.toLowerCase() === "true";
+
+            gr.photo = x[i].photo;
+            gr.repeat = x[i].repeat.toLowerCase() === "true";
+            gr.repeat_ends = x[i].repeat_ends || "Never";
+            gr.repeat_ends_on = x[i].repeat_ends_on;
+            gr.repeat_every = x[i].repeat_every;
+            gr.repeat_frequency = x[i].repeat_frequency;
+            gr.repeat_occurences = x[i].repeat_occurences;
+
+            const repeat_week_days_json = JSON.parse(x[i].repeat_week_days);
+
+            if (repeat_week_days_json) {
+              gr.repeat_week_days = {
+                0:
+                  repeat_week_days_json.Sunday &&
+                  repeat_week_days_json.Sunday.toLowerCase() === "true"
+                    ? "Sunday"
+                    : "",
+                1:
+                  repeat_week_days_json.Monday &&
+                  repeat_week_days_json.Monday.toLowerCase() === "true"
+                    ? "Monday"
+                    : "",
+                2:
+                  repeat_week_days_json.Tuesday &&
+                  repeat_week_days_json.Tuesday.toLowerCase() === "true"
+                    ? "Tuesday"
+                    : "",
+                3:
+                  repeat_week_days_json.Wednesday &&
+                  repeat_week_days_json.Wednesday.toLowerCase() === "true"
+                    ? "Wednesday"
+                    : "",
+                4:
+                  repeat_week_days_json.Thursday &&
+                  repeat_week_days_json.Thursday.toLowerCase() === "true"
+                    ? "Thursday"
+                    : "",
+                5:
+                  repeat_week_days_json.Friday &&
+                  repeat_week_days_json.Friday.toLowerCase() === "true"
+                    ? "Friday"
+                    : "",
+                6:
+                  repeat_week_days_json.Saturday &&
+                  repeat_week_days_json.Saturday.toLowerCase() === "true"
+                    ? "Saturday"
+                    : "",
+              };
+            } else {
+              gr.repeat_week_days = {
+                0: "",
+                1: "",
+                2: "",
+                3: "",
+                4: "",
+                5: "",
+                6: "",
+              };
+            }
+
+            gr.start_day_and_time = x[i].start_day_and_time;
+            const first_notifications = x[i].notifications[0];
+            const second_notifications = x[i].notifications[1];
+
+            console.log(first_notifications);
+            if (first_notifications.user_ta_id.charAt(0) === "1") {
               gr.user_notifications = {
                 before: {
                   is_enabled: first_notifications.before_is_enable.toLowerCase(),
-                  is_set:    first_notifications.before_is_set.toLowerCase(),
-                  message:   first_notifications.before_message,
-                  time:      first_notifications.before_time
+                  is_set: first_notifications.before_is_set.toLowerCase(),
+                  message: first_notifications.before_message,
+                  time: first_notifications.before_time,
                 },
                 during: {
                   is_enabled: first_notifications.during_is_enable.toLowerCase(),
-                  is_set:    first_notifications.during_is_set.toLowerCase(),
-                  message:   first_notifications.during_message,
-                  time:      first_notifications.during_time
+                  is_set: first_notifications.during_is_set.toLowerCase(),
+                  message: first_notifications.during_message,
+                  time: first_notifications.during_time,
                 },
-                after:  {
+                after: {
                   is_enabled: first_notifications.after_is_enable.toLowerCase(),
-                  is_set:    first_notifications.after_is_set.toLowerCase(),
-                  message:   first_notifications.after_message,
-                  time:      first_notifications.after_time
-                }
+                  is_set: first_notifications.after_is_set.toLowerCase(),
+                  message: first_notifications.after_message,
+                  time: first_notifications.after_time,
+                },
+              };
+              if (second_notifications.user_ta_id.charAt(0) === "1") {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                };
+              } else if (second_notifications.user_ta_id.charAt(0) === "1") {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                };
+              } else {
+                return;
               }
-              if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-                gr.user_notifications = {
-                  before: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  during: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  after:  {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  }
-                }
-               }
-               else 
-               if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-                gr.user_notifications = {
-                  before: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  during: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  after:  {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  }
-                }
-               }
+            }
 
-               else{
-                 return;
-               }
-             }
-
-             if ((first_notifications.user_ta_id.charAt(0)) === '2') {
+            if (first_notifications.user_ta_id.charAt(0) === "2") {
               gr.ta_notifications = {
                 before: {
                   is_enabled: first_notifications.before_is_enable.toLowerCase(),
-                  is_set:    first_notifications.before_is_set.toLowerCase(),
-                  message:   first_notifications.before_message,
-                  time:      first_notifications.before_time
+                  is_set: first_notifications.before_is_set.toLowerCase(),
+                  message: first_notifications.before_message,
+                  time: first_notifications.before_time,
                 },
                 during: {
                   is_enabled: first_notifications.during_is_enable.toLowerCase(),
-                  is_set:    first_notifications.during_is_set.toLowerCase(),
-                  message:   first_notifications.during_message,
-                  time:      first_notifications.during_time
+                  is_set: first_notifications.during_is_set.toLowerCase(),
+                  message: first_notifications.during_message,
+                  time: first_notifications.during_time,
                 },
-                after:  {
+                after: {
                   is_enabled: first_notifications.after_is_enable.toLowerCase(),
-                  is_set:    first_notifications.after_is_set.toLowerCase(),
-                  message:   first_notifications.after_message,
-                  time:      first_notifications.after_time
-                }
+                  is_set: first_notifications.after_is_set.toLowerCase(),
+                  message: first_notifications.after_message,
+                  time: first_notifications.after_time,
+                },
+              };
+              if (second_notifications.user_ta_id.charAt(0) === "1") {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                };
+              } else if (second_notifications.user_ta_id.charAt(0) === "1") {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.before_is_enable,
+                    is_set: second_notifications.before_is_set,
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                };
+              } else {
+                return;
               }
-              if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-                gr.user_notifications = {
-                  before: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  during: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  after:  {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  }
-                }
-               }
-               else 
-               if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-                gr.user_notifications = {
-                  before: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  during: {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  },
-                  after:  {
-                    is_enabled: second_notifications.before_is_enable,
-                    is_set:    second_notifications.before_is_set,
-                    message:   second_notifications.before_message,
-                    time:      second_notifications.before_time
-                  }
-                }
-               }
+            }
 
-               else{
-                 return;
-               }
-             }
+            gr.title = x[i].gr_title;
 
-           
+            gr_array.push(gr);
+          }
 
-
-             
-            
-  
-             gr.title = x[ i ].gr_title
-  
-             gr_array.push( gr )
-           }
-  
-           this.setState({
-             grArr: gr_array,
-           });
-         }
-       })
-       .catch(function (error) {
-         console.log("Error getting goals and routines:", error);
-         // alert("Error getting document");
-       });
+          this.setState({
+            grArr: gr_array,
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting goals and routines:", error);
+        // alert("Error getting document");
+      });
   };
 
   // getGRDataFromFB = () => {
@@ -429,7 +457,6 @@ export default class AddNewGRItem extends Component {
   //       alert("Error getting document");
   //     });
   // };
-  
 
   newInputSubmit = () => {
     status = this.newInputVerify();
@@ -461,7 +488,7 @@ export default class AddNewGRItem extends Component {
     temp.photo = photo;
     temp.photo_url = photo_url;
     this.setState({ itemToEdit: temp });
-    console.log(this.state.itemToEdit.photo)
+    console.log(this.state.itemToEdit.photo);
   };
 
   set_day_and_time = (id, dateString) => {
@@ -475,76 +502,71 @@ export default class AddNewGRItem extends Component {
       this.setState({ itemToEdit: temp });
     }
   };
-  
+
   addNewDoc = () => {
-    
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR2"
-  
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR2";
+
     let newArr = this.state.grArr;
     let temp = this.state.itemToEdit;
     console.log(temp);
     temp.available_start_time = this.state.itemToEdit.available_start_time;
     temp.available_end_time = this.state.itemToEdit.available_end_time;
     temp.is_displayed_today = this.calculateIsDisplayed(temp);
-  
+
     temp.start_day_and_time = new Date(
-       this.state.itemToEdit.start_day_and_time
+      this.state.itemToEdit.start_day_and_time
     ).toLocaleString();
     temp.end_day_and_time = new Date(
-       this.state.itemToEdit.end_day_and_time
+      this.state.itemToEdit.end_day_and_time
     ).toLocaleString();
-  
-    temp.repeat_ends_on = String(
-       this.state.itemToEdit.repeat_ends_on
-    );
-    
+
+    temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
+
     // let body = JSON.parse(JSON.stringify(temp))
     let body = temp;
-    
+
     // changes to request body to make it compatible with RDS
-    console.log(this.props)
+    console.log(this.props);
     body.user_id = this.props.theCurrentUserId;
     delete body.id;
 
     if (body.available_end_time) delete body.available_end_time;
     if (body.available_start_time) delete body.available_start_time;
     body.ta_people_id = this.props.theCurrentTAID;
-    console.log(body)
+    console.log(body);
 
     let formData = new FormData();
-        Object.entries(body).forEach(entry => {
-            if (typeof entry[1].name == 'string'){
-            
-                formData.append(entry[0], entry[1]);
-            }
-            else if (entry[1] instanceof Object) {
-                entry[1] = JSON.stringify(entry[1])
-                formData.append(entry[0], entry[1]);
-            }
-            
-            else{
-                formData.append(entry[0], entry[1]);
-            }
-        });
-    console.log(formData)
-    axios.post(url, formData)
-       .then(() => {
-         console.log("Added Goal/Routine to Database")
-         newArr.push(temp);
-         // this.updateEntireArray(newArr);
-         
-         this.getGRDataFromFB();
-         if (this.props != null) {
-           this.props.refresh();
-         }
-       })
-       .catch((err) => {
-         console.log("Error adding Goal/Routine", err);
-       });
-  
+    Object.entries(body).forEach((entry) => {
+      if (typeof entry[1].name == "string") {
+        formData.append(entry[0], entry[1]);
+      } else if (entry[1] instanceof Object) {
+        entry[1] = JSON.stringify(entry[1]);
+        formData.append(entry[0], entry[1]);
+      } else {
+        formData.append(entry[0], entry[1]);
+      }
+    });
+    console.log(formData);
+    axios
+      .post(url, formData)
+      .then(() => {
+        console.log("Added Goal/Routine to Database");
+        newArr.push(temp);
+        // this.updateEntireArray(newArr);
+
+        this.getGRDataFromFB();
+        if (this.props != null) {
+          this.props.refresh();
+        }
+      })
+      .catch((err) => {
+        console.log("Error adding Goal/Routine", err);
+      });
+
     // this.updateEntireArray(newArr);
   };
-  
+
   // addNewDoc = () => {
   //
   //   this.state.arrPath
