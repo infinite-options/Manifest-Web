@@ -57,7 +57,6 @@ export default class DayGoals extends Component {
     var addmarginLeft = 0;
     var fontSize = 10;
     //console.log("this.props.dateContext", this.props.dateContext);
-
     //this.updateGRIsDisplayed()
     for (let i = 0; i < arr.length; i++) {
       tempStart = arr[i].start_day_and_time;

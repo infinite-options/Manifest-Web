@@ -26,6 +26,7 @@ import ShowISList from "./ShowISList";
 import MustDoAT from "./MustDoAT";
 import EditIcon from "./EditIcon.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import moment from "moment";
 import {
   faUser,
   faUserAltSlash,
@@ -34,7 +35,7 @@ import {
   faBookmark,
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
-import axios from 'axios';
+import axios from "axios";
 // import moment from "moment";
 
 /**
@@ -77,6 +78,11 @@ export default class FirebaseV2 extends React.Component {
         arr: [],
         fbPath: null,
       },
+
+      grName: "",
+      dateString: "",
+
+
 
       singleAT: {
         //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
@@ -257,91 +263,90 @@ export default class FirebaseV2 extends React.Component {
     return time.format("YYYY MMM DD HH:mm");
     */
   }
-  
+
   //This function essentially grabs all action/tasks
   //for the routine or goal passed in and pops open the
   //modal for the action/task
   getATList = async (id, title, persist, tempGR) => {
-  
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/"
-  
-    axios.get(url + id)
-       .then((response) => {
-         if (response.data.result && (response.data.result.length > 0)) {
-           
-           let x = response.data.result;
-  
-           for (let i = 0; i < x.length; ++i) {
-             x[i].audio = x[i].audio || "";
-             x[i].available_end_time = x[i].available_end_time || "";
-             x[i].available_start_time = x[i].available_start_time || "";
-             x[i].id = x[i].at_unique_id;
-             
-             x[i].is_available = x[i].is_available.toLowerCase() === "true";
-             x[i].is_complete = x[i].is_complete.toLowerCase() === "true";
-             x[i].is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
-             x[i].is_must_do = x[i].is_must_do.toLowerCase() === "true";
-             x[i].is_sublist_available = x[i].is_sublist_available.toLowerCase() === "true";
-             x[i].is_timed = x[i].is_timed.toLowerCase() === "true";
-             x[i].title = x[i].at_title;
-           }
-           
-           let singleGR = {
-             //initialise without list to pass fbPath to child
-             show: true,
-             type: persist ? "Routine" : "Goal",
-             title: title,
-             id: id,
-             arr: [], //array of current action/task in this singular Routine
-             // fbPath: docRef,
-           };
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
 
-           this.setState({
-             singleGR: singleGR,
-             singleATitemArr: x,
-           });
-           let resArr = this.createListofAT(x);
-           //assemble singleGR template here:
+    axios
+      .get(url + id)
+      .then((response) => {
+        if (response.data.result && response.data.result.length > 0) {
+          let x = response.data.result;
 
-           singleGR = {
-             show: true,
-             type: persist ? "Routine" : "Goal",
-             title: title,
-             id: id,
-             arr: resArr, //array of current action/task in this singular Routine
-             // fbPath: docRef,
-           };
+          for (let i = 0; i < x.length; ++i) {
+            x[i].audio = x[i].audio || "";
+            x[i].available_end_time = x[i].available_end_time || "";
+            x[i].available_start_time = x[i].available_start_time || "";
+            x[i].id = x[i].at_unique_id;
 
-           this.setState({
-             singleGR: singleGR,
-           });
-           // console.log(this.state.singleATitemArr);
-         } else {
-  
-           console.log("there are  no action/tasks")
-           console.log(response.data)
-           
-           let singleGR = {
-             
-             //Variable to hold information about the parent Goal/ Routine
-             show: true,
-             type: persist ? "Routine" : "Goal",
-             title: title,
-             id: id,
-             is_complete: tempGR.is_complete,
-             is_in_progress: tempGR.is_in_progress,
-             arr: [],
-             // fbPath: docRef,
-           };
-           this.setState({
-             singleGR: singleGR,
-             singleATitemArr: [],
-           });
-         }
-       })
-       .catch((error) => {
-         console.log("Error Occurred in Retrieving Action/Tasks" + error);
-       });
+            x[i].is_available = x[i].is_available.toLowerCase() === "true";
+            x[i].is_complete = x[i].is_complete.toLowerCase() === "true";
+            x[i].is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
+            x[i].is_must_do = x[i].is_must_do.toLowerCase() === "true";
+            x[i].is_sublist_available =
+              x[i].is_sublist_available.toLowerCase() === "true";
+            x[i].is_timed = x[i].is_timed.toLowerCase() === "true";
+            x[i].title = x[i].at_title;
+          }
+
+          let singleGR = {
+            //initialise without list to pass fbPath to child
+            show: true,
+            type: persist ? "Routine" : "Goal",
+            title: title,
+            id: id,
+            arr: [], //array of current action/task in this singular Routine
+            // fbPath: docRef,
+          };
+
+          this.setState({
+            singleGR: singleGR,
+            singleATitemArr: x,
+          });
+          let resArr = this.createListofAT(x);
+          //assemble singleGR template here:
+
+          singleGR = {
+            show: true,
+            type: persist ? "Routine" : "Goal",
+            title: title,
+            id: id,
+            arr: resArr, //array of current action/task in this singular Routine
+            // fbPath: docRef,
+          };
+
+          this.setState({
+            singleGR: singleGR,
+          });
+          // console.log(this.state.singleATitemArr);
+        } else {
+          console.log("there are  no action/tasks");
+          console.log(response.data);
+
+          let singleGR = {
+            //Variable to hold information about the parent Goal/ Routine
+            show: true,
+            type: persist ? "Routine" : "Goal",
+            title: title,
+            id: id,
+            is_complete: tempGR.is_complete,
+            is_in_progress: tempGR.is_in_progress,
+            arr: [],
+            // fbPath: docRef,
+          };
+          this.setState({
+            singleGR: singleGR,
+            singleATitemArr: [],
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("Error Occurred in Retrieving Action/Tasks" + error);
+      });
   };
 
   // //This function essentially grabs all action/tasks
@@ -432,7 +437,7 @@ export default class FirebaseV2 extends React.Component {
       let tempPhoto = A[i]["photo"];
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
-      
+
       // console.log("in createlist")
       // console.log(this.state.timeSlotForAT)
       // console.log(this.state.singleATitemArr)
@@ -780,23 +785,22 @@ export default class FirebaseV2 extends React.Component {
   ISonClickEvent = (title) => {
     console.log("Inside IS Click " + title);
   };
-  
+
   /**
    * Retrieve parent goal's start time and end time and use them for it's ATItem
    */
   setTimeSlot = async (id, tempGR) => {
-    
     // console.log("in setTimeSlot")
     // console.log(tempGR)
-  
+
     let start_day_and_time = new Date(tempGR.start_day_and_time).toString();
     let end_day_and_time = new Date(tempGR.end_day_and_time).toString();
-    
+
     let timeSlot = [
       start_day_and_time.split(" ")[4],
       end_day_and_time.split(" ")[4],
     ];
-   
+
     // const db = firestore();
     // const userData = await db
     //    .collection("users")
@@ -977,7 +981,8 @@ export default class FirebaseV2 extends React.Component {
         let tempID = this.props.routines[i]["id"];
         let tempPersist = this.props.routines[i]["is_persistent"];
         let tempGR = this.props.routines[i];
-
+        let date = moment(this.props.routines[i]["end_day_and_time"]).format("MM/DD/YYYY");
+        
         displayRoutines.push(
           <div key={"test0" + i}>
             <ListGroup.Item
@@ -995,6 +1000,8 @@ export default class FirebaseV2 extends React.Component {
                 <Col>
                   <div className="fancytext">
                     {this.props.routines[i]["title"]}
+                    <Col></Col>
+                    ({date})
                   </div>
                 </Col>
               </Row>
@@ -1100,7 +1107,7 @@ export default class FirebaseV2 extends React.Component {
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                       theCurrentUserId={this.props.theCurrentUserID}
                       theCurrentTAID={this.props.theCurrentTAID}
-                      
+
                       // chnagePhoto = {this.changePhotoIcon()}
                     />
                   </Row>
@@ -1266,9 +1273,8 @@ export default class FirebaseV2 extends React.Component {
   };
 
   getATexpectedTime(id) {
-    
     // console.log("inside getATexpectedTime")
-    
+
     let ActionTaskArrayPath = firebase
       .firestore()
       .collection("users")
@@ -1443,6 +1449,7 @@ export default class FirebaseV2 extends React.Component {
         let tempID = this.props.goals[i]["id"];
         let tempPersist = this.props.goals[i]["is_persistent"];
         let tempGR = this.props.goals[i];
+        let date = moment(this.props.goals[i]["end_day_and_time"]).format("MM/DD/YYYY");
         displayGoals.push(
           <div key={"test1" + i}>
             <ListGroup.Item
@@ -1458,7 +1465,11 @@ export default class FirebaseV2 extends React.Component {
                 className="d-flex flex-row-center"
               >
                 <Col>
-                  <div className="fancytext">{tempTitle}</div>
+                  <div className="fancytext">
+                    {tempTitle}
+                    <Col></Col>
+                    ({date})
+                  </div>
                 </Col>
               </Row>
               {this.props.goals[i]["photo"] ? (
@@ -1810,6 +1821,7 @@ export default class FirebaseV2 extends React.Component {
 
   getGoalsStatus = () => {
     let displayGoals = [];
+
     if (this.props.goals.length != null) {
       //Check to make sure routines exists
       for (let i = 0; i < this.props.goals.length; i++) {
@@ -2370,8 +2382,51 @@ shows entire list of goals and routines
     );
   };
 
+   
+
   getHistoryData = (object) => {
     let historyItems = [];
+    let ids = [];
+    const url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/100-000045";
+    axios.get(url).then((res)=>{  
+      console.log(res.data.result)
+      const data = res.data.result;
+
+      data.map((info)=>{
+        const dataDate = moment(info.date).format("MM/DD/YYYY");
+        const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
+
+        if(dataDate === grDate){
+          var keyId = Object.keys(info.details);
+          keyId.forEach((id)=>{
+            ids.push(id);
+          })
+          ids.forEach((grId)=>{
+            if(grId === object.id){
+              this.setState({ 
+                grName: object.title
+              })
+              console.log(this.state.grName);
+            }
+            
+          })  
+        }
+      })
+      
+    });
+ 
+    console.log(object);
+
+
+
+
+
+
+
+
+
+
+
     const db = firebase.firestore();
     db.collection("history")
       .doc(this.props.theCurrentUserID)
@@ -2385,11 +2440,12 @@ shows entire list of goals and routines
             if (gr.id == object.id) {
               gr.date = log.data().date;
               logs.push(gr);
+              
             }
           });
         });
 
-
+        console.log(logs);
         // push data for current date
         let date = new Date();
         let date_string =
@@ -2408,38 +2464,39 @@ shows entire list of goals and routines
           is_complete: object.is_complete,
         };
 
-        await db
-          .collection("users")
-          .doc(this.props.theCurrentUserID)
-          .collection("goals&routines")
-          .doc(object.id)
-          .get()
-          .then((ats) => {
-            console.log(ats.data()["actions&tasks"]);
-            currentDateHistory["actions&tasks"] =
-              ats.data()["actions&tasks"] != undefined
-                ? ats.data()["actions&tasks"]
-                : [];
-          });
+        // await db
+        //   .collection("users")
+        //   .doc(this.props.theCurrentUserID)
+        //   .collection("goals&routines")
+        //   .doc(object.id)
+        //   .get()
+        //   .then((ats) => {
+        //     console.log(ats.data()["actions&tasks"]);
+        //     currentDateHistory["actions&tasks"] =
+        //       ats.data()["actions&tasks"] != undefined
+        //         ? ats.data()["actions&tasks"]
+        //         : [];
+        //   });
 
-        for (let i = 0; i < currentDateHistory["actions&tasks"].length; i++) {
-          let at = currentDateHistory["actions&tasks"][i];
-          await db
-            .collection("users")
-            .doc(this.props.theCurrentUserID)
-            .collection("goals&routines")
-            .doc(object.id)
-            .collection("actions&tasks")
-            .doc(at.id)
-            .get()
-            .then((singleAT) => {
-              if (singleAT.data()["instructions&steps"] != undefined) {
-                currentDateHistory["actions&tasks"][i][
-                  "instructions&steps"
-                ] = singleAT.data()["instructions&steps"];
-              }
-            });
-        }
+        // for (let i = 0; i < currentDateHistory["actions&tasks"].length; i++) {
+        //   let at = currentDateHistory["actions&tasks"][i];
+        //   console.log(currentDateHistory);
+        //   await db
+        //     .collection("users")
+        //     .doc(this.props.theCurrentUserID)
+        //     .collection("goals&routines")
+        //     .doc(object.id)
+        //     .collection("actions&tasks")
+        //     .doc(at.id)
+        //     .get()
+        //     .then((singleAT) => {
+        //       if (singleAT.data()["instructions&steps"] != undefined) {
+        //         currentDateHistory["actions&tasks"][i][
+        //           "instructions&steps"
+        //         ] = singleAT.data()["instructions&steps"];
+        //       }
+        //     });
+        // }
 
         logs.push(currentDateHistory);
 
@@ -2600,8 +2657,8 @@ shows entire list of goals and routines
           </Table>
         );
         this.setState({ historyItems: historyItems });
-        
-  console.log(historyItems)
+
+        console.log(historyItems);
       });
   };
 
@@ -2751,7 +2808,7 @@ shows entire list of goals and routines
                 }}
                 width={this.state.modalWidth}
                 updateNewWentThroughATListObj={this.handleWentThroughATListObj}
-                currentUserId = {this.props.theCurrentUserID}
+                currentUserId={this.props.theCurrentUserID}
               />
             ) : (
               <div></div>

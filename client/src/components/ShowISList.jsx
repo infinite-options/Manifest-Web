@@ -30,11 +30,11 @@ export default class ShowISList extends React.Component {
       iconShow: items[this.props.Index]["is_sublist_available"],
     });
   }
-  
+
   hasStepss = async () => {
     const ATItem = this.props.Array[this.props.Index];
-    
-    if (!ATItem.steps) this.setState({ hasSteps: false })
+
+    if (!ATItem.steps) this.setState({ hasSteps: false });
   };
 
   // hasStepss = async () => {

@@ -39,6 +39,7 @@ export default class WeekGoals extends Component {
       let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
         timeZone: this.props.timeZone
       }));
+ 
       let repeatOccurences = parseInt(arr[i]["repeat_occurences"]);
       let repeatEvery = parseInt(arr[i]["repeat_every"]);
       let repeatEnds = arr[i]["repeat_ends"];
@@ -56,16 +57,19 @@ export default class WeekGoals extends Component {
           }
         });
       }
-      // console.log(
-      //   arr[i].repeat, repeatOccurences, repeatEvery, repeatEnds, repeatEndsOn, repeatFrequency, repeatWeekDays
-      // )
-      if (!arr[i].repeat){
+      console.log(
+        arr[i].repeat, repeatOccurences, repeatEvery, repeatEnds, repeatEndsOn, repeatFrequency, repeatWeekDays, arr[i]
+      )
+      if (arr[i].repeat === false) {
         if (tempStartTime >= startDate && tempStartTime <= endDate) {
           let key = tempStartTime.getDay()+"_"+tempStartTime.getHours();
+          
           if (dic[key] == null) {
             dic[key] = [];
           }
           dic[key].push(arr[i]);
+          console.log(dic);
+    
         }
       } else {
         for (let j=0; j<7; j++) {

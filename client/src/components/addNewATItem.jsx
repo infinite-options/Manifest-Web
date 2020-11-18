@@ -10,7 +10,7 @@ import TimePicker from "./TimePicker";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
-import axios from 'axios';
+import axios from "axios";
 
 export default class AddNewATItem extends Component {
   constructor(props) {
@@ -24,7 +24,8 @@ export default class AddNewATItem extends Component {
         id: "",
         title: "",
         photo: "",
-        photo_url: "https://manifest-image-db.s3-us-west-1.amazonaws.com/action.png",
+        photo_url:
+          "https://manifest-image-db.s3-us-west-1.amazonaws.com/action.png",
         audio: "",
         is_must_do: true,
         is_complete: false,
@@ -143,79 +144,75 @@ export default class AddNewATItem extends Component {
     }
     return invalid ? false : true;
   };
-  
+
   addNewDoc = () => {
-  
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT";
-    
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT";
+
     if (this.props.ATArray.length > 0) {
       this.setState({
         AT_arr: this.props.ATArray,
       });
     }
-    
+
     // console.log("in addNEwATITem")
     // console.log(this.props.ATItem.id)
     // console.log(this.props.ATArray)
-    
+
     // let body = JSON.parse(JSON.stringify(this.state.itemToEdit))
-  
+
     // changes to request body to make it compatible with RDS
-  
+
     // if (body.available_end_time) delete body.available_end_time;
     // if (body.available_start_time) delete body.available_start_time;
-  
 
-    let body = this.state.itemToEdit
+    let body = this.state.itemToEdit;
 
     if (body.ta_notifications) delete body.ta_notifications;
     if (body.user_notifications) delete body.user_notifications;
-    
-    if (body.id || body.id === "") delete body.id
-    body.gr_id = this.props.ATItem.id
-    
+
+    if (body.id || body.id === "") delete body.id;
+    body.gr_id = this.props.ATItem.id;
+
     // console.log("BODY")
-    console.log(body)
+    console.log(body);
 
     let formData = new FormData();
-    Object.entries(body).forEach(entry => {
-        if (typeof entry[1].name == 'string'){
-        
-            formData.append(entry[0], entry[1]);
-        }
-        else if (entry[1] instanceof Object) {
-            entry[1] = JSON.stringify(entry[1])
-            formData.append(entry[0], entry[1]);
-        }
-        
-        else{
-            formData.append(entry[0], entry[1]);
-        }
+    Object.entries(body).forEach((entry) => {
+      if (typeof entry[1].name == "string") {
+        formData.append(entry[0], entry[1]);
+      } else if (entry[1] instanceof Object) {
+        entry[1] = JSON.stringify(entry[1]);
+        formData.append(entry[0], entry[1]);
+      } else {
+        formData.append(entry[0], entry[1]);
+      }
     });
-    console.log(formData)
-  
-    axios.post(url, formData)
-       .then((response) => {
-         let newArr = this.state.AT_arr;
-         let temp = this.state.itemToEdit;
-         temp.id = response.data.result;
-         temp.at_unique_id = response.data.result;
-         
-         // console.log("*****")
-         // console.log(response.data.result)
-         // console.log(newArr)
-         newArr.push(temp);
-  
-         this.props.hideNewATModal();
-         this.props.refresh(newArr);
-         // this.updateEntireArray(newArr);
-         
-         console.log("Added Action/Task to Database")
-       })
-       .catch((err) => {
-         console.log("Error adding Action/Task", err);
-       });
-    
+    console.log(formData);
+
+    axios
+      .post(url, formData)
+      .then((response) => {
+        let newArr = this.state.AT_arr;
+        let temp = this.state.itemToEdit;
+        temp.id = response.data.result;
+        temp.at_unique_id = response.data.result;
+
+        // console.log("*****")
+        // console.log(response.data.result)
+        // console.log(newArr)
+        newArr.push(temp);
+
+        this.props.hideNewATModal();
+        this.props.refresh(newArr);
+        // this.updateEntireArray(newArr);
+
+        console.log("Added Action/Task to Database");
+      })
+      .catch((err) => {
+        console.log("Error adding Action/Task", err);
+      });
+
     // this.props.ATItem.fbPath
     //    .get()
     //    .then((doc) => {
@@ -407,8 +404,10 @@ export default class AddNewATItem extends Component {
             <Form.Label> Photo </Form.Label>
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
-              <UploadImage parentFunction={this.setPhotoURLFunction} 
-               currentUserId = {this.props.currentUserId}/>
+              <UploadImage
+                parentFunction={this.setPhotoURLFunction}
+                currentUserId={this.props.currentUserId}
+              />
               <br />
             </Row>
             <div style={{ marginTop: "10px", marginBottom: "10px" }}>

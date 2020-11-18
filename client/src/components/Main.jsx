@@ -35,6 +35,7 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+
 export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
@@ -138,14 +139,12 @@ export default class MainPage extends React.Component {
       enableNameDropDown: false,
       showNewAccountmodal: false,
       showAllowTAmodel: false,
-  
-  
+
       ta_people_id: "",
       emailIdObject: {},
       theCurrentUserEmail: {},
       newAccountID: "",
-      
-      
+
       versionNumber: this.getVersionNumber(),
     };
   }
@@ -210,7 +209,7 @@ export default class MainPage extends React.Component {
         this.setState({
           loaded: true,
           loggedIn: response.data.username,
-          ta_people_id: response.data.ta_people_id
+          ta_people_id: response.data.ta_people_id,
         });
         if (response.data) {
           this.updateStatesByQuery();
@@ -218,7 +217,7 @@ export default class MainPage extends React.Component {
           this.updateEventsArray();
           // console.log(document.cookie);
           // this.getEventNotifications();
-  
+
           // this.listAllTAs();      // Testing listing all TA's as a separate call
         }
       })
@@ -273,12 +272,12 @@ export default class MainPage extends React.Component {
     let email = this.getUrlParam("email", query);
     let userID = this.getUrlParam("userID", query);
     console.log("In updateStatesByQuery");
-    console.log("UserId : ", userID)
+    console.log("UserId : ", userID);
     if (createUserParam) {
       this.setState({
         showNewAccountmodal: createUserParam,
         newAccountEmail: email,
-        newAccountID: userID
+        newAccountID: userID,
       });
     }
   };
@@ -286,8 +285,7 @@ export default class MainPage extends React.Component {
   updateProfileFromFirebase = () => {
     // console.log("**")
     // console.log(this.state);
-    axios.get("/usersOfTA?emailId=" + this.state.loggedIn)
-    .then((response) => {
+    axios.get("/usersOfTA?emailId=" + this.state.loggedIn).then((response) => {
       // console.log(response.data);
       let nameIdObject = {};
       let timeZoneObject = {};
@@ -299,17 +297,17 @@ export default class MainPage extends React.Component {
       let theCurrentUserEmail = "";
       let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-      if(response.data.length != 0) {
-        console.log(response.data)
+      if (response.data.length != 0) {
+        console.log(response.data);
         response.data.forEach((d, i) => {
-          console.log(d)
+          console.log(d);
           let id = d.user_unique_id;
           profilePicURLArray.push(d.user_picture);
           nameIdObject[id] = d.user_name;
           timeZoneObject[id] = d.time_zone;
           emailIdObject[id] = d.user_email_id;
         });
-        
+
         theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
         theCurrentUserPic = profilePicURLArray[0];
         theCurrentUserId = Object.keys(nameIdObject)[0];
@@ -335,12 +333,10 @@ export default class MainPage extends React.Component {
           this.grabFireBaseRoutinesGoalsData();
           this.updateEventsArray();
           this.listAllTAs();
-  
         }
       );
     });
-    
-    
+
     // // Fetching all TA's to populate advisorIdAndNames
     // axios.get("https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
     //    .then((response) => {
@@ -355,11 +351,10 @@ export default class MainPage extends React.Component {
     //        });
     //      }
     //    });
-    
 
-      // const db = firebase.firestore();
-      // const docRef = db.collection("users");
-      // const trustedAd = db.collection("trusted_advisor");
+    // const db = firebase.firestore();
+    // const docRef = db.collection("users");
+    // const trustedAd = db.collection("trusted_advisor");
     //
     // docRef.get().then((usersArray) => {
     //   trustedAd
@@ -406,11 +401,11 @@ export default class MainPage extends React.Component {
     //         }
     //
     //         profilePicURLArray.push(picURL);
-            // nameIdObject[id] = name;
-            // timeZoneObject[id] = theTimeZone;
-            // theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
-            // theCurrentUserPic = profilePicURLArray[0];
-            // theCurrentUserId = Object.keys(nameIdObject)[0];
+    // nameIdObject[id] = name;
+    // timeZoneObject[id] = theTimeZone;
+    // theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
+    // theCurrentUserPic = profilePicURLArray[0];
+    // theCurrentUserId = Object.keys(nameIdObject)[0];
 
     //         this.setState(
     //           {
@@ -436,335 +431,419 @@ export default class MainPage extends React.Component {
     //     });
     // });
   };
-  
+
   // Gets all TA's for the logged in user. Added by Vishal
   listAllTAs = () => {
     // Fetching all TA's to populate advisorIdAndNames
-    
-    console.log("User ID: " + this.state.currentUserId)
-    console.log(this.state.currentUserPicUrl)
-    axios.get("https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
-       .then((response) => {
 
-         if(response.data.result.length !== 0) {
-           response.data.result.forEach( ( d, i ) => {
-             this.state.advisorIdAndNames[i] = {
-               first_name: d.ta_first_name,
-               last_name: d.ta_last_name,
-               uid: d.ta_unique_id
-             };
-           });
-         }
-       });
-  }
-  
+    console.log("User ID: " + this.state.currentUserId);
+    console.log(this.state.currentUserPicUrl);
+    axios
+      .get(
+        "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" +
+          this.state.currentUserId
+      )
+      .then((response) => {
+        if (response.data.result.length !== 0) {
+          response.data.result.forEach((d, i) => {
+            this.state.advisorIdAndNames[i] = {
+              first_name: d.ta_first_name,
+              last_name: d.ta_last_name,
+              uid: d.ta_unique_id,
+            };
+          });
+        }
+      });
+  };
+
   grabFireBaseRoutinesGoalsData = () => {
-    
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/"
-    
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
+
     let routine = [];
     let routine_ids = [];
     let goal = [];
     let goal_ids = [];
-    
-    axios.get(url + this.state.currentUserId)
-       .then((response) => {
-         
-         if(response.data.result && (response.data.result.length !== 0)) {
-           
-          
-           let x = response.data.result;
-           console.log(x)
-           x.sort((a, b) => {
-             console.log(a);
-             console.log(b);
-             let datetimeA = new Date(a["start_day_and_time"]);
-             let datetimeB = new Date(b["start_day_and_time"]);
-             let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
-             let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
-             return timeA - timeB;
-           });
-           
-           
-           let gr_array = [];
-           
-           for (let i = 0; i < x.length; ++i) {
-             
-             let gr = {};
-             gr.audio =  "";
-             // gr.available_end_time = "23:59:59";
-             // gr.available_start_time = "00:00:00";
-             gr.datetime_completed = x[i].datetime_completed;
-             gr.datetime_started = x[i].datetime_started;
-             gr.end_day_and_time =  x[i].end_day_and_time;
-             gr.expected_completion_time = x[i].expected_completion_time;
-             gr.id = x[i].gr_unique_id;
-             
-             gr.is_available = x[i].is_available.toLowerCase() === "true"
-             gr.is_complete = x[i].is_complete.toLowerCase() === "true"
-             gr.is_displayed_today = x[i].is_displayed_today.toLowerCase() === "true"
-             gr.is_in_progress = x[i].is_in_progress.toLowerCase() === "true"
-             gr.is_persistent = x[i].is_persistent.toLowerCase() === "true"
-             gr.is_sublist_available = x[i].is_sublist_available.toLowerCase() === "true"
-             gr.is_timed = x[i].is_timed.toLowerCase() === "true"
-             
-             gr.photo = x[i].photo
-             gr.repeat = x[i].repeat.toLowerCase() === "true"
-             gr.repeat_ends = x[i].repeat_ends || "Never"
-             gr.repeat_ends_on = x[i].repeat_ends_on
-             gr.repeat_every = x[i].repeat_every
-             gr.repeat_frequency = x[i].repeat_frequency
-             gr.repeat_occurences = x[i].repeat_occurences
-             
-             const repeat_week_days_json = JSON.parse(x[i].repeat_week_days)
-             
-             if (repeat_week_days_json) {
-               gr.repeat_week_days = {
-                 0: ( repeat_week_days_json.Sunday && repeat_week_days_json.Sunday.toLowerCase() === "true" ) ? "Sunday" : "",
-                 1: ( repeat_week_days_json.Monday && repeat_week_days_json.Monday.toLowerCase() === "true" ) ? "Monday" : "",
-                 2: ( repeat_week_days_json.Tuesday && repeat_week_days_json.Tuesday.toLowerCase() === "true" ) ? "Tuesday" : "",
-                 3: ( repeat_week_days_json.Wednesday && repeat_week_days_json.Wednesday.toLowerCase() === "true" ) ? "Wednesday" : "",
-                 4: ( repeat_week_days_json.Thursday && repeat_week_days_json.Thursday.toLowerCase() === "true" ) ? "Thursday" : "",
-                 5: ( repeat_week_days_json.Friday && repeat_week_days_json.Friday.toLowerCase() === "true" ) ? "Friday" : "",
-                 6: ( repeat_week_days_json.Saturday && repeat_week_days_json.Saturday.toLowerCase() === "true" ) ? "Saturday" : ""
-               }
-             } else {
-               gr.repeat_week_days = {
-                 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: ""
-               }
-             }
-             
-             // gr.repeat_week_days = {
-             //   0 : (repeat_week_days_json && repeat_week_days_json.Sunday.toLowerCase() === "true") ? "Sunday" : "",
-             //   1 : (repeat_week_days_json && repeat_week_days_json.Monday.toLowerCase() === "true") ? "Monday" : "",
-             //   2 : (repeat_week_days_json && repeat_week_days_json.Tuesday.toLowerCase() === "true") ? "Tuesday" : "",
-             //   3 : (repeat_week_days_json && repeat_week_days_json.Wednesday.toLowerCase() === "true") ? "Wednesday" : "",
-             //   4 : (repeat_week_days_json && repeat_week_days_json.Thursday.toLowerCase() === "true") ? "Thursday" : "",
-             //   5 : (repeat_week_days_json && repeat_week_days_json.Friday.toLowerCase() === "true") ? "Friday" : "",
-             //   6 : (repeat_week_days_json && repeat_week_days_json.Saturday.toLowerCase() === "true") ? "Saturday" : ""
-             // }
-             
-             gr.start_day_and_time = x[i].start_day_and_time
-             
-      
-             const first_notifications = (x[i].notifications[0])
-             const second_notifications = (x[i].notifications[1])
-             console.log(first_notifications);
-             console.log(second_notifications);
-             if ((first_notifications.user_ta_id.charAt(0)) === '1') {
+
+    axios
+      .get(url + this.state.currentUserId)
+      .then((response) => {
+        if (response.data.result && response.data.result.length !== 0) {
+          let x = response.data.result;
+          // console.log(x);
+          x.sort((a, b) => {
+            // console.log(a);
+            // console.log(b);
+            let datetimeA = new Date(a["start_day_and_time"]);
+            let datetimeB = new Date(b["start_day_and_time"]);
+            let timeA =
+              new Date(datetimeA).getHours() * 60 +
+              new Date(datetimeA).getMinutes();
+            let timeB =
+              new Date(datetimeB).getHours() * 60 +
+              new Date(datetimeB).getMinutes();
+            return timeA - timeB;
+          });
+
+          let gr_array = [];
+
+          for (let i = 0; i < x.length; ++i) {
+            let gr = {};
+            gr.audio = "";
+            // gr.available_end_time = "23:59:59";
+            // gr.available_start_time = "00:00:00";
+            gr.datetime_completed = x[i].datetime_completed;
+            gr.datetime_started = x[i].datetime_started;
+            gr.end_day_and_time = x[i].end_day_and_time;
+            gr.expected_completion_time = x[i].expected_completion_time;
+            gr.id = x[i].gr_unique_id;
+
+            gr.is_available = x[i].is_available.toLowerCase() === "true";
+            gr.is_complete = x[i].is_complete.toLowerCase() === "true";
+            gr.is_displayed_today =
+              x[i].is_displayed_today.toLowerCase() === "true";
+            gr.is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
+            gr.is_persistent = x[i].is_persistent.toLowerCase() === "true";
+            gr.is_sublist_available =
+              x[i].is_sublist_available.toLowerCase() === "true";
+            gr.is_timed = x[i].is_timed.toLowerCase() === "true";
+
+            gr.photo = x[i].photo;
+            gr.repeat = x[i].repeat.toLowerCase() === "true";
+            gr.repeat_ends = x[i].repeat_ends || "Never";
+            gr.repeat_ends_on = x[i].repeat_ends_on;
+            gr.repeat_every = x[i].repeat_every;
+            gr.repeat_frequency = x[i].repeat_frequency;
+            gr.repeat_occurences = x[i].repeat_occurences;
+
+            const repeat_week_days_json = JSON.parse(x[i].repeat_week_days);
+
+            if (repeat_week_days_json) {
+              gr.repeat_week_days = {
+                0:
+                  repeat_week_days_json.Sunday &&
+                  repeat_week_days_json.Sunday.toLowerCase() === "true"
+                    ? "Sunday"
+                    : "",
+                1:
+                  repeat_week_days_json.Monday &&
+                  repeat_week_days_json.Monday.toLowerCase() === "true"
+                    ? "Monday"
+                    : "",
+                2:
+                  repeat_week_days_json.Tuesday &&
+                  repeat_week_days_json.Tuesday.toLowerCase() === "true"
+                    ? "Tuesday"
+                    : "",
+                3:
+                  repeat_week_days_json.Wednesday &&
+                  repeat_week_days_json.Wednesday.toLowerCase() === "true"
+                    ? "Wednesday"
+                    : "",
+                4:
+                  repeat_week_days_json.Thursday &&
+                  repeat_week_days_json.Thursday.toLowerCase() === "true"
+                    ? "Thursday"
+                    : "",
+                5:
+                  repeat_week_days_json.Friday &&
+                  repeat_week_days_json.Friday.toLowerCase() === "true"
+                    ? "Friday"
+                    : "",
+                6:
+                  repeat_week_days_json.Saturday &&
+                  repeat_week_days_json.Saturday.toLowerCase() === "true"
+                    ? "Saturday"
+                    : "",
+              };
+            } else {
+              gr.repeat_week_days = {
+                0: "",
+                1: "",
+                2: "",
+                3: "",
+                4: "",
+                5: "",
+                6: "",
+              };
+            }
+
+            // gr.repeat_week_days = {
+            //   0 : (repeat_week_days_json && repeat_week_days_json.Sunday.toLowerCase() === "true") ? "Sunday" : "",
+            //   1 : (repeat_week_days_json && repeat_week_days_json.Monday.toLowerCase() === "true") ? "Monday" : "",
+            //   2 : (repeat_week_days_json && repeat_week_days_json.Tuesday.toLowerCase() === "true") ? "Tuesday" : "",
+            //   3 : (repeat_week_days_json && repeat_week_days_json.Wednesday.toLowerCase() === "true") ? "Wednesday" : "",
+            //   4 : (repeat_week_days_json && repeat_week_days_json.Thursday.toLowerCase() === "true") ? "Thursday" : "",
+            //   5 : (repeat_week_days_json && repeat_week_days_json.Friday.toLowerCase() === "true") ? "Friday" : "",
+            //   6 : (repeat_week_days_json && repeat_week_days_json.Saturday.toLowerCase() === "true") ? "Saturday" : ""
+            // }
+
+            gr.start_day_and_time = x[i].start_day_and_time;
+
+            const first_notifications = x[i].notifications[0];
+            const second_notifications = x[i].notifications[1];
+            // console.log(first_notifications);
+            // console.log(second_notifications);
+            if (first_notifications.user_ta_id.charAt(0) === "1") {
               gr.user_notifications = {
                 before: {
                   is_enabled: first_notifications.before_is_enable.toLowerCase(),
-                  is_set:    first_notifications.before_is_set.toLowerCase(),
-                  message:   first_notifications.before_message,
-                  time:      first_notifications.before_time
+                  is_set: first_notifications.before_is_set.toLowerCase(),
+                  message: first_notifications.before_message,
+                  time: first_notifications.before_time,
                 },
                 during: {
                   is_enabled: first_notifications.during_is_enable.toLowerCase(),
-                  is_set:    first_notifications.during_is_set.toLowerCase(),
-                  message:   first_notifications.during_message,
-                  time:      first_notifications.during_time
+                  is_set: first_notifications.during_is_set.toLowerCase(),
+                  message: first_notifications.during_message,
+                  time: first_notifications.during_time,
                 },
-                after:  {
+                after: {
                   is_enabled: first_notifications.after_is_enable.toLowerCase(),
-                  is_set:    first_notifications.after_is_set.toLowerCase(),
-                  message:   first_notifications.after_message,
-                  time:      first_notifications.after_time
-                }
-              }
-               if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-              gr.user_notifications = {
-                before: {
-                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
-                  is_set:    second_notifications.before_is_set.toLowerCase(),
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
+                  is_set: first_notifications.after_is_set.toLowerCase(),
+                  message: first_notifications.after_message,
+                  time: first_notifications.after_time,
                 },
-                during: {
-                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
-                  is_set:    second_notifications.during_is_set.toLowerCase(),
-                  message:   second_notifications.during_message,
-                  time:      second_notifications.during_time
-                },
-                after:  {
-                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
-                  is_set:    second_notifications.after_is_set.toLowerCase(),
-                  message:   second_notifications.after_message,
-                  time:      second_notifications.after_time
-                }
+              };
+              if (second_notifications.user_ta_id.charAt(0) === "1") {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                    is_set: second_notifications.before_is_set.toLowerCase(),
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                    is_set: second_notifications.during_is_set.toLowerCase(),
+                    message: second_notifications.during_message,
+                    time: second_notifications.during_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                    is_set: second_notifications.after_is_set.toLowerCase(),
+                    message: second_notifications.after_message,
+                    time: second_notifications.after_time,
+                  },
+                };
+              } else if (second_notifications.user_ta_id.charAt(0) === "2") {
+                gr.ta_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                    is_set: second_notifications.before_is_set.toLowerCase(),
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                    is_set: second_notifications.during_is_set.toLowerCase(),
+                    message: second_notifications.during_message,
+                    time: second_notifications.during_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                    is_set: second_notifications.after_is_set.toLowerCase(),
+                    message: second_notifications.after_message,
+                    time: second_notifications.after_time,
+                  },
+                };
+              } else {
+                return;
               }
-             }
+            }
 
-           else if ((second_notifications.user_ta_id.charAt(0)) === '2') {
-              gr.ta_notifications = {
-                before: {
-                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
-                  is_set:    second_notifications.before_is_set.toLowerCase(),
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                },
-                during: {
-                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
-                  is_set:    second_notifications.during_is_set.toLowerCase(),
-                  message:   second_notifications.during_message,
-                  time:      second_notifications.during_time
-                },
-                after:  {
-                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
-                  is_set:    second_notifications.after_is_set.toLowerCase(),
-                  message:   second_notifications.after_message,
-                  time:      second_notifications.after_time
-                }
-              }
-             }
-             else{
-               return;
-             }
-             
-             }
-
-             if ((first_notifications.user_ta_id.charAt(0)) === '2') {
+            if (first_notifications.user_ta_id.charAt(0) === "2") {
               gr.ta_notifications = {
                 before: {
                   is_enabled: first_notifications.before_is_enable.toLowerCase(),
-                  is_set:    first_notifications.before_is_set.toLowerCase(),
-                  message:   first_notifications.before_message,
-                  time:      first_notifications.before_time
+                  is_set: first_notifications.before_is_set.toLowerCase(),
+                  message: first_notifications.before_message,
+                  time: first_notifications.before_time,
                 },
                 during: {
                   is_enabled: first_notifications.during_is_enable.toLowerCase(),
-                  is_set:    first_notifications.during_is_set.toLowerCase(),
-                  message:   first_notifications.during_message,
-                  time:      first_notifications.during_time
+                  is_set: first_notifications.during_is_set.toLowerCase(),
+                  message: first_notifications.during_message,
+                  time: first_notifications.during_time,
                 },
-                after:  {
+                after: {
                   is_enabled: first_notifications.after_is_enable.toLowerCase(),
-                  is_set:    first_notifications.after_is_set.toLowerCase(),
-                  message:   first_notifications.after_message,
-                  time:      first_notifications.after_time
-                }
-              }
-                 if ((second_notifications.user_ta_id.charAt(0)) === '1') {
-              gr.user_notifications = {
-                before: {
-                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
-                  is_set:    second_notifications.before_is_set.toLowerCase(),
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
+                  is_set: first_notifications.after_is_set.toLowerCase(),
+                  message: first_notifications.after_message,
+                  time: first_notifications.after_time,
                 },
-                during: {
-                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
-                  is_set:    second_notifications.during_is_set.toLowerCase(),
-                  message:   second_notifications.during_message,
-                  time:      second_notifications.during_time
-                },
-                after:  {
-                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
-                  is_set:    second_notifications.after_is_set.toLowerCase(),
-                  message:   second_notifications.after_message,
-                  time:      second_notifications.after_time
-                }
+              };
+              if (second_notifications.user_ta_id.charAt(0) === "1") {
+                gr.user_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                    is_set: second_notifications.before_is_set.toLowerCase(),
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                    is_set: second_notifications.during_is_set.toLowerCase(),
+                    message: second_notifications.during_message,
+                    time: second_notifications.during_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                    is_set: second_notifications.after_is_set.toLowerCase(),
+                    message: second_notifications.after_message,
+                    time: second_notifications.after_time,
+                  },
+                };
+              } else if (second_notifications.user_ta_id.charAt(0) === "2") {
+                gr.ta_notifications = {
+                  before: {
+                    is_enabled: second_notifications.before_is_enable.toLowerCase(),
+                    is_set: second_notifications.before_is_set.toLowerCase(),
+                    message: second_notifications.before_message,
+                    time: second_notifications.before_time,
+                  },
+                  during: {
+                    is_enabled: second_notifications.during_is_enable.toLowerCase(),
+                    is_set: second_notifications.during_is_set.toLowerCase(),
+                    message: second_notifications.during_message,
+                    time: second_notifications.during_time,
+                  },
+                  after: {
+                    is_enabled: second_notifications.after_is_enable.toLowerCase(),
+                    is_set: second_notifications.after_is_set.toLowerCase(),
+                    message: second_notifications.after_message,
+                    time: second_notifications.after_time,
+                  },
+                };
+              } else {
+                return;
               }
-             }
+            }
 
-           else if ((second_notifications.user_ta_id.charAt(0)) === '2') {
-              gr.ta_notifications = {
-                before: {
-                  is_enabled: second_notifications.before_is_enable.toLowerCase(),
-                  is_set:    second_notifications.before_is_set.toLowerCase(),
-                  message:   second_notifications.before_message,
-                  time:      second_notifications.before_time
-                },
-                during: {
-                  is_enabled: second_notifications.during_is_enable.toLowerCase(),
-                  is_set:    second_notifications.during_is_set.toLowerCase(),
-                  message:   second_notifications.during_message,
-                  time:      second_notifications.during_time
-                },
-                after:  {
-                  is_enabled: second_notifications.after_is_enable.toLowerCase(),
-                  is_set:    second_notifications.after_is_set.toLowerCase(),
-                  message:   second_notifications.after_message,
-                  time:      second_notifications.after_time
-                }
-              }
-             }
-             else{
-               return
-             }
-             
-             }
-
-          
-             gr.title = x[i].gr_title
-             var start = new Date();
-             start.setHours(0,0,0,0);
-             var end = new Date();
-             end.setHours(23,59,59,999); 
-             console.log(start); 
-             console.log(end);            
+            gr.title = x[i].gr_title;
+            console.log(x);
+            var goalDate = new Date(gr.end_day_and_time);
+            //For Today Goals and Routines
+            let startOfDay = moment(goalDate);
+            let endOfDay = moment(goalDate);
+            let begOfTheDay = startOfDay.startOf("day");
+            let endOfTheDay = endOfDay.endOf("day");
+            console.log(begOfTheDay);
+            console.log(endOfTheDay);
+            let todayStartDate = new Date(begOfTheDay.format("MM/DD/YYYY"));
+            let todayEndDate = new Date(endOfTheDay.format("MM/DD/YYYY"));
+            todayStartDate.setHours(0, 0, 0);
+            todayEndDate.setHours(23, 59, 59);
+            console.log(todayStartDate);
+            console.log(todayEndDate);
+            console.log(goalDate);
             
-             var goalDate = new Date(gr.end_day_and_time);
-             var currentDate = new Date();
-             console.log(currentDate);
-             if(goalDate.getTime() >  start.getTime() && goalDate.getTime() < end.getTime() ){
-             gr_array.push(gr)
-             };
-             console.log(gr_array);
-             if (x[i]["is_persistent"].toLowerCase() === "true") {
-               
-               // routine_ids.push(i);
-               
-               // routine_ids.push(x[i]["gr_unique_id"]);
-               // routine.push(x[i]);
-               if(goalDate.getTime() >  currentDate.getTime()){
+
+            //For Week Goals and Routines
+            let startWeek = moment(goalDate);
+            let endWeek = moment(goalDate);
+            let startDay = startWeek.startOf("week");
+            let endDay = endWeek.endOf("week");
+            console.log(startDay);
+            console.log(endDay);
+            let startDate = new Date(startDay.format("MM/DD/YYYY"));
+            let endDate = new Date(endDay.format("MM/DD/YYYY"));
+            startDate.setHours(0, 0, 0);
+            endDate.setHours(23, 59, 59);
+            console.log(startDate);
+            console.log(endDate);
+
+            //For Months Goals and Routines
+            let startMonth = moment(goalDate);
+            let endMonth = moment(goalDate);
+            let startDayMonth = startMonth.startOf("month");
+            let endDayMonth = endMonth.endOf("month");
+            console.log(startDayMonth);
+            console.log(endDayMonth);
+            let monthStartDate = new Date(startDayMonth.format("MM/DD/YYYY"));
+            let monthEndDate = new Date(endDayMonth.format("MM/DD/YYYY"));
+            monthStartDate.setHours(0, 0, 0);
+            monthEndDate.setHours(23, 59, 59);
+            console.log(monthStartDate);
+            console.log(monthEndDate);
+
+
+            if ( (this.state.calendarView === "Day" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime()) ) {
+              
+              gr_array.push(gr);
+            }
+             if ((this.state.calendarView === "Week" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
+              gr_array.push(gr);
+            }
+            if ((this.state.calendarView === "Month" && goalDate.getTime() > monthStartDate.getTime() && goalDate.getTime() < monthEndDate.getTime())){
+              gr_array.push(gr);
+            }
+            // console.log(gr_array);
+            if (x[i]["is_persistent"].toLowerCase() === "true") {
+              // routine_ids.push(i);
+
+              // routine_ids.push(x[i]["gr_unique_id"]);
+              // routine.push(x[i]);
+              if ((this.state.calendarView === "Day" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime())) {
                 routine_ids.push(gr["id"]);
                 routine.push(gr);
-               }
-               
-             } else if (x[i]["is_persistent"].toLowerCase() === "false") {
-               // goal_ids.push(i);
-               
-               // goal_ids.push(x[i]["gr_unique_id"]);
-               // goal.push(x[i]);
+              }
+              if ((this.state.calendarView === "Week" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime())) {
+                routine_ids.push(gr["id"]);
+                routine.push(gr);
+              }
+              if ((this.state.calendarView === "Month" && goalDate.getTime() > monthStartDate.getTime() && goalDate.getTime() < monthEndDate.getTime())){
+                routine_ids.push(gr["id"]);
+                routine.push(gr);
+              }
+            }  if (x[i]["is_persistent"].toLowerCase() === "false") {
+              // goal_ids.push(i);
 
-               if(goalDate.getTime() >  currentDate.getTime()){
+              // goal_ids.push(x[i]["gr_unique_id"]);
+              // goal.push(x[i]);
+
+              if ( (this.state.calendarView === "Day" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime()) ) {
                 goal_ids.push(gr["id"]);
                 goal.push(gr);
               }
-               
-             }
-           }
-           
-           this.setState({
-             originalGoalsAndRoutineArr: gr_array,
-             goals: goal,
-             addNewGRModalShow: false,
-             routine_ids: routine_ids,
-             goal_ids: goal_ids,
-             routines: routine,
-           });
-           
-         } else {
-           this.setState({
-             originalGoalsAndRoutineArr: [],
-             goals: goal,
-             addNewGRModalShow: false,
-             routine_ids: routine_ids,
-             goal_ids: goal_ids,
-             routines: routine,
-           });
-         }
-         
-         console.log(this.state);
-         
-       })
-       .catch((error) => {
-         console.log('Error in getting goals and routines ' + error);
-       });
+               if ((this.state.calendarView === "Week" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
+                goal_ids.push(gr["id"]);
+                goal.push(gr);
+              }
+              if ((this.state.calendarView === "Month" && goalDate.getTime() > monthStartDate.getTime() && goalDate.getTime() < monthEndDate.getTime())){
+                goal_ids.push(gr["id"]);
+                goal.push(gr);
+              }
+            }
+          }
+
+          this.setState({
+            originalGoalsAndRoutineArr: gr_array,
+            goals: goal,
+            addNewGRModalShow: false,
+            routine_ids: routine_ids,
+            goal_ids: goal_ids,
+            routines: routine,
+          });
+        } else {
+          this.setState({
+            originalGoalsAndRoutineArr: [],
+            goals: goal,
+            addNewGRModalShow: false,
+            routine_ids: routine_ids,
+            goal_ids: goal_ids,
+            routines: routine,
+          });
+        }
+
+        console.log(this.state.goals)
+        console.log(this.state);
+      })
+      .catch((error) => {
+        console.log("Error in getting goals and routines " + error);
+      });
   };
-  
-  
+
   /**
    * grabFireBaseRoutinesGoalsData:
    * this function grabs the goals&routines array from the path located in this function
@@ -1802,9 +1881,7 @@ updates the google calendar based  on
       description: updatedEvent.description,
       start: updatedEvent.start,
       end: updatedEvent.end,
-      recurrence: this.state.repeatOption
-      ? this.defineRecurrence()
-      : false,
+      recurrence: this.state.repeatOption ? this.defineRecurrence() : false,
       reminders: updatedEvent.reminders,
     };
     console.log("event: ", event);
@@ -2804,32 +2881,35 @@ this will close repeat modal.
       currentAdvisorCandidateId: advisorId,
     });
   };
-  
+
   giveAcessToTA = () => {
     // console.log(this.state.advisorIdAndNames[this.state.currentAdvisorCandidateId].uid);
     // console.log(this.state.currentUserId);
     // console.log(this.state.currentAdvisorCandidateId);
-  
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/anotherTAAccess";
-    
+
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/anotherTAAccess";
+
     let body = {
-      ta_people_id: this.state.advisorIdAndNames[this.state.currentAdvisorCandidateId].uid,
-      user_id: this.state.currentUserId
-    }
-    
-    console.log(body)
-  
-    axios.post(url, body)
-       .then(() => {
-         console.log("Updated Relationship")
-         alert("Trusted Advisor Granted Access");
-       })
-       .catch((err) => {
-         console.log("Error updating relationship", err);
-         result.json(false);
-       });
+      ta_people_id: this.state.advisorIdAndNames[
+        this.state.currentAdvisorCandidateId
+      ].uid,
+      user_id: this.state.currentUserId,
+    };
+
+    console.log(body);
+
+    axios
+      .post(url, body)
+      .then(() => {
+        console.log("Updated Relationship");
+        alert("Trusted Advisor Granted Access");
+      })
+      .catch((err) => {
+        console.log("Error updating relationship", err);
+        result.json(false);
+      });
   };
-  
 
   showDayViewOrAboutView = () => {
     if (this.state.dayEventSelected) {
@@ -2965,7 +3045,7 @@ this will close repeat modal.
                                   this.state.userTimeZone,
                                   keyName,
                                   this.state.userTimeZone[keyName],
-                                   this.state.currentUserId
+                                  this.state.currentUserId
                                 );
                                 this.changeUser(
                                   keyName,
@@ -3558,8 +3638,8 @@ this will close repeat modal.
               () => {
                 this.showEventsFormbyCreateNewEventButton();
                 this.setState({
-                  dayEventSelected: !this.state.dayEventSelected
-                })
+                  dayEventSelected: !this.state.dayEventSelected,
+                });
               }
             );
           }}
@@ -4314,22 +4394,21 @@ this will close repeat modal.
                 }
               }}
             >
-              {(
-                  <Form.Check type="radio">
-                    <Form.Check.Label style={{ marginLeft: "5px" }}>
-                      <Form.Check.Input
-                        type="radio"
-                        value="This event"
-                        name="radios"
-                        defaultChecked={
-                          this.state.editRecurringOption === "This event" &&
-                          true
-                        }
-                      />
-                      This event
-                    </Form.Check.Label>
-                  </Form.Check>
-                )}
+              {
+                <Form.Check type="radio">
+                  <Form.Check.Label style={{ marginLeft: "5px" }}>
+                    <Form.Check.Input
+                      type="radio"
+                      value="This event"
+                      name="radios"
+                      defaultChecked={
+                        this.state.editRecurringOption === "This event" && true
+                      }
+                    />
+                    This event
+                  </Form.Check.Label>
+                </Form.Check>
+              }
               <Form.Check type="radio">
                 <Form.Check.Label style={{ marginLeft: "5px" }}>
                   <Form.Check.Input
@@ -4887,7 +4966,11 @@ this will close repeat modal.
         var events = response.data;
         console.log(events);
         var end_call = +new Date();
-        console.log("Retrieve " + response.data.length + " items in: ", end_call - start_call, "ms");
+        console.log(
+          "Retrieve " + response.data.length + " items in: ",
+          end_call - start_call,
+          "ms"
+        );
         this.setState(
           {
             newEventID: "",
@@ -4927,13 +5010,16 @@ this will close repeat modal.
         // console.log("what are the events", response.data);
         var events = response.data;
         var end_call = +new Date();
-        console.log("Retrieve " + response.data.length + " items in: ", end_call - start_call, "ms");
+        console.log(
+          "Retrieve " + response.data.length + " items in: ",
+          end_call - start_call,
+          "ms"
+        );
         this.setState(
           {
             dayEvents: events,
           },
-          () => {
-          }
+          () => {}
         );
       })
       .catch((error) => {
@@ -4944,7 +5030,7 @@ this will close repeat modal.
   //Get and store events by week, take first and last day of the week as parameters as date object
   getEventsByIntervalWeekVersion = (start0, end0) => {
     var start_call = +new Date();
-      axios
+    axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
@@ -4957,13 +5043,16 @@ this will close repeat modal.
       .then((response) => {
         var events = response.data;
         var end_call = +new Date();
-        console.log("Retrieve " + response.data.length + " items in: ", end_call - start_call, "ms");
+        console.log(
+          "Retrieve " + response.data.length + " items in: ",
+          end_call - start_call,
+          "ms"
+        );
         this.setState(
           {
             weekEvents: events,
           },
-          () => {
-          }
+          () => {}
         );
       })
       .catch((error) => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSlash, faList } from "@fortawesome/free-solid-svg-icons";
-import axios from 'axios';
+import axios from "axios";
 
 export default class ShowATList extends React.Component {
   constructor(props) {
@@ -22,6 +22,23 @@ export default class ShowATList extends React.Component {
         iconShow: items[this.props.Index]["is_sublist_available"],
       });
     }
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
+
+    const id = this.props.Array[this.props.Index].id;
+
+    axios
+      .get(url + id)
+      .then((response) => {
+        if (response.data.result && response.data.result.length > 0) {
+          this.setState({ hasAction: true });
+        } else {
+          this.setState({ hasAction: false });
+        }
+      })
+      .catch((error) => {
+        console.log("Error Occurred " + error);
+      });
   }
 
   async componentDidMount() {
@@ -35,24 +52,25 @@ export default class ShowATList extends React.Component {
       iconShow: items[this.props.Index]["is_sublist_available"],
     });
   }
-  
-  hasActions = async () => {
 
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/"
+  hasActions = async () => {
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
 
     const id = this.props.Array[this.props.Index].id;
 
-    axios.get(url + id)
-       .then((response) => {
-         if (response.data.result && (response.data.result.length > 0)) {
-           this.setState({ hasAction: true });
-         } else {
-           this.setState({ hasAction: false });
-         }
-       })
-       .catch((error) => {
-         console.log("Error Occurred " + error);
-       });
+    axios
+      .get(url + id)
+      .then((response) => {
+        if (response.data.result && response.data.result.length > 0) {
+          this.setState({ hasAction: true });
+        } else {
+          this.setState({ hasAction: false });
+        }
+      })
+      .catch((error) => {
+        console.log("Error Occurred " + error);
+      });
 
     // const response = await this.props.Path.collection("goals&routines")
     //    .doc(id)

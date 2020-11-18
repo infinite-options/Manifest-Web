@@ -11,7 +11,6 @@ export default class MustDoAT extends React.Component {
     };
   }
 
-  
   /*
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.Array !== this.props.Array) {
