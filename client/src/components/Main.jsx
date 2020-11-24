@@ -276,7 +276,7 @@ export default class MainPage extends React.Component {
       email_id: email
     }
     console.log(body);
-    let result = false
+    let result = true
     if(email){
     axios.post(existingUserUrl, body)
     .then((response) => {
