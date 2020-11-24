@@ -280,6 +280,9 @@ export default class MainPage extends React.Component {
     axios.post(existingUserUrl, body)
     .then((response) => {
       console.log(response.data.message);
+      createUserParam = response.data.message
+              ? response.data.message === "true"
+              : false;
       createUserParam = response.data.message;
   })
   .catch((err) => {
