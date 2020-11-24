@@ -276,15 +276,15 @@ export default class MainPage extends React.Component {
       email_id: email
     }
     console.log(body);
+    let result;
     if(email){
     axios.post(existingUserUrl, body)
     .then((response) => {
       console.log(response.data.message);
-      createUserParam = response.data.message
+      result = response.data.message
               ? response.data.message === "true"
               : false;
-      createUserParam = response.data.message;
-      console.log(createUserParam)
+      
   })
   .catch((err) => {
       console.log("Error getting Details", err);
@@ -293,6 +293,8 @@ export default class MainPage extends React.Component {
     console.log(createUserParam)
     console.log("In updateStatesByQuery");
     console.log("UserId : ", userID);
+    createUserParam = result;
+    console.log(createUserParam)
     if (createUserParam) {
       this.setState({
         showNewAccountmodal: createUserParam,
