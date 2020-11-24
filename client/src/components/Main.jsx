@@ -284,6 +284,7 @@ export default class MainPage extends React.Component {
               ? response.data.message === "true"
               : false;
       createUserParam = response.data.message;
+      console.log(createUserParam)
   })
   .catch((err) => {
       console.log("Error getting Details", err);
