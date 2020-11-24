@@ -284,7 +284,8 @@ export default class MainPage extends React.Component {
   .catch((err) => {
       console.log("Error getting Details", err);
   });
-
+    console.log(email)
+    console.log(createUserParam)
     console.log("In updateStatesByQuery");
     console.log("UserId : ", userID);
     if (createUserParam) {
