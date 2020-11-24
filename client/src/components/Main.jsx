@@ -271,6 +271,19 @@ export default class MainPage extends React.Component {
     let createUserParam = this.getUrlParam("createUser", query) == "true";
     let email = this.getUrlParam("email", query);
     let userID = this.getUrlParam("userID", query);
+    let existingUserUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/existingUser"
+    let body = {
+      email_id: email
+    }
+
+    axios.post(existingUserUrl, body)
+    .then((response) => {
+      createUserParam = response.data.message
+  })
+  .catch((err) => {
+      console.log("Error getting Details", err);
+  });
+
     console.log("In updateStatesByQuery");
     console.log("UserId : ", userID);
     if (createUserParam) {
