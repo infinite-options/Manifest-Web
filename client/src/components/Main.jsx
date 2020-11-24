@@ -276,15 +276,16 @@ export default class MainPage extends React.Component {
       email_id: email
     }
     console.log(body);
+    if(email){
     axios.post(existingUserUrl, body)
     .then((response) => {
-      console.log(response);
+      console.log(response.data);
       createUserParam = response.data.message;
   })
   .catch((err) => {
       console.log("Error getting Details", err);
   });
-    console.log(email)
+}
     console.log(createUserParam)
     console.log("In updateStatesByQuery");
     console.log("UserId : ", userID);
