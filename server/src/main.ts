@@ -997,7 +997,7 @@ app.get("/adduser", function (req, result) {
               result.redirect("/main?createUser=true&email=" + emailId + "&userID=" + response.data.result);
             }
             else{
-              result.redirect("/main?email=" + emailId");
+              result.redirect("/main?email=" + emailId);
             }
           })
           .catch((err) => {
