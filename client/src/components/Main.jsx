@@ -273,14 +273,15 @@ export default class MainPage extends React.Component {
     let userID = this.getUrlParam("userID", query);
 
     let existingUserUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/existingUser";
-    let body = {
-      email_id: email
-    }
-    console.log(body);
-
+    
     var result = false;
 
     if(email){
+      let body = {
+        email_id: email
+      }
+      console.log(body);
+  
     axios.post(existingUserUrl, body)
     .then((response) => {
       console.log(response.data.message);
