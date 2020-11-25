@@ -40,6 +40,7 @@ export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      createUserParam: false,
       loaded: false,
       loggedIn: false,
       originalEvents: [], //holds the google events data in it's original JSON form
@@ -268,14 +269,13 @@ export default class MainPage extends React.Component {
 
   updateStatesByQuery = () => {
     let query = window.location.href;
-    let createUserParam = this.getUrlParam("createUser", query) == "true";
+    let result = this.getUrlParam("createUser", query) == "true";
     let email = this.getUrlParam("email", query);
     let userID = this.getUrlParam("userID", query);
 
     let existingUserUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/existingUser";
     
-    var result = false;
-
+    this.setState({createUserParam: result})
     if(email){
       let body = {
         email_id: email
@@ -286,21 +286,18 @@ export default class MainPage extends React.Component {
     .then((response) => {
       console.log(response.data.message);
       result = response.data.message ? response.data.message.toLowerCase() === "true" : false;
-      console.log(result)
+      this.setState({createUserParam:result})
   })
   .catch((err) => {
       console.log("Error getting Details", err);
   });
 }
-    console.log(createUserParam)
-    console.log(result)
+    console.log(this.state.createUserParam)
     console.log("In updateStatesByQuery");
     console.log("UserId : ", userID);
-    createUserParam = result;
-    console.log(createUserParam)
-    if (createUserParam) {
+    if (this.state.createUserParam) {
       this.setState({
-        showNewAccountmodal: createUserParam,
+        showNewAccountmodal: this.state.createUserParam,
         newAccountEmail: email,
         newAccountID: userID,
       });
