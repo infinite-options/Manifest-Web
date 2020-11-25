@@ -285,23 +285,24 @@ export default class MainPage extends React.Component {
     axios.post(existingUserUrl, body)
     .then((response) => {
       console.log(response.data.message);
-    
+      
       this.setState({createUserParam:response.data.message ? response.data.message.toLowerCase() === "true" : false})
+      console.log(this.state.createUserParam)
+      console.log("In updateStatesByQuery");
+      console.log("UserId : ", userID);
+      if (this.state.createUserParam) {
+        this.setState({
+          showNewAccountmodal: this.state.createUserParam,
+          newAccountEmail: email,
+          newAccountID: userID,
+        });
+      }
   })
   .catch((err) => {
       console.log("Error getting Details", err);
   });
 }
-    console.log(this.state.createUserParam)
-    console.log("In updateStatesByQuery");
-    console.log("UserId : ", userID);
-    if (this.state.createUserParam) {
-      this.setState({
-        showNewAccountmodal: this.state.createUserParam,
-        newAccountEmail: email,
-        newAccountID: userID,
-      });
-    }
+  
   };
 
   updateProfileFromFirebase = () => {
