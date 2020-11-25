@@ -993,7 +993,12 @@ app.get("/adduser", function (req, result) {
             // console.log(response.data.result)
             // www.yoursite.com?myparam1={id1}&myparam2={id2}
             console.log(response.data);
-            result.redirect("/main?createUser=true&email=" + emailId + "&userID=" + response.data.result);
+            if(response.data.result){
+              result.redirect("/main?createUser=true&email=" + emailId + "&userID=" + response.data.result);
+            }
+            else{
+              result.redirect("/main");
+            }
           })
           .catch((err) => {
             console.log("Error getting firebase documents", err);
