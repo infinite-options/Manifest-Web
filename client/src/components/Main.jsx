@@ -285,7 +285,7 @@ export default class MainPage extends React.Component {
     axios.post(existingUserUrl, body)
     .then((response) => {
       console.log(response.data.message);
-      result = response.data.message ? response.data.message.lowercase() === "true" : false;
+      result = response.data.message ? response.data.message.toLowerCase() === "true" : false;
       console.log(result)
   })
   .catch((err) => {
