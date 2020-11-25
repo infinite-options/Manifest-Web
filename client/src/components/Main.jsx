@@ -276,11 +276,13 @@ export default class MainPage extends React.Component {
     let existingUserUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/existingUser";
     
     this.setState({createUserParam: result})
+
     if(email){
       let body = {
-        email_id: email
+        email_id: email,
+        ta_people_id: this.state.ta_people_id,
+        user_id: userID
       }
-      console.log(body);
   
     axios.post(existingUserUrl, body)
     .then((response) => {
@@ -290,6 +292,7 @@ export default class MainPage extends React.Component {
       console.log(this.state.createUserParam)
       console.log("In updateStatesByQuery");
       console.log("UserId : ", userID);
+
       if (this.state.createUserParam) {
         this.setState({
           showNewAccountmodal: this.state.createUserParam,
