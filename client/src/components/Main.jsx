@@ -285,8 +285,8 @@ export default class MainPage extends React.Component {
     axios.post(existingUserUrl, body)
     .then((response) => {
       console.log(response.data.message);
-      result = response.data.message ? response.data.message.toLowerCase() === "true" : false;
-      this.setState({createUserParam:result})
+    
+      this.setState({createUserParam:response.data.message ? response.data.message.toLowerCase() === "true" : false})
   })
   .catch((err) => {
       console.log("Error getting Details", err);
