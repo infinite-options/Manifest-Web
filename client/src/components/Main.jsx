@@ -277,13 +277,14 @@ export default class MainPage extends React.Component {
       email_id: email
     }
     console.log(body);
+
     var result = false;
 
     if(email){
     axios.post(existingUserUrl, body)
     .then((response) => {
       console.log(response.data.message);
-      result = response.data.message ? response.data.message === "true" : false;
+      result = response.data.message ? response.data.message.lowercase() === "true" : false;
       console.log(result)
   })
   .catch((err) => {
