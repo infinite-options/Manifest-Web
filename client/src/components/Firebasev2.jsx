@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import firebase from "./firebase";
 import { firestore } from "firebase";
 import {
@@ -80,10 +80,9 @@ export default class FirebaseV2 extends React.Component {
       },
 
       grName: "",
-      dateString: "",
-
-
-
+      dataObj: {},
+      isComplete: false,
+      isInProgress: false,
       singleAT: {
         //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
         //with the task
@@ -2236,7 +2235,7 @@ shows entire list of goals and routines
             )}
           </div>
           <ListGroup>
-            <div style={{ height: "650px", overflow: "scroll" }}>
+            <div style={{ height: "1400px", overflow: "scroll" }}>
               {displayGoals}
             </div>
           </ListGroup>
@@ -2307,7 +2306,7 @@ shows entire list of goals and routines
             )}
           </div>
           <ListGroup>
-            <div style={{ height: "650px", overflow: "scroll" }}>
+            <div style={{ height: "1400px", overflow: "scroll" }}>
               {displayRoutines}
             </div>
           </ListGroup>
@@ -2382,50 +2381,54 @@ shows entire list of goals and routines
     );
   };
 
-   
+
+  
+
+
+
 
   getHistoryData = (object) => {
     let historyItems = [];
-    let ids = [];
-    const url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/100-000045";
+    let userId = this.props.theCurrentUserID
+    let logs = [];
+    let logstatus = [];
+    let grId = {"id":{}};
+    let grStatus = {"id":{}};
+    const url = `https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/${userId}`;
     axios.get(url).then((res)=>{  
-      console.log(res.data.result)
       const data = res.data.result;
-
+      this.setState({dataObj: res.data.result});
       data.map((info)=>{
-        const dataDate = moment(info.date).format("MM/DD/YYYY");
-        const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
-
-        if(dataDate === grDate){
+        // const dataDate = moment(info.date).format("MM/DD/YYYY");
+        // const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
           var keyId = Object.keys(info.details);
           keyId.forEach((id)=>{
-            ids.push(id);
-          })
-          ids.forEach((grId)=>{
-            if(grId === object.id){
-              this.setState({ 
-                grName: object.title
-              })
-              console.log(this.state.grName);
-            }
             
-          })  
+            if(id === object.id){
+              logs.push(info);
+            }
+          })
+          
+          grId.id = info.details[object.id];
+          grId[object.id] = grId["id"];
+          delete grId["id"];
+          })
+
+
+
+axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/currentStatus/${userId}`).then((response) => {
+  const data = response.data.result;
+    // const dataDate = moment(info.date).format("MM/DD/YYYY");
+    // const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
+      var keyId = Object.keys(data);
+      keyId.forEach((id)=>{
+        if(id === object.id){
+          logstatus.push(data);
         }
-      })
-      
-    });
- 
-    console.log(object);
-
-
-
-
-
-
-
-
-
-
+      })  
+      grStatus.id = data[object.id];
+      grStatus[object.id] = grStatus["id"];
+      delete grStatus["id"];
 
     const db = firebase.firestore();
     db.collection("history")
@@ -2434,7 +2437,7 @@ shows entire list of goals and routines
       .get()
       .then(async (snapshot) => {
         console.log(snapshot);
-        let logs = [];
+        // let logs = [];
         snapshot.forEach((log) => {
           log.data().log.forEach((gr) => {
             if (gr.id == object.id) {
@@ -2444,8 +2447,6 @@ shows entire list of goals and routines
             }
           });
         });
-
-        console.log(logs);
         // push data for current date
         let date = new Date();
         let date_string =
@@ -2459,11 +2460,11 @@ shows entire list of goals and routines
         date_string = "_Today";
         let currentDateHistory = {
           date: date_string,
-          title: object.title,
-          is_in_progress: object.is_in_progress,
-          is_complete: object.is_complete,
+          // title: object.title,
+          // is_in_progress: object.is_in_progress,
+          // is_complete: object.is_complete,
+          details: grStatus,
         };
-
         // await db
         //   .collection("users")
         //   .doc(this.props.theCurrentUserID)
@@ -2499,90 +2500,101 @@ shows entire list of goals and routines
         // }
 
         logs.push(currentDateHistory);
-
         let list = [];
-        console.log(currentDateHistory, logs);
         let headers = [
           <th key={"history_header_title:"} style={{ width: "400px" }}></th>,
         ];
         for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
           headers.push(
             <th
-              key={"history_header:" + logs[i].date}
+              key={"history_header:" +  logs[i].date}
               style={{ width: "80px", textAlign: "center" }}
             >
-              {logs[i].date.split("_").slice(1).join("/")}
-            </th>
+              {logs[i].date === "_Today" ? logs[i].date : moment(logs[i].date).format("MM/DD/YY")}
+            </th>                     
           );
         }
 
         let rows_objects = {};
         for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
+          let atId = ""
+          var atIds = Object.keys(logstatus[0][object.id])
+          
           let gr = logs[i];
+          console.log(gr.details[object.id])
+          let grs = logstatus[0];
           let date = logs[i].date;
-          if (rows_objects["gr:" + gr.title] == undefined) {
-            rows_objects["gr:" + gr.title] = {};
+          if (rows_objects["gr:" + gr.details[object.id].title] == undefined) {
+            rows_objects["gr:" + gr.details[object.id].title] = {};
           }
-          rows_objects["gr:" + gr.title][date] = {
-            is_in_progress: gr.is_in_progress,
-            is_complete: gr.is_complete,
-            title: gr.title,
+          
+          rows_objects["gr:" + gr.details[object.id].title][date] = {
+            is_in_progress: gr.details[object.id].is_in_progress,
+            is_complete: gr.details[object.id].is_complete,
+            title: gr.details[object.id].title,
           };
-          if (gr["actions&tasks"] != undefined) {
-            gr["actions&tasks"].forEach((at) => {
+         
+          atIds.map((id) => {
+            if(parseInt(id)){
+                atId = id;            
+            }
+          if (grs[object.id][atId] != undefined) {
               if (
-                rows_objects["gr:" + gr.title + "," + "at:" + at.title] ==
+                rows_objects["gr:" + gr.details[object.id].title + "," + "at:" + grs[object.id][atId].title] ==
                 undefined
               ) {
-                rows_objects["gr:" + gr.title + "," + "at:" + at.title] = {};
+                rows_objects["gr:" + gr.details[object.id].title + "," + "at:" + grs[object.id][atId].title] = {};
               }
-              rows_objects["gr:" + gr.title + "," + "at:" + at.title][date] = {
-                is_in_progress: at.is_in_progress,
-                is_complete: at.is_complete,
-                title: at.title,
+              rows_objects["gr:" + gr.details[object.id].title + "," + "at:" + grs[object.id][atId].title][date] = {
+                is_in_progress: gr.details[object.id].is_in_progress,
+                is_complete: gr.details[object.id].is_complete,
+                title: grs[object.id][atId].title,
               };
-              if (at["instructions&steps"] != undefined) {
-                at["instructions&steps"].forEach((is) => {
-                  if (
-                    rows_objects[
-                      "gr:" +
-                        gr.title +
-                        "," +
-                        "at:" +
-                        at.title +
-                        "," +
-                        "is:" +
-                        is.title
-                    ] == undefined
-                  ) {
-                    rows_objects[
-                      "gr:" +
-                        gr.title +
-                        "," +
-                        "at:" +
-                        at.title +
-                        "," +
-                        "is:" +
-                        is.title
-                    ] = {};
-                  }
-                  rows_objects[
-                    "gr:" +
-                      gr.title +
-                      "," +
-                      "at:" +
-                      at.title +
-                      "," +
-                      "is:" +
-                      is.title
-                  ][date] = is;
-                });
-              }
-            });
+              // if (at["instructions&steps"] != undefined) {
+              //   at["instructions&steps"].forEach((is) => {
+              //     if (
+              //       rows_objects[
+              //         "gr:" +
+              //           gr.title +
+              //           "," +
+              //           "at:" +
+              //           at.title +
+              //           "," +
+              //           "is:" +
+              //           is.title
+              //       ] == undefined
+              //     ) {
+              //       rows_objects[
+              //         "gr:" +
+              //           gr.title +
+              //           "," +
+              //           "at:" +
+              //           at.title +
+              //           "," +
+              //           "is:" +
+              //           is.title
+              //       ] = {};
+              //     }
+              //     rows_objects[
+              //       "gr:" +
+              //         gr.title +
+              //         "," +
+              //         "at:" +
+              //         at.title +
+              //         "," +
+              //         "is:" +
+              //         is.title
+              //     ][date] = is;
+              //   });
+              // }
+           
           }
+        })
         }
 
+        console.log(rows_objects);
         Object.keys(rows_objects).forEach((key, index) => {
+          console.log(key);
           let row = [];
           let cells = [];
           let title_left = "";
@@ -2596,6 +2608,7 @@ shows entire list of goals and routines
             paddingLeft = "30px";
           }
           for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
+            console.log(rows_objects[key])
             if (rows_objects[key][logs[i].date] == undefined) {
               cells.push(
                 <td
@@ -2605,9 +2618,11 @@ shows entire list of goals and routines
               );
             } else {
               let title = rows_objects[key][logs[i].date]["title"];
+              console.log(title);
               let isComplete = rows_objects[key][logs[i].date]["is_complete"];
-              let isInProgress =
-                rows_objects[key][logs[i].date]["is_in_progress"];
+              console.log(isComplete);
+              let isInProgress = rows_objects[key][logs[i].date]["is_in_progress"]
+                
               title_left = title;
               cells.push(
                 <td
@@ -2617,11 +2632,12 @@ shows entire list of goals and routines
                   <FontAwesomeIcon
                     style={{
                       color:
-                        isComplete || isInProgress
+                        isComplete === "True" || isInProgress === "True"
                           ? this.state.availabilityColorCode
                           : "black",
                     }}
-                    icon={isComplete ? faTrophy : faRunning}
+                  
+                    icon={isComplete === "True" ? faTrophy : faRunning}
                     size="lg"
                   />
                 </td>
@@ -2642,6 +2658,7 @@ shows entire list of goals and routines
           list.push(row);
         });
 
+        console.log(headers)
         historyItems.push(
           <Table
             key={"goalStatus" + object.id}
@@ -2660,7 +2677,330 @@ shows entire list of goals and routines
 
         console.log(historyItems);
       });
+    });
+    });
   };
+
+  // getHistoryData = (object) => {
+  //   let historyItems = [];
+  //   let ids = [];
+  //   let weekDate = [];
+  //   let grRepeat =[];
+  //   const url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/100-000045";
+  //   axios.get(url).then((res)=>{  
+  //     console.log(res.data.result)
+  //     const data = res.data.result;
+
+  //     data.map((info)=>{
+  //       const dataDate = moment(info.date).format("MM/DD/YYYY");
+  //       const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
+
+  //       if(dataDate === grDate){
+  //         var keyId = Object.keys(info.details);
+  //         keyId.forEach((id)=>{
+  //           ids.push(id);
+  //           this.setState({dateOfGR: object.end_day_and_time})
+  //         })
+  //         ids.forEach((grId)=>{
+  //           console.log(info.details);
+  //           if(grId === object.id){
+  //             console.log(object.end_day_and_time);
+  //             this.setState({ 
+  //               grName: object.title,
+  //               isCompleted: info.details[grId].is_complete,
+  //               isProgress: info.details[grId].is_in_progress,
+  //               repeatStatus: object.repeat,
+  //               repeatEnds: object.repeat_ends,
+  //               repeatEndsOn: object.repeat_ends_on,
+  //               repeatEvery: object.repeat_every,
+  //               repeatFrequency: object.repeat_frequency,
+  //               repeatOccurrences: object.repeat_occurrences
+  //             })
+  //             console.log(this.state.grName);
+  //             console.log(this.state.dateOfGR)
+  //           }
+            
+  //         })  
+  //       }
+  //     })
+      
+  //   });
+ 
+  //   console.log(object);
+
+  //   const db = firebase.firestore();
+  //   db.collection("history")
+  //     .doc(this.props.theCurrentUserID)
+  //     .collection("goals&routines")
+  //     .get()
+  //     .then(async (snapshot) => {
+  //       console.log(snapshot);
+  //       let logs = [];
+  //       snapshot.forEach((log) => {
+  //         log.data().log.forEach((gr) => {
+  //           if (gr.id == object.id) {
+  //             gr.date = log.data().date;
+  //             logs.push(gr);
+              
+  //           }
+  //         });
+  //       });
+
+  //       console.log(logs);
+  //       // push data for current date
+  //       let date = new Date();
+
+  //       let date_string =
+  //       (date.getFullYear() +
+  //       "_" +
+  //       (date.getMonth() > 8
+  //         ? date.getMonth() + 1
+  //         : "0" + (date.getMonth() + 1)) +
+  //       "_" +
+  //       (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()))
+          
+  //       date_string = "_Today";
+
+  
+  //       let currentDateHistory = {
+  //         date: date_string,
+  //         title: object.title,
+  //         is_in_progress: object.is_in_progress,
+  //         is_complete: object.is_complete,
+  //         repeat: this.state.repeatStatus,
+  //         repeat_ends: this.state.repeatEnds,
+  //         repeat_ends_on: this.state.repeatEndsOn,
+  //         repeat_every: this.state.repeatEvery,
+  //         repeat_frequency: this.state.repeatFrequency,
+  //         repeat_occurences: this.state.repeatOccurences
+  //       };
+
+  //       // await db
+  //       //   .collection("users")
+  //       //   .doc(this.props.theCurrentUserID)
+  //       //   .collection("goals&routines")
+  //       //   .doc(object.id)
+  //       //   .get()
+  //       //   .then((ats) => {
+  //       //     console.log(ats.data()["actions&tasks"]);
+  //       //     currentDateHistory["actions&tasks"] =
+  //       //       ats.data()["actions&tasks"] != undefined
+  //       //         ? ats.data()["actions&tasks"]
+  //       //         : [];
+  //       //   });
+
+  //       // for (let i = 0; i < currentDateHistory["actions&tasks"].length; i++) {
+  //       //   let at = currentDateHistory["actions&tasks"][i];
+  //       //   console.log(currentDateHistory);
+  //       //   await db
+  //       //     .collection("users")
+  //       //     .doc(this.props.theCurrentUserID)
+  //       //     .collection("goals&routines")
+  //       //     .doc(object.id)
+  //       //     .collection("actions&tasks")
+  //       //     .doc(at.id)
+  //       //     .get()
+  //       //     .then((singleAT) => {
+  //       //       if (singleAT.data()["instructions&steps"] != undefined) {
+  //       //         currentDateHistory["actions&tasks"][i][
+  //       //           "instructions&steps"
+  //       //         ] = singleAT.data()["instructions&steps"];
+  //       //       }
+  //       //     });
+  //       // }
+
+  //       logs.push(currentDateHistory);
+        
+  //       if(currentDateHistory.repeat === true){
+  //         if(currentDateHistory.repeat_ends === "Never"){
+  //             for(var i = 0; i<=7; i++){
+  //               grRepeat.push(currentDateHistory);
+  //               let nextDay = new Date(currentDateHistory.date);
+  //               let newDate = moment(nextDay.setDate(nextDay.getDate() + 1)).format("MM/DD/YYYY");
+  //               weekDate.push(newDate);
+  //               currentDateHistory.date = newDate.toString();
+  //             }
+  //         }
+  //       }
+
+  //       let list = [];
+  //       console.log(currentDateHistory, logs);
+  //       console.log(grRepeat);
+  //       let headers = [
+  //         <th key={"history_header_title:"} style={{ width: "400px" }}></th>,
+  //       ];
+  //       if(currentDateHistory.repeat === true){
+  //         for (let i = Math.max(grRepeat.length - 7, 0); i < grRepeat.length; i++) {
+  //           headers.push(
+  //             <th
+  //               key={"history_header:" + weekDate[i]}
+  //               style={{ width: "80px", textAlign: "center" }}
+  //             >
+  //               {weekDate[i].toString()}
+  //             </th>
+  //           );
+  //         }
+  //       }
+  //       else{
+  //       for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
+  //         headers.push(
+  //           <th
+  //             key={"history_header:" + logs[i].date}
+  //             style={{ width: "80px", textAlign: "center" }}
+  //           >
+  //             {logs[i].date.toString()}
+  //           </th>
+  //         );
+  //       }
+  //     }
+
+  //       let rows_objects = {};
+  //       for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
+  //         let gr = logs[i];
+  //         let date = logs[i].date;
+  //         if (rows_objects["gr:" + gr.title] == undefined) {
+  //           rows_objects["gr:" + gr.title] = {};
+  //         }
+  //         rows_objects["gr:" + gr.title][date] = {
+  //           is_in_progress: gr.is_in_progress,
+  //           is_complete: gr.is_complete,
+  //           title: gr.title,
+  //         };
+  //         if (gr["actions&tasks"] != undefined) {
+  //           gr["actions&tasks"].forEach((at) => {
+  //             if (
+  //               rows_objects["gr:" + gr.title + "," + "at:" + at.title] ==
+  //               undefined
+  //             ) {
+  //               rows_objects["gr:" + gr.title + "," + "at:" + at.title] = {};
+  //             }
+  //             rows_objects["gr:" + gr.title + "," + "at:" + at.title][date] = {
+  //               is_in_progress: at.is_in_progress,
+  //               is_complete: at.is_complete,
+  //               title: at.title,
+  //             };
+  //             if (at["instructions&steps"] != undefined) {
+  //               at["instructions&steps"].forEach((is) => {
+  //                 if (
+  //                   rows_objects[
+  //                     "gr:" +
+  //                       gr.title +
+  //                       "," +
+  //                       "at:" +
+  //                       at.title +
+  //                       "," +
+  //                       "is:" +
+  //                       is.title
+  //                   ] == undefined
+  //                 ) {
+  //                   rows_objects[
+  //                     "gr:" +
+  //                       gr.title +
+  //                       "," +
+  //                       "at:" +
+  //                       at.title +
+  //                       "," +
+  //                       "is:" +
+  //                       is.title
+  //                   ] = {};
+  //                 }
+  //                 rows_objects[
+  //                   "gr:" +
+  //                     gr.title +
+  //                     "," +
+  //                     "at:" +
+  //                     at.title +
+  //                     "," +
+  //                     "is:" +
+  //                     is.title
+  //                 ][date] = is;
+  //               });
+  //             }
+  //           });
+  //         }
+  //       }
+
+  //       Object.keys(rows_objects).forEach((key, index) => {
+  //         let row = [];
+  //         let cells = [];
+  //         let title_left = "";
+  //         let fontSize = "22px";
+  //         let paddingLeft = "10px";
+  //         if (key.includes("is:")) {
+  //           fontSize = "14x";
+  //           paddingLeft = "50px";
+  //         } else if (key.includes("at:")) {
+  //           fontSize = "18px";
+  //           paddingLeft = "30px";
+  //         }
+  //         for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
+  //           if (rows_objects[key][logs[i].date] == undefined) {
+  //             cells.push(
+  //               <td
+  //                 style={{ width: "80px", textAlign: "center" }}
+  //                 key={"history:" + key + logs[i].date}
+  //               ></td>
+  //             );
+  //           } else {
+  //             let title = rows_objects[key][logs[i].date]["title"];
+  //             let isComplete = rows_objects[key][logs[i].date]["is_complete"];
+  //             let isInProgress = currentDateHistory.is_in_progress;
+  //             title_left = title;
+  //             cells.push(
+  //               <td
+  //                 style={{ width: "80px", textAlign: "center" }}
+  //                 key={"history:" + key + logs[i].date}
+  //               >
+  //                 <FontAwesomeIcon
+  //                 onClick = {()=>{
+
+  //                 }}
+  //                   style={{
+  //                     color:
+  //                       isComplete || isInProgress === false
+  //                         ? this.state.availabilityColorCode
+  //                         : "black",
+  //                   }}
+  //                   icon={isComplete ? faTrophy : faRunning}
+  //                   size="lg"
+  //                 />
+  //               </td>
+  //             );
+  //           }
+  //         }
+  //         row.push(
+  //           <tr key={"history_title_row:" + key}>
+  //             <td
+  //               style={{ paddingLeft: paddingLeft, fontSize: fontSize }}
+  //               key={"history_title_left:" + key}
+  //             >
+  //               {title_left}
+  //             </td>
+  //             {cells}
+  //           </tr>
+  //         );
+  //         list.push(row);
+  //       });
+
+  //       historyItems.push(
+  //         <Table
+  //           key={"goalStatus" + object.id}
+  //           style={{ tableLayout: "fixed", width: "fit-content" }}
+  //           striped
+  //           bordered
+  //           hover
+  //         >
+  //           <thead>
+  //             <tr>{headers}</tr>
+  //           </thead>
+  //           <tbody key="history-body">{list}</tbody>
+  //         </Table>
+  //       );
+  //       this.setState({ historyItems: historyItems });
+
+  //       console.log(historyItems);
+  //     });
+  // };
 
   /*
     abstractedInstructionsAndStepsList:

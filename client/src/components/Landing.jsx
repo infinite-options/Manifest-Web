@@ -66,13 +66,13 @@ export default class MainPage extends React.Component {
         </Form.Group>
         <Form.Group as={Row}>
           <Col>
-            <Button variant="primary" type="submit" onClick={this.handleSubmit}>
-              Sign in
+            <Button variant="primary" type="submit" onClick={this.handleSignUp}>
+              Sign Up
             </Button>
           </Col>
           <Col>
-            <Button variant="primary" type="submit" onClick={this.handleSignUp}>
-              Sign Up
+            <Button variant="primary" type="submit" onClick={this.handleSubmit}>
+              Sign in
             </Button>
           </Col>
         </Form.Group>

@@ -149,15 +149,7 @@ export default class MainPage extends React.Component {
     };
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   // console.log("this is in the component update ",this.props.ATArray[this.props.i] )
 
-  //   if (prevState.originalGoalsAndRoutineArr !== this.state.originalGoalsAndRoutineArr) {
-  //     // this.grabFireBaseRoutinesGoalsData();
-  //     // console.log("does it go here");
-
-  //   }
-  // }
 
   handleRepeatDropDown = (eventKey, week_days) => {
     if (eventKey === "WEEK") {
