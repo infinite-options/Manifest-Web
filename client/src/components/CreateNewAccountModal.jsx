@@ -46,6 +46,7 @@ export default class AddNewPeople extends Component {
        .post("/updateNewUser", body)
        .then((result) => {
          this.props.newUserAdded();
+         result.redirect("/main");
        })
        .catch((err) => {
          console.log(err);

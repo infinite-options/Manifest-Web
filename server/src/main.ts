@@ -977,8 +977,8 @@ app.get("/adduser", function (req, result) {
           console.log(res.data)
           let emailId = res.data.email;
           emailId = formatEmail(emailId);
-          let socialId = oAuth2Client.client_id
-          console.log(socialId)
+          // let socialId = oAuth2Client.client_id
+          // console.log(socialId)
           let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
           let body = {
             email_id: emailId,
@@ -990,9 +990,15 @@ app.get("/adduser", function (req, result) {
           axios.post(url, body)
           .then((response) => {
             console.log("After addNewUser, before UpdateNewUser")
-            console.log(response.data.result)
+            // console.log(response.data.result)
             // www.yoursite.com?myparam1={id1}&myparam2={id2}
-            result.redirect("/main?createUser=true&email=" + emailId + "&userID=" + response.data.result);
+            console.log(response.data);
+            if(response.data.result){
+              result.redirect("/main?createUser=true&email=" + emailId + "&userID=" + response.data.result);
+            }
+            else{
+              result.redirect("/main?email=" + emailId);
+            }
           })
           .catch((err) => {
             console.log("Error getting firebase documents", err);
