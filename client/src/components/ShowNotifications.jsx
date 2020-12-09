@@ -81,14 +81,12 @@ class ShowNotifications extends React.Component {
                   type="checkbox"
                   style={{ width: "20px", height: "20px" }}
                   checked={
-                    this.props.itemToEditPassedIn.user_notifications.before
-                      .is_enabled
+                    this.props.itemToEditPassedIn.user_notifications.before.is_enabled
                   }
                   onChange={(e) => {
                     e.stopPropagation();
                     let temp = this.props.itemToEditPassedIn;
-                    temp.user_notifications.before.is_enabled = !temp
-                      .user_notifications.before.is_enabled;
+                    temp.user_notifications.before.is_enabled = !temp.user_notifications.before.is_enabled;
                     this.props.notificationChange(temp);
                   }}
                 />

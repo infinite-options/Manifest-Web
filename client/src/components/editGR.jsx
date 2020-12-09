@@ -116,6 +116,7 @@ export default class editGR extends Component {
 
   componentDidMount() {
     let temp = this.props.ATArray[this.props.i];
+    console.log(temp)
     this.setState({ itemToEdit: temp });
   }
 
@@ -558,6 +559,7 @@ export default class editGR extends Component {
     }
   };
   handleNotificationChange = (temp) => {
+    console.log(temp)
     this.setState({ itemToEdit: temp });
   };
 

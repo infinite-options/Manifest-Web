@@ -13,7 +13,11 @@ export default class AddIconModal extends Component {
       show: false,
       modal: false,
       photo_url: null,
-      iconList: [],
+      iconList1: [],
+      iconList2: [],
+      iconList3: [],
+      iconList4: [],
+      iconList5: [],
       image: null,
       type: 'icon'
     };
@@ -52,18 +56,67 @@ export default class AddIconModal extends Component {
   };
 
   onHandleShowClick = () => {
-    let url  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIcons";
-    let iconList = []
+    let url1  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsHygiene";
+    let url2  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsClothing";
+    let url3  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsFood";
+    let url4  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsActivities";
+    let url5  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsOther";
 
-    axios.get(url).then(
+    let iconList1 = []
+    let iconList2 = []
+    let iconList3 = []
+    let iconList4 = []
+    let iconList5 = []
+
+    axios.get(url1).then(
       (response) => {
-          iconList = response.data.result;
-          console.log(iconList)
-          this.setState({iconList: iconList})
+          iconList1 = response.data.result;
+          console.log(iconList1)
+          this.setState({iconList1: iconList1})
       }
    ).catch((err) => {
        console.log("Error getting icons list", err);
    });
+
+   axios.get(url2).then(
+    (response) => {
+        iconList2 = response.data.result;
+        console.log(iconList2)
+        this.setState({iconList2: iconList2})
+    }
+ ).catch((err) => {
+     console.log("Error getting icons list", err);
+ });
+
+ axios.get(url3).then(
+  (response) => {
+      iconList3 = response.data.result;
+      console.log(iconList3)
+      this.setState({iconList3: iconList3})
+  }
+).catch((err) => {
+   console.log("Error getting icons list", err);
+});
+
+axios.get(url4).then(
+  (response) => {
+      iconList4 = response.data.result;
+      console.log(iconList4)
+      this.setState({iconList4: iconList4})
+  }
+).catch((err) => {
+   console.log("Error getting icons list", err);
+});
+
+axios.get(url5).then(
+  (response) => {
+      iconList5 = response.data.result;
+      console.log(iconList5)
+      this.setState({iconList5: iconList5})
+  }
+).catch((err) => {
+   console.log("Error getting icons list", err);
+});
 
    let toggle = this.state.show;
    this.setState({ show: !toggle});
@@ -84,12 +137,48 @@ export default class AddIconModal extends Component {
   };
 
   render() {
-    var arrButtons = []
-    for (let i = 0; i < this.state.iconList.length; i++) { 
-         arrButtons.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconList[i].url)}><img
+    var arrButtonsHygiene = []
+    for (let i = 0; i < this.state.iconList1.length; i++) { 
+      arrButtonsHygiene.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconList1[i].url)}><img
          height="70px"
          width="70px"
-         src={this.state.iconList[i].url}
+         src={this.state.iconList1[i].url}
+       ></img></button>)
+  }
+
+  var arrButtonsClothing = []
+    for (let i = 0; i < this.state.iconList2.length; i++) { 
+      arrButtonsClothing.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconList2[i].url)}><img
+         height="70px"
+         width="70px"
+         src={this.state.iconList2[i].url}
+       ></img></button>)
+  }
+
+  var arrButtonsFood = []
+    for (let i = 0; i < this.state.iconList3.length; i++) { 
+      arrButtonsFood.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconLis3t[i].url)}><img
+         height="70px"
+         width="70px"
+         src={this.state.iconList3[i].url}
+       ></img></button>)
+  }
+
+  var arrButtonsActivities = []
+    for (let i = 0; i < this.state.iconList4.length; i++) { 
+      arrButtonsActivities.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconList4[i].url)}><img
+         height="70px"
+         width="70px"
+         src={this.state.iconList4[i].url}
+       ></img></button>)
+  }
+
+  var arrButtonsOther = []
+    for (let i = 0; i < this.state.iconList5.length; i++) { 
+      arrButtonsOther.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconList5[i].url)}><img
+         height="70px"
+         width="70px"
+         src={this.state.iconList5[i].url}
        ></img></button>)
   }
 
@@ -110,10 +199,23 @@ export default class AddIconModal extends Component {
           <Modal.Body>
             <div>
               <div>Hygiene</div>
-              {arrButtons}
+              {arrButtonsHygiene}
+              
+              <div>Clothing</div>
+              {arrButtonsClothing}
+              <div>Food</div>
+              {arrButtonsFood}
+              
+              <div>Activities</div>
+              {arrButtonsActivities}
+              
+              <div>Other</div>
+              {arrButtonsOther}
               
               </div> 
+             
               </Modal.Body>
+            
 
               <Modal.Footer>
                 
