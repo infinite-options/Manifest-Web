@@ -2430,23 +2430,23 @@ axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/cur
       grStatus[object.id] = grStatus["id"];
       delete grStatus["id"];
 
-    const db = firebase.firestore();
-    db.collection("history")
-      .doc(this.props.theCurrentUserID)
-      .collection("goals&routines")
-      .get()
-      .then(async (snapshot) => {
-        console.log(snapshot);
-        // let logs = [];
-        snapshot.forEach((log) => {
-          log.data().log.forEach((gr) => {
-            if (gr.id == object.id) {
-              gr.date = log.data().date;
-              logs.push(gr);
+    // const db = firebase.firestore();
+    // db.collection("history")
+    //   .doc(this.props.theCurrentUserID)
+    //   .collection("goals&routines")
+    //   .get()
+    //   .then(async (snapshot) => {
+    //     console.log(snapshot);
+    //     // let logs = [];
+    //     snapshot.forEach((log) => {
+    //       log.data().log.forEach((gr) => {
+    //         if (gr.id == object.id) {
+    //           gr.date = log.data().date;
+    //           logs.push(gr);
               
-            }
-          });
-        });
+    //         }
+    //       });
+    //     });
         // push data for current date
         let date = new Date();
         let date_string =
@@ -2676,7 +2676,7 @@ axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/cur
         this.setState({ historyItems: historyItems });
 
         console.log(historyItems);
-      });
+      // });
     });
     });
   };
