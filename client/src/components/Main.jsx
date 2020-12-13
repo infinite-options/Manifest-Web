@@ -4996,6 +4996,7 @@ this will close repeat modal.
           },
           () => {}
         );
+        console.log(this.state.dayEvents)
       })
       .catch((error) => {
         console.log("Error Occurred " + error);

@@ -139,18 +139,33 @@ export default class WeekEvents extends Component {
       let curDate = startDay.clone();
       curDate.add(day,'days');
       var res = []
+      let arr = [];
       var tempStart = null;
       var tempEnd = null;
-      var arr = dic[day+"_"+hour];
+      // var arr = dic[day+"_"+hour];
       var sameTimeEventCount = 0;
       var addmarginLeft = 0;
       let itemWidth = this.state.eventBoxSize;
       var fontSize = 10;
+      for(var j = 0; j < 31; j++){
+      for(var i = 0; i < 24; i++){
+
+        if(dic[j+"_"+i] != null){
+  
+          arr.push(dic[j+"_"+i]);
+         
+        }
+      if (arr == null) {
+        return;
+      }
+    }
+  }
+  console.log(arr);
       if (arr == null) {
         return;
       }
       for (let i = 0; i < arr.length; i++) {
-        var arr_i = arr[i];
+        var arr_i = arr[i][0];
         tempStart = arr_i.start.dateTime;
         tempEnd = arr_i.end.dateTime;
         let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
@@ -176,8 +191,8 @@ export default class WeekEvents extends Component {
 
                 //check if there is already an event there overlapping from another hour
                 for (let i = 0; i < arr.length; i++) {
-                    tempStart = arr[i].start.dateTime;
-                    tempEnd = arr[i].end.dateTime;
+                    tempStart = arr[i][0].start.dateTime;
+                    tempEnd = arr[i][0].end.dateTime;
                     let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
                       timeZone: this.props.timeZone
                     }));

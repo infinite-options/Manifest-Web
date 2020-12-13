@@ -59,6 +59,7 @@ export default class DayEvents extends Component {
           dic[key] = [];
         }
         dic[key].push(arr[i]);
+        console.log(dic)
     }
     return dic;
   }
@@ -72,18 +73,31 @@ export default class DayEvents extends Component {
     var res = [];
     var tempStart = null;
     var tempEnd = null;
-    var arr = dic[hour];
+
+    let arr = [];
+console.log(arr);
     var sameTimeEventCount = 0;
     var addmarginLeft = 0;
     let itemWidth = this.state.eventBoxSize;
     var fontSize = 10;
+    for(var i = 0; i < 24; i++){
+
+      if(dic[i] != null){
+
+        arr.push(dic[i]);
+       
+      }
     if (arr == null) {
       return;
     }
+  }
     for (let i = 0; i < arr.length; i++) {
-      if(!arr[i].start) break;
-      tempStart = arr[i].start.dateTime;
-      tempEnd = arr[i].end.dateTime;
+      
+      console.log(arr);
+      if(!arr[i][0].start) break;
+      tempStart = arr[i][0].start.dateTime;
+      console.log(tempStart)
+      tempEnd = arr[i][0].end.dateTime;
 
       let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
      		timeZone: this.props.timeZone
@@ -112,7 +126,7 @@ export default class DayEvents extends Component {
                   data-toggle="tooltip"
                   data-placement="right"
                   title={
-                    arr[i].summary +
+                    arr[i][0].summary +
                     "\nStart: " +
                     tempStartTime +
                     "\nEnd: " +
@@ -151,7 +165,7 @@ export default class DayEvents extends Component {
                   }}
                 >
                   {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-                  {arr[i].summary}
+                  {arr[i][0].summary}
                 </div>
               </div>
             );
@@ -214,7 +228,7 @@ export default class DayEvents extends Component {
                   data-toggle="tooltip"
                   data-placement="right"
                   title={
-                    arr[i].summary +
+                    arr[i][0].summary +
                     "\nStart: " +
                     tempStartTime +
                     "\nEnd: " +
@@ -253,7 +267,7 @@ export default class DayEvents extends Component {
                   }}
                 >
                   {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-                  {arr[i].summary}
+                  {arr[i][0].summary}
                 </div>
               </div>
             );
@@ -273,7 +287,7 @@ export default class DayEvents extends Component {
               data-toggle="tooltip"
               data-placement="right"
               title={
-                arr[i].summary +
+                arr[i][0].summary +
                 "\nStart: " +
                 tempStartTime +
                 "\nEnd: " +
@@ -312,7 +326,7 @@ export default class DayEvents extends Component {
               }}
             >
               {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-              {arr[i].summary}
+              {arr[i][0].summary}
             </div>
           </div>
         );
@@ -333,7 +347,7 @@ export default class DayEvents extends Component {
               data-toggle="tooltip"
               data-placement="right"
               title={
-                arr[i].summary +
+                arr[i][0].summary +
                 "\nStart: " +
                 tempStartTime +
                 "\nEnd: " +
@@ -372,7 +386,7 @@ export default class DayEvents extends Component {
               }}
             >
               {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-              {arr[i].summary}
+              {arr[i][0].summary}
             </div>
           </div>
         );

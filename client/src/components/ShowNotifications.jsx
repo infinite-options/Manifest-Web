@@ -46,14 +46,16 @@ class ShowNotifications extends React.Component {
             <Col style={{ paddingRight: "0px" }}>
               <Form.Control
                 type="number"
-                placeholder="5"
+                placeholder=""
                 style={{ width: "70px", marginTop: ".25rem" }}
-                value={this.convertToMinutes(
+                value={ this.props.itemToEditPassedIn.ta_notifications.before.time === "00:00:00" ? "" : this.convertToMinutes(
                   this.props.itemToEditPassedIn.ta_notifications.before.time
                 )}
                 onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.props.itemToEditPassedIn;
+                  console.log(this.props.itemToEditPassedIn)
+
                   temp.ta_notifications.before.time = this.convertTimeToHRMMSS(
                     e
                   );
@@ -173,9 +175,9 @@ class ShowNotifications extends React.Component {
             <Col style={{ paddingRight: "0px" }}>
               <Form.Control
                 type="number"
-                placeholder="30"
+                placeholder=""
                 style={{ width: "70px", marginTop: ".25rem" }}
-                value={this.convertToMinutes(
+                value={ this.props.itemToEditPassedIn.ta_notifications.during.time === "00:00:00" ? "" : this.convertToMinutes(
                   this.props.itemToEditPassedIn.ta_notifications.during.time
                 )}
                 onChange={(e) => {
@@ -300,9 +302,9 @@ class ShowNotifications extends React.Component {
             <Col style={{ paddingRight: "0px" }}>
               <Form.Control
                 type="number"
-                placeholder="5"
+                placeholder=""
                 style={{ width: "70px", marginTop: ".25rem" }}
-                value={this.convertToMinutes(
+                value={ this.props.itemToEditPassedIn.ta_notifications.after.time === "00:00:00" ? "" : this.convertToMinutes(
                   this.props.itemToEditPassedIn.ta_notifications.after.time
                 )}
                 onChange={(e) => {
