@@ -153,7 +153,7 @@ export default class MainPage extends React.Component {
 
 
   handleRepeatDropDown = (eventKey, week_days) => {
-    if (eventKey === "WEEK") {
+    if (eventKey === "Week") {
       const newByDay = {
         ...this.state.byDay_temp,
         [this.state.newEventStart0.getDay()]: week_days[
@@ -527,7 +527,7 @@ export default class MainPage extends React.Component {
 
             gr.photo = x[i].photo;
             gr.repeat = x[i].repeat.toLowerCase() === "true";
-            gr.repeat_ends = x[i].repeat_ends || "Never";
+            gr.repeat_type = x[i].repeat_type || "Never";
             gr.repeat_ends_on = x[i].repeat_ends_on;
             gr.repeat_every = x[i].repeat_every;
             gr.repeat_frequency = x[i].repeat_frequency;
@@ -2155,7 +2155,7 @@ updates the google calendar based  on
     let exdate = "";
 
     // If seleted WEEK, add BYDAY to recurrence string
-    if (this.state.repeatDropDown === "WEEK") {
+    if (this.state.repeatDropDown === "Week") {
       let selectedDays = [];
       for (let [key, value] of Object.entries(this.state.byDay)) {
         // Excluding today if today is not selected
@@ -2584,7 +2584,7 @@ this will close repeat modal.
     }
 
     // If repeatDropDown_temp is WEEK
-    else if (repeatDropDown_temp === "WEEK") {
+    else if (repeatDropDown_temp === "Week") {
       let selectedDays = [];
       for (let [key, value] of Object.entries(byDay_temp)) {
         value !== "" && selectedDays.push(value);
@@ -3994,7 +3994,7 @@ this will close repeat modal.
                   day
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="WEEK"
+                  eventKey="Week"
                   onSelect={(eventKey) =>
                     this.handleRepeatDropDown(eventKey, week_days)
                   }
@@ -4016,7 +4016,7 @@ this will close repeat modal.
               </DropdownButton>
             </Form.Group>
             <Form.Group style={{ marginLeft: "5px" }}>
-              {this.state.repeatDropDown_temp === "WEEK" && weekSelected}
+              {this.state.repeatDropDown_temp === "Week" && weekSelected}
             </Form.Group>
             {/* {this.state.repeatDropDown === "MONTH" && monthSelected} */}
             <Form.Group

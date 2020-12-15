@@ -95,9 +95,12 @@ console.log(arr);
       
       console.log(arr);
       if(!arr[i][0].start) break;
-      tempStart = arr[i][0].start.dateTime;
+      for(var j = 0; j < arr[i].length; j++) {
+        console.log(arr[i][j])
+      
+      tempStart = arr[i][j].start.dateTime;
       console.log(tempStart)
-      tempEnd = arr[i][0].end.dateTime;
+      tempEnd = arr[i][j].end.dateTime;
 
       let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
      		timeZone: this.props.timeZone
@@ -126,7 +129,7 @@ console.log(arr);
                   data-toggle="tooltip"
                   data-placement="right"
                   title={
-                    arr[i][0].summary +
+                    arr[i][j].summary +
                     "\nStart: " +
                     tempStartTime +
                     "\nEnd: " +
@@ -165,7 +168,7 @@ console.log(arr);
                   }}
                 >
                   {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-                  {arr[i][0].summary}
+                  {arr[i][j].summary}
                 </div>
               </div>
             );
@@ -228,7 +231,7 @@ console.log(arr);
                   data-toggle="tooltip"
                   data-placement="right"
                   title={
-                    arr[i][0].summary +
+                    arr[i][j].summary +
                     "\nStart: " +
                     tempStartTime +
                     "\nEnd: " +
@@ -267,7 +270,7 @@ console.log(arr);
                   }}
                 >
                   {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-                  {arr[i][0].summary}
+                  {arr[i][j].summary}
                 </div>
               </div>
             );
@@ -287,7 +290,7 @@ console.log(arr);
               data-toggle="tooltip"
               data-placement="right"
               title={
-                arr[i][0].summary +
+                arr[i][j].summary +
                 "\nStart: " +
                 tempStartTime +
                 "\nEnd: " +
@@ -326,7 +329,7 @@ console.log(arr);
               }}
             >
               {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-              {arr[i][0].summary}
+              {arr[i][j].summary}
             </div>
           </div>
         );
@@ -347,7 +350,7 @@ console.log(arr);
               data-toggle="tooltip"
               data-placement="right"
               title={
-                arr[i][0].summary +
+                arr[i][j].summary +
                 "\nStart: " +
                 tempStartTime +
                 "\nEnd: " +
@@ -386,12 +389,13 @@ console.log(arr);
               }}
             >
               {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-              {arr[i][0].summary}
+              {arr[i][j].summary}
             </div>
           </div>
         );
         res.push(newElement);
       }
+    }
     }
     return res;
   };

@@ -88,7 +88,7 @@ export default class DayGoals extends Component {
 
       let repeatEvery = parseInt(arr[i].repeat_every);
 
-      let repeatEnds = arr[i].repeat_ends;
+      let repeatEnds = arr[i].repeat_type;
 
       let repeatEndsOn = new Date(
         new Date(arr[i].repeat_ends_on).toLocaleString("en-US", {
@@ -115,12 +115,12 @@ export default class DayGoals extends Component {
         if (CurrentDate >= startDate) {
           if (repeatEnds == "On") {
           } else if (repeatEnds == "After") {
-            if (repeatFrequency == "DAY") {
+            if (repeatFrequency == "Day") {
               repeatEndsOn = new Date(startDate);
               repeatEndsOn.setDate(
                 startDate.getDate() + (repeatOccurences - 1) * repeatEvery
               );
-            } else if (repeatFrequency == "WEEK") {
+            } else if (repeatFrequency == "Week") {
               let occurence_dates = [];
 
               const start_day_and_time = arr[i].start_day_and_time.split(
@@ -192,7 +192,7 @@ export default class DayGoals extends Component {
           }
 
           if (CurrentDate <= repeatEndsOn) {
-            if (repeatFrequency == "DAY") {
+            if (repeatFrequency == "Day") {
               isDisplayedTodayCalculated =
                 Math.floor(
                   (CurrentDate.getTime() - startDate.getTime()) /
@@ -200,7 +200,7 @@ export default class DayGoals extends Component {
                 ) %
                   repeatEvery ==
                 0;
-            } else if (repeatFrequency == "WEEK") {
+            } else if (repeatFrequency == "Week") {
               isDisplayedTodayCalculated =
                 repeatWeekDays.includes(CurrentDate.getDay()) &&
                 Math.floor(

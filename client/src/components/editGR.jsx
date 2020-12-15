@@ -34,9 +34,9 @@ export default class editGR extends Component {
           ? "Custom..."
           : "Does not repeat",
       repeatDropDown:
-        this.props.ATArray[this.props.i].repeat_frequency || "DAY",
+        this.props.ATArray[this.props.i].repeat_frequency || "Day",
       repeatDropDown_temp:
-        this.props.ATArray[this.props.i].repeat_frequency || "DAY",
+        this.props.ATArray[this.props.i].repeat_frequency || "Day",
       repeatMonthlyDropDown: "Monthly on day 13",
       repeatInputValue: this.props.ATArray[this.props.i].repeat_every || "1",
       repeatInputValue_temp:
@@ -45,8 +45,8 @@ export default class editGR extends Component {
         this.props.ATArray[this.props.i].repeat_occurences || "1",
       repeatOccurrence_temp:
         this.props.ATArray[this.props.i].repeat_occurences || "1",
-      repeatRadio: this.props.ATArray[this.props.i].repeat_ends || "Never",
-      repeatRadio_temp: this.props.ATArray[this.props.i].repeat_ends || "Never",
+      repeatRadio: this.props.ATArray[this.props.i].repeat_type || "Never",
+      repeatRadio_temp: this.props.ATArray[this.props.i].repeat_type || "Never",
       repeatEndDate: this.props.ATArray[this.props.i].repeat_ends_on || "",
       repeatEndDate_temp: this.props.ATArray[this.props.i].repeat_ends_on || "",
       byDay: this.props.ATArray[this.props.i].repeat_week_days || {
@@ -168,7 +168,7 @@ export default class editGR extends Component {
     let isDisplayedTodayCalculated = false;
     let repeatOccurences = parseInt(gr["repeat_occurences"]);
     let repeatEvery = parseInt(gr["repeat_every"]);
-    let repeatEnds = gr["repeat_ends"];
+    let repeatEnds = gr["repeat_type"];
     let repeatEndsOn = new Date(
       new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
         timeZone: "America/Los_Angeles",
@@ -191,12 +191,12 @@ export default class editGR extends Component {
       if (CurrentDate >= startDate) {
         if (repeatEnds == "On") {
         } else if (repeatEnds == "After") {
-          if (repeatFrequency == "DAY") {
+          if (repeatFrequency == "Day") {
             repeatEndsOn = new Date(startDate);
             repeatEndsOn.setDate(
               startDate.getDate() + (repeatOccurences - 1) * repeatEvery
             );
-          } else if (repeatFrequency == "WEEK") {
+          } else if (repeatFrequency == "Week") {
             repeatEndsOn = new Date(startDate);
             repeatEndsOn.setDate(
               startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
@@ -217,7 +217,7 @@ export default class editGR extends Component {
         }
 
         if (CurrentDate <= repeatEndsOn) {
-          if (repeatFrequency == "DAY") {
+          if (repeatFrequency == "Day") {
             isDisplayedTodayCalculated =
               Math.floor(
                 (CurrentDate.getTime() - startDate.getTime()) /
@@ -225,7 +225,7 @@ export default class editGR extends Component {
               ) %
                 repeatEvery ==
               0;
-          } else if (repeatFrequency == "WEEK") {
+          } else if (repeatFrequency == "Week") {
             isDisplayedTodayCalculated =
               repeatWeekDays.includes(CurrentDate.getDay()) &&
               Math.floor(
@@ -616,7 +616,7 @@ export default class editGR extends Component {
     temp.repeat = true;
     temp.repeat_every = repeatInputValue_temp;
     temp.repeat_frequency = repeatDropDown_temp;
-    temp.repeat_ends = repeatRadio_temp;
+    temp.repeat_type = repeatRadio_temp;
     temp.repeat_ends_on = repeatEndDate_temp;
     temp.repeat_occurences = repeatOccurrence_temp;
     temp.repeat_week_days = byDay_temp;
@@ -634,7 +634,7 @@ export default class editGR extends Component {
     }));
 
     // If repeatDropDown_temp is DAY
-    if (repeatDropDown_temp === "DAY") {
+    if (repeatDropDown_temp === "Day") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
@@ -683,7 +683,7 @@ export default class editGR extends Component {
     }
 
     // If repeatDropDown_temp is WEEK
-    else if (repeatDropDown_temp === "WEEK") {
+    else if (repeatDropDown_temp === "Week") {
       let selectedDays = [];
       for (let [key, value] of Object.entries(byDay_temp)) {
         value !== "" && selectedDays.push(value);
@@ -891,7 +891,7 @@ export default class editGR extends Component {
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
-    if (eventKey === "WEEK") {
+    if (eventKey === "Week") {
       const newByDay = {
         ...this.state.byDay_temp,
       };
@@ -1249,8 +1249,8 @@ export default class editGR extends Component {
         </div>
       </>
     );
-    if (!this.state.itemToEdit.repeat_ends) {
-      this.state.itemToEdit.repeat_ends = "Never";
+    if (!this.state.itemToEdit.repeat_type) {
+      this.state.itemToEdit.repeat_type = "Never";
     }
     return (
       <Modal.Dialog style={modalStyle}>
@@ -1278,18 +1278,18 @@ export default class editGR extends Component {
                 onChange={(e) => this.handleRepeatInputValue(e.target.value)}
               />
               <DropdownButton
-                title={this.state.itemToEdit.repeat_frequency || "DAY"}
+                title={this.state.itemToEdit.repeat_frequency || "Day"}
                 style={selectStyle}
                 variant="light"
               >
                 <Dropdown.Item
-                  eventKey="DAY"
+                  eventKey="Day"
                   onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   day
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="WEEK"
+                  eventKey="Week"
                   onSelect={(eventKey) =>
                     this.handleRepeatDropDown(eventKey, week_days)
                   }
@@ -1311,7 +1311,7 @@ export default class editGR extends Component {
               </DropdownButton>
             </Form.Group>
             <Form.Group>
-              {this.state.repeatDropDown_temp === "WEEK" && weekSelected}
+              {this.state.repeatDropDown_temp === "Week" && weekSelected}
             </Form.Group>
             <Form.Group
               style={{
@@ -1339,7 +1339,7 @@ export default class editGR extends Component {
                     value="Never"
                     name="radios"
                     defaultChecked={
-                      this.state.itemToEdit.repeat_ends === ("Never" || null) &&
+                      this.state.itemToEdit.repeat_type === ("Never" || null) &&
                       true
                     }
                   />
@@ -1354,7 +1354,7 @@ export default class editGR extends Component {
                     value="On"
                     style={{ marginTop: "10px" }}
                     defaultChecked={
-                      this.state.itemToEdit.repeat_ends === "On" && true
+                      this.state.itemToEdit.repeat_type === "On" && true
                     }
                   />
                   On
@@ -1371,14 +1371,14 @@ export default class editGR extends Component {
               </Form.Check>
               <Form.Check type="radio" style={{ margin: "15px 0" }}>
                 <Form.Check.Label>
-                  {this.state.itemToEdit.repeat_frequency === "WEEK" ? (
+                  {this.state.itemToEdit.repeat_frequency === "Week" ? (
                     <Form.Check.Input
                       type="radio"
                       name="radios"
                       value="After"
                       style={{ marginTop: "12px" }}
                       defaultChecked={
-                        this.state.itemToEdit.repeat_ends === "After" && true
+                        this.state.itemToEdit.repeat_type === "After" && true
                       }
                     />
                   ) : (
@@ -1388,7 +1388,7 @@ export default class editGR extends Component {
                       value="After"
                       style={{ marginTop: "12px" }}
                       defaultChecked={
-                        this.state.itemToEdit.repeat_ends === "After" && true
+                        this.state.itemToEdit.repeat_type === "After" && true
                       }
                     />
                   )}

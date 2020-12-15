@@ -284,12 +284,12 @@ app.get("/isdisplayedugh", (req, res) => {
             if (CurrentDate >= startDate) {
               if (repeatEnds == "On") {
               } else if (repeatEnds == "After") {
-                if (repeatFrequency == "DAY") {
+                if (repeatFrequency == "Day") {
                   repeatEndsOn = new Date(startDate);
                   repeatEndsOn.setDate(
                     startDate.getDate() + (repeatOccurences - 1) * repeatEvery
                   );
-                } else if (repeatFrequency == "WEEK") {
+                } else if (repeatFrequency == "Week") {
                   repeatEndsOn = new Date(startDate);
                   repeatEndsOn.setDate(
                     startDate.getDate() +
@@ -313,7 +313,7 @@ app.get("/isdisplayedugh", (req, res) => {
               }
 
               if (CurrentDate <= repeatEndsOn) {
-                if (repeatFrequency == "DAY") {
+                if (repeatFrequency == "Day") {
                   isDisplayedTodayCalculated =
                   Math.floor(
                     (CurrentDate.getTime() - startDate.getTime()) /
@@ -321,7 +321,7 @@ app.get("/isdisplayedugh", (req, res) => {
                   ) %
                   repeatEvery ==
                   0;
-                } else if (repeatFrequency == "WEEK") {
+                } else if (repeatFrequency == "Week") {
                   isDisplayedTodayCalculated =
                   repeatWeekDays.includes(CurrentDate.getDay()) &&
                   Math.floor(

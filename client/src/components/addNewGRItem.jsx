@@ -60,8 +60,8 @@ export default class AddNewGRItem extends Component {
       end_day_and_time: new Date(),
       repeat: false,
       repeat_every: "1",
-      repeat_frequency: "DAY",
-      repeat_ends: "Never",
+      repeat_frequency: "Day",
+      repeat_type: "",
       repeat_ends_on: "",
       repeat_occurences: "1",
       repeat_week_days: {
@@ -128,8 +128,8 @@ export default class AddNewGRItem extends Component {
     showRepeatModal: false,
     repeatOption: false,
     repeatOptionDropDown: "Does not repeat",
-    repeatDropDown: "DAY",
-    repeatDropDown_temp: "DAY",
+    repeatDropDown: "Day",
+    repeatDropDown_temp: "Day",
     repeatMonthlyDropDown: "Monthly on day 13",
     repeatInputValue: "1",
     repeatInputValue_temp: "1",
@@ -215,7 +215,7 @@ export default class AddNewGRItem extends Component {
 
             gr.photo = x[i].photo;
             gr.repeat = x[i].repeat.toLowerCase() === "true";
-            gr.repeat_ends = x[i].repeat_ends || "Never";
+            gr.repeat_type = x[i].repeat_type || "";
             gr.repeat_ends_on = x[i].repeat_ends_on;
             gr.repeat_every = x[i].repeat_every;
             gr.repeat_frequency = x[i].repeat_frequency;
@@ -743,7 +743,7 @@ this will close repeat modal.
     let isDisplayedTodayCalculated = false;
     let repeatOccurences = parseInt(gr["repeat_occurences"]);
     let repeatEvery = parseInt(gr["repeat_every"]);
-    let repeatEnds = gr["repeat_ends"];
+    let repeatEnds = gr["repeat_type"];
     let repeatEndsOn = new Date(
       new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
         timeZone: "America/Los_Angeles",
@@ -766,12 +766,12 @@ this will close repeat modal.
       if (CurrentDate >= startDate) {
         if (repeatEnds == "On") {
         } else if (repeatEnds == "After") {
-          if (repeatFrequency == "DAY") {
+          if (repeatFrequency == "Day") {
             repeatEndsOn = new Date(startDate);
             repeatEndsOn.setDate(
               startDate.getDate() + (repeatOccurences - 1) * repeatEvery
             );
-          } else if (repeatFrequency == "WEEK") {
+          } else if (repeatFrequency == "Week") {
             repeatEndsOn = new Date(startDate);
             repeatEndsOn.setDate(
               startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
@@ -792,7 +792,7 @@ this will close repeat modal.
         }
 
         if (CurrentDate <= repeatEndsOn) {
-          if (repeatFrequency == "DAY") {
+          if (repeatFrequency == "Day") {
             isDisplayedTodayCalculated =
               Math.floor(
                 (CurrentDate.getTime() - startDate.getTime()) /
@@ -800,7 +800,7 @@ this will close repeat modal.
               ) %
                 repeatEvery ==
               0;
-          } else if (repeatFrequency == "WEEK") {
+          } else if (repeatFrequency == "Week") {
             isDisplayedTodayCalculated =
               repeatWeekDays.includes(CurrentDate.getDay()) &&
               Math.floor(
@@ -850,7 +850,7 @@ this will close repeat modal.
     temp.repeat = true;
     temp.repeat_every = repeatInputValue_temp;
     temp.repeat_frequency = repeatDropDown_temp;
-    temp.repeat_ends = repeatRadio_temp;
+    temp.repeat_type = repeatRadio_temp;
     temp.repeat_ends_on = repeatEndDate_temp;
     temp.repeat_occurences = repeatOccurrence_temp;
     temp.repeat_week_days = byDay_temp;
@@ -869,7 +869,8 @@ this will close repeat modal.
     }));
 
     // If repeatDropDown_temp is DAY
-    if (repeatDropDown_temp === "DAY") {
+  
+    if (repeatDropDown_temp === "Day") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
@@ -918,7 +919,7 @@ this will close repeat modal.
     }
 
     // If repeatDropDown_temp is WEEK
-    else if (repeatDropDown_temp === "WEEK") {
+    else if (repeatDropDown_temp === "Week") {
       let selectedDays = [];
       for (let [key, value] of Object.entries(byDay_temp)) {
         value !== "" && selectedDays.push(value);
@@ -1126,7 +1127,7 @@ this will close repeat modal.
 
   handleRepeatDropDown = (eventKey, week_days) => {
     console.log("is it going in here");
-    if (eventKey === "WEEK") {
+    if (eventKey === "Week") {
       const newByDay = {
         ...this.state.byDay_temp,
       };
@@ -1298,13 +1299,13 @@ this will close repeat modal.
                 variant="light"
               >
                 <Dropdown.Item
-                  eventKey="DAY"
+                  eventKey="Day"
                   onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   day
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="WEEK"
+                  eventKey="Week"
                   onSelect={(eventKey) =>
                     this.handleRepeatDropDown(eventKey, week_days)
                   }
@@ -1326,7 +1327,7 @@ this will close repeat modal.
               </DropdownButton>
             </Form.Group>
             <Form.Group>
-              {this.state.repeatDropDown_temp === "WEEK" && weekSelected}
+              {this.state.repeatDropDown_temp === "Week" && weekSelected}
             </Form.Group>
             <Form.Group
               style={{
@@ -1354,7 +1355,7 @@ this will close repeat modal.
                     value="Never"
                     name="radios"
                     defaultChecked={
-                      this.state.itemToEdit.repeat_ends === "Never" && true
+                      this.state.itemToEdit.repeat_type === "Never" && true
                     }
                   />
                   Never
@@ -1368,7 +1369,7 @@ this will close repeat modal.
                     value="On"
                     style={{ marginTop: "10px" }}
                     defaultChecked={
-                      this.state.itemToEdit.repeat_ends === "On" && true
+                      this.state.itemToEdit.repeat_type === "On" && true
                     }
                   />
                   On
@@ -1388,7 +1389,7 @@ this will close repeat modal.
                       value="After"
                       style={{ marginTop: "12px" }}
                       defaultChecked={
-                        this.state.itemToEdit.repeat_ends === "After" && true
+                        this.state.itemToEdit.repeat_type === "After" && true
                       }
                       //disabled
                     />
@@ -1399,7 +1400,7 @@ this will close repeat modal.
                       value="After"
                       style={{ marginTop: "12px" }}
                       defaultChecked={
-                        this.state.itemToEdit.repeat_ends === "After" && true
+                        this.state.itemToEdit.repeat_type === "After" && true
                       }
                     />
                   )}

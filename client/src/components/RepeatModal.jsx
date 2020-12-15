@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const RepeatModal = (props) => {
-  const [title, setTitle] = useState("DAY");
+  const [title, setTitle] = useState("Day");
   const [monthly, setMonthly] = useState("Monthly on day 13");
   const [endDate, setEndDate] = useState(props.newEventStart0);
   const [inputValue, setInputValue] = useState(1);
@@ -119,13 +119,13 @@ const RepeatModal = (props) => {
           />
           <DropdownButton title={title} style={selectStyle} variant="light">
             <Dropdown.Item
-              eventKey="DAY"
+              eventKey="Day"
               onSelect={(eventKey) => setTitle(eventKey)}
             >
               day
             </Dropdown.Item>
             <Dropdown.Item
-              eventKey="WEEK"
+              eventKey="Week"
               onSelect={(eventKey) => setTitle(eventKey)}
             >
               week
@@ -144,7 +144,7 @@ const RepeatModal = (props) => {
             </Dropdown.Item>
           </DropdownButton>
         </div>
-        {title === "WEEK" && weekSelected}
+        {title === "Week" && weekSelected}
         {title === "MONTH" && monthSelected}
         <Form
           style={{

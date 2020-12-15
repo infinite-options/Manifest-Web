@@ -1387,7 +1387,8 @@ export default class FirebaseV2 extends React.Component {
       return <div style={{ fontSize: "12px" }}> One time only </div>;
     } else {
       switch (this.props.routines[i]["repeat_frequency"]) {
-        case "DAY":
+        case "Day":
+          console.log(this.props.routines[i]["repeat_frequency"])
           if (this.props.routines[i]["repeat_every"] === "1") {
             return <div style={{ fontSize: "12px" }}> Repeat daily </div>;
           } else {
@@ -1398,7 +1399,7 @@ export default class FirebaseV2 extends React.Component {
               </div>
             );
           }
-        case "WEEK":
+        case "Week":
           if (this.props.routines[i]["repeat_every"] === "1") {
             return <div style={{ fontSize: "12px" }}> Repeat weekly </div>;
           } else {
@@ -1768,7 +1769,7 @@ export default class FirebaseV2 extends React.Component {
       return <div> One time goal </div>;
     } else {
       switch (this.props.goals[i]["repeat_frequency"]) {
-        case "DAY":
+        case "Day":
           if (this.props.goals[i]["repeat_every"] === "1") {
             return <div> Repeat daily </div>;
           } else {
@@ -1779,7 +1780,7 @@ export default class FirebaseV2 extends React.Component {
               </div>
             );
           }
-        case "WEEK":
+        case "Week":
           if (this.props.goals[i]["repeat_every"] === "1") {
             return <div> Repeat weekly </div>;
           } else {
