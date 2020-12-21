@@ -260,7 +260,7 @@ app.get("/isdisplayedugh", (req, res) => {
           let isDisplayedTodayCalculated: boolean = false;
           let repeatOccurences = parseInt(gr["repeat_occurences"]);
           let repeatEvery = parseInt(gr["repeat_every"]);
-          let repeatEnds = gr["repeat_ends"];
+          let repeatEnds = gr["repeat_type"];
           let repeatEndsOn: Date = new Date(
             new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
               timeZone: "America/Los_Angeles",
