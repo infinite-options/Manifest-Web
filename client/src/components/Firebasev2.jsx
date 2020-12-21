@@ -1383,15 +1383,35 @@ export default class FirebaseV2 extends React.Component {
   };
 
   showRoutineRepeatStatus = (i) => {
+    console.log(this.props.routines)
+    let selectedDays = [];
+      for (let [key, value] of Object.entries(this.props.routines[i]["repeat_week_days"])) {
+        value !== "" && selectedDays.push(value);
+      }
+      console.log(selectedDays)
+    // const date = moment(this.props.routines[i]["repeat_ends_on"]).format("MMMM DD,YYYY")
     if (!this.props.routines[i]["repeat"]) {
       return <div style={{ fontSize: "12px" }}> One time only </div>;
     } else {
       switch (this.props.routines[i]["repeat_frequency"]) {
         case "Day":
           console.log(this.props.routines[i]["repeat_frequency"])
+          console.log(this.props.routines[i]["repeat_every"])
           if (this.props.routines[i]["repeat_every"] === "1") {
             return <div style={{ fontSize: "12px" }}> Repeat daily </div>;
-          } else {
+          }
+          else if(this.props.routines[i]["repeat_type"] === "On"){
+              return  <div style={{ fontSize: "12px" }}> Repeat every {this.props.routines[i]["repeat_every"]} days, until { moment(this.props.routines[i]["repeat_ends_on"]).format("MMMM DD,YYYY")} </div>;
+          } 
+          else if(this.props.routines[i]["repeat_type"] === "After"){
+            return(
+            <div style={{ fontSize: "12px" }}>
+                {" "}
+                Repeat every {this.props.routines[i]["repeat_every"]} days, {this.props.routines[i]["repeat_occurences"]} times
+              </div>
+            )
+          }
+          else {
             return (
               <div style={{ fontSize: "12px" }}>
                 {" "}
@@ -1402,15 +1422,26 @@ export default class FirebaseV2 extends React.Component {
         case "Week":
           if (this.props.routines[i]["repeat_every"] === "1") {
             return <div style={{ fontSize: "12px" }}> Repeat weekly </div>;
-          } else {
+          }
+          else if(this.props.routines[i]["repeat_type"] === "On"){
+            return  <div style={{ fontSize: "12px" }}> Repeat every {this.props.routines[i]["repeat_every"]} weeks on {selectedDays.join(", ")}, until { moment(this.props.routines[i]["repeat_ends_on"]).format("MMMM DD,YYYY")} </div>;
+        } 
+        else if(this.props.routines[i]["repeat_type"] === "After"){
+          return(
+          <div style={{ fontSize: "12px" }}>
+              {" "}
+              Repeat every {this.props.routines[i]["repeat_every"]} weeks on {selectedDays.join(", ")}, {this.props.routines[i]["repeat_occurences"]} times
+            </div>
+          )
+        } else {
             return (
               <div style={{ fontSize: "12px" }}>
                 {" "}
-                Repeat every {this.props.routines[i]["repeat_every"]} weeks{" "}
+                Repeat every {this.props.routines[i]["repeat_every"]} weeks{" "} on {selectedDays.join(", ")}
               </div>
             );
           }
-        case "MONTH":
+        case "Month":
           if (this.props.routines[i]["repeat_every"] === "1") {
             return <div style={{ fontSize: "12px" }}> Repeat monthly </div>;
           } else {
@@ -1791,7 +1822,7 @@ export default class FirebaseV2 extends React.Component {
               </div>
             );
           }
-        case "MONTH":
+        case "Month":
           if (this.props.goals[i]["repeat_every"] === "1") {
             return <div> Repeat monthly </div>;
           } else {

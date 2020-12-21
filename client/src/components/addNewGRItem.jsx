@@ -60,7 +60,7 @@ export default class AddNewGRItem extends Component {
       end_day_and_time: new Date(),
       repeat: false,
       repeat_every: "1",
-      repeat_frequency: "Day",
+      repeat_frequency: "",
       repeat_type: "",
       repeat_ends_on: "",
       repeat_occurences: "1",
@@ -776,7 +776,7 @@ this will close repeat modal.
             repeatEndsOn.setDate(
               startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
             );
-          } else if (repeatFrequency == "MONTH") {
+          } else if (repeatFrequency == "Month") {
             repeatEndsOn = new Date(startDate);
             repeatEndsOn.setMonth(
               startDate.getMonth() + (repeatOccurences - 1) * repeatEvery
@@ -809,7 +809,7 @@ this will close repeat modal.
               ) %
                 repeatEvery ==
                 0;
-          } else if (repeatFrequency == "MONTH") {
+          } else if (repeatFrequency == "Month") {
             isDisplayedTodayCalculated =
               CurrentDate.getDate() == startDate.getDate() &&
               ((CurrentDate.getFullYear() - startDate.getFullYear()) * 12 +
@@ -870,6 +870,7 @@ this will close repeat modal.
 
     // If repeatDropDown_temp is DAY
   
+    console.log(repeatDropDown_temp)
     if (repeatDropDown_temp === "Day") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
@@ -1018,7 +1019,7 @@ this will close repeat modal.
     }
 
     // If repeatDropDown_temp is MONTH
-    else if (repeatDropDown_temp === "MONTH") {
+    else if (repeatDropDown_temp === "Month") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
@@ -1313,7 +1314,7 @@ this will close repeat modal.
                   week
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="MONTH"
+                  eventKey="Month"
                   onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   month

@@ -201,7 +201,7 @@ export default class editGR extends Component {
             repeatEndsOn.setDate(
               startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
             );
-          } else if (repeatFrequency == "MONTH") {
+          } else if (repeatFrequency == "Month") {
             repeatEndsOn = new Date(startDate);
             repeatEndsOn.setMonth(
               startDate.getMonth() + (repeatOccurences - 1) * repeatEvery
@@ -234,7 +234,7 @@ export default class editGR extends Component {
               ) %
                 repeatEvery ==
                 0;
-          } else if (repeatFrequency == "MONTH") {
+          } else if (repeatFrequency == "Month") {
             isDisplayedTodayCalculated =
               CurrentDate.getDate() == startDate.getDate() &&
               ((CurrentDate.getFullYear() - startDate.getFullYear()) * 12 +
@@ -634,6 +634,8 @@ export default class editGR extends Component {
     }));
 
     // If repeatDropDown_temp is DAY
+    
+    console.log(repeatDropDown_temp)
     if (repeatDropDown_temp === "Day") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
@@ -783,7 +785,7 @@ export default class editGR extends Component {
     }
 
     // If repeatDropDown_temp is MONTH
-    else if (repeatDropDown_temp === "MONTH") {
+    else if (repeatDropDown_temp === "Month") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
@@ -1297,7 +1299,7 @@ export default class editGR extends Component {
                   week
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="MONTH"
+                  eventKey="Month"
                   onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   month

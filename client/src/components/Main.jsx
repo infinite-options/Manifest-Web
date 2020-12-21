@@ -2145,7 +2145,7 @@ updates the google calendar based  on
   defineRecurrence = () => {
     // frequency in RRULE
     let frequency =
-      this.state.repeatDropDown === "DAY"
+      this.state.repeatDropDown === "Day"
         ? "DAILY"
         : this.state.repeatDropDown.concat("LY");
 
@@ -2535,7 +2535,8 @@ this will close repeat modal.
     }));
 
     // If repeatDropDown_temp is DAY
-    if (repeatDropDown_temp === "DAY") {
+    console.log(repeatDropDown_temp)
+    if (repeatDropDown_temp === "Day") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
@@ -2684,7 +2685,7 @@ this will close repeat modal.
     }
 
     // If repeatDropDown_temp is MONTH
-    else if (repeatDropDown_temp === "MONTH") {
+    else if (repeatDropDown_temp === "Month") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
@@ -3988,7 +3989,7 @@ this will close repeat modal.
                 variant="light"
               >
                 <Dropdown.Item
-                  eventKey="DAY"
+                  eventKey="Day"
                   onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   day
@@ -4002,7 +4003,7 @@ this will close repeat modal.
                   week
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="MONTH"
+                  eventKey="Month"
                   onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   month

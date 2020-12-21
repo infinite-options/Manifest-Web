@@ -295,7 +295,7 @@ app.get("/isdisplayedugh", (req, res) => {
                     startDate.getDate() +
                     (repeatOccurences - 1) * 7 * repeatEvery
                   );
-                } else if (repeatFrequency == "MONTH") {
+                } else if (repeatFrequency == "Month") {
                   repeatEndsOn = new Date(startDate);
                   repeatEndsOn.setMonth(
                     startDate.getMonth() +
@@ -330,7 +330,7 @@ app.get("/isdisplayedugh", (req, res) => {
                   ) %
                   repeatEvery ==
                   0;
-                } else if (repeatFrequency == "MONTH") {
+                } else if (repeatFrequency == "Month") {
                   isDisplayedTodayCalculated =
                   CurrentDate.getDate() == startDate.getDate() &&
                   ((CurrentDate.getFullYear() - startDate.getFullYear()) *

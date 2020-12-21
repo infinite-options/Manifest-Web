@@ -131,7 +131,7 @@ const RepeatModal = (props) => {
               week
             </Dropdown.Item>
             <Dropdown.Item
-              eventKey="MONTH"
+              eventKey="Month"
               onSelect={(eventKey) => setTitle(eventKey)}
             >
               month
@@ -145,7 +145,7 @@ const RepeatModal = (props) => {
           </DropdownButton>
         </div>
         {title === "Week" && weekSelected}
-        {title === "MONTH" && monthSelected}
+        {title === "Month" && monthSelected}
         <Form
           style={{
             height: "140px",

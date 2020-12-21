@@ -86,7 +86,7 @@ export default class WeekGoals extends Component {
               } else if (repeatFrequency == "Week"){
                 repeatEndsOn = new Date(startDate);
                 repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
-              } else if (repeatFrequency == "MONTH"){
+              } else if (repeatFrequency == "Month"){
                 repeatEndsOn = new Date(startDate);
                 repeatEndsOn.setMonth(startDate.getMonth() + (repeatOccurences-1)*repeatEvery);
               } else if (repeatFrequency == "YEAR"){
@@ -107,7 +107,7 @@ export default class WeekGoals extends Component {
                   (CurrentDate.getTime() - startDate.getTime()) /
                   (7 * 24 * 3600 * 1000)
                 ) % repeatEvery == 0;
-              } else if (repeatFrequency == "MONTH"){
+              } else if (repeatFrequency == "Month"){
                 isDisplayedTodayCalculated = (CurrentDate.getDate() == startDate.getDate()) &&
                 ((CurrentDate.getFullYear() - startDate.getFullYear())*12 + CurrentDate.getMonth() - startDate.getMonth()) % repeatEvery == 0;
               } else if (repeatFrequency == "YEAR"){
@@ -340,7 +340,7 @@ export default class WeekGoals extends Component {
   if (occurence_dates.includes(today)) {
     isDisplayedTodayCalculated = true;
   }
-} else if (repeatFrequency == "MONTH") {
+} else if (repeatFrequency == "Month") {
   repeatEndsOn = new Date(startDate2);
   repeatEndsOn.setMonth(
     startDate2.getMonth() + (repeatOccurences - 1) * repeatEvery
@@ -373,7 +373,7 @@ if (CurrentDate <= repeatEndsOn) {
     ) %
     repeatEvery ==
     0;
-  } else if (repeatFrequency == "MONTH") {
+  } else if (repeatFrequency == "Month") {
     isDisplayedTodayCalculated =
     CurrentDate.getDate() == startDate2.getDate() &&
     ((CurrentDate.getFullYear() - startDate2.getFullYear()) * 12 +

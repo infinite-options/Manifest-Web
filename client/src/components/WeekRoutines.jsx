@@ -27,6 +27,7 @@ export default class WeekRoutines extends Component {
     var arr = this.props.routines;
     var dic = {}
     let startObject = this.props.dateContext.clone();
+    console.log(startObject)
     let endObject = this.props.dateContext.clone();
     let startDay = startObject.startOf("week");
     let endDay = endObject.endOf("week");
@@ -74,16 +75,23 @@ export default class WeekRoutines extends Component {
           let isDisplayedTodayCalculated = false;
 
           CurrentDate.setDate(CurrentDate.getDate()+j);
+          console.log(CurrentDate, startDate, arr[i].title, repeatEnds)
           if (CurrentDate >= startDate) {
             if (repeatEnds == "On") {
+              // repeatEndsOn.setDate(arr[i]["repeat_ends_on"])
             } else if (repeatEnds == "After") {
               if (repeatFrequency == "Day") {
                 repeatEndsOn = new Date(startDate);
-                repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery);
+                console.log(repeatEndsOn)
+                console.log(startDate.getDate())
+                console.log(repeatOccurences, repeatEvery)
+                console.log( repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery))
+                repeatEndsOn.setDate(tempStartTime.getDate() + (repeatOccurences-1)*repeatEvery);
+                console.log(repeatEndsOn, arr[i].title)
               } else if (repeatFrequency == "Week"){
                 repeatEndsOn = new Date(startDate);
                 repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
-              } else if (repeatFrequency == "MONTH"){
+              } else if (repeatFrequency == "Month"){
                 repeatEndsOn = new Date(startDate);
                 repeatEndsOn.setMonth(startDate.getMonth() + (repeatOccurences-1)*repeatEvery);
               } else if (repeatFrequency == "YEAR"){
@@ -94,9 +102,12 @@ export default class WeekRoutines extends Component {
               repeatEndsOn = CurrentDate;
             }
 
+            console.log(CurrentDate, repeatEndsOn, arr[i].title);
             if (CurrentDate <= repeatEndsOn) {
               if (repeatFrequency == "Day") {
-                isDisplayedTodayCalculated = Math.floor((CurrentDate.getTime() - startDate.getTime())/(24*3600*1000)) % repeatEvery == 0;
+                console.log( CurrentDate, startDate, tempStartTime, arr[i].title)
+                isDisplayedTodayCalculated = Math.floor((repeatEndsOn.getTime() - CurrentDate.getTime())) % repeatEvery == 0;
+                console.log(isDisplayedTodayCalculated, CurrentDate, repeatEndsOn, arr[i].title )
               } else if (repeatFrequency == "Week"){
                 // isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) && Math.floor((CurrentDate.getTime() - startDate.getTime())/(7*24*3600*1000)) % repeatEvery == 0;
                 isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) &&
@@ -104,7 +115,7 @@ export default class WeekRoutines extends Component {
                   (CurrentDate.getTime() - startDate.getTime()) /
                   (7 * 24 * 3600 * 1000)
                 ) % repeatEvery == 0;
-              } else if (repeatFrequency == "MONTH"){
+              } else if (repeatFrequency == "Month"){
                 isDisplayedTodayCalculated = (CurrentDate.getDate() == startDate.getDate()) &&
                 ((CurrentDate.getFullYear() - startDate.getFullYear())*12 + CurrentDate.getMonth() - startDate.getMonth()) % repeatEvery == 0;
               } else if (repeatFrequency == "YEAR"){
@@ -115,6 +126,7 @@ export default class WeekRoutines extends Component {
             }
           }
           if (isDisplayedTodayCalculated) {
+            console.log(arr[i])
             let key = j+"_"+tempStartTime.getHours();
             if (dic[key] == null) {
               dic[key] = [];
@@ -124,6 +136,7 @@ export default class WeekRoutines extends Component {
         }
       }
     }
+    console.log(dic);
     return dic;
   }
 
@@ -271,7 +284,7 @@ export default class WeekRoutines extends Component {
               if (occurence_dates.includes(today)) {
                 isDisplayedTodayCalculated = true;
               }
-            } else if (repeatFrequency == "MONTH") {
+            } else if (repeatFrequency == "Month") {
               repeatEndsOn = new Date(startDate2);
               repeatEndsOn.setMonth(
                 startDate2.getMonth() + (repeatOccurences - 1) * repeatEvery
@@ -304,7 +317,7 @@ export default class WeekRoutines extends Component {
                 ) %
                   repeatEvery ==
                   0;
-            } else if (repeatFrequency == "MONTH") {
+            } else if (repeatFrequency == "Month") {
               isDisplayedTodayCalculated =
                 CurrentDate.getDate() == startDate2.getDate() &&
                 ((CurrentDate.getFullYear() - startDate2.getFullYear()) * 12 +
@@ -326,6 +339,7 @@ export default class WeekRoutines extends Component {
 
       arr[i].is_displayed_today = arr[i].is_displayed_today || isDisplayedTodayCalculated;
 
+      console.log(arr)
       //console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
       if (isDisplayedTodayCalculated) {
         //console.log("today is the day");
@@ -396,6 +410,8 @@ export default class WeekRoutines extends Component {
               }
 
               if (isDisplayedTodayCalculated) {
+              
+                console.log(isDisplayedTodayCalculated,arr[i].title, tempStartTime,tempEndTime)
                 let newElement = (
                   <div key={"event" + i}>
                     <div
@@ -438,6 +454,7 @@ export default class WeekRoutines extends Component {
                     </div>
                   </div>
                 );
+                console.log(newElement);
                 res.push(newElement);
               }
             } else if (startDate.date() !== endDate.date()) {

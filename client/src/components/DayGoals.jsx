@@ -176,7 +176,7 @@ export default class DayGoals extends Component {
               if (occurence_dates.includes(today)) {
                 isDisplayedTodayCalculated = true;
               }
-            } else if (repeatFrequency == "MONTH") {
+            } else if (repeatFrequency == "Month") {
               repeatEndsOn = new Date(startDate);
               repeatEndsOn.setMonth(
                 startDate.getMonth() + (repeatOccurences - 1) * repeatEvery
@@ -209,7 +209,7 @@ export default class DayGoals extends Component {
                 ) %
                   repeatEvery ==
                   0;
-            } else if (repeatFrequency == "MONTH") {
+            } else if (repeatFrequency == "Month") {
               isDisplayedTodayCalculated =
                 CurrentDate.getDate() == startDate.getDate() &&
                 ((CurrentDate.getFullYear() - startDate.getFullYear()) * 12 +
