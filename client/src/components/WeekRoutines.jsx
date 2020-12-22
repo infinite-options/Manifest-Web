@@ -282,6 +282,7 @@ export default class WeekRoutines extends Component {
               let today = getFormattedDate(today_date_object);
 
               if (occurence_dates.includes(today)) {
+                console.log(today);
                 isDisplayedTodayCalculated = true;
               }
             } else if (repeatFrequency == "Month") {
