@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import queryString from "query-string";
-
 import { Redirect } from "react-router-dom";
 import {
   Form,
@@ -152,8 +151,9 @@ export default class MainPage extends React.Component {
 
 
 
+
   handleRepeatDropDown = (eventKey, week_days) => {
-    if (eventKey === "Week") {
+    if (eventKey === "WEEK") {
       const newByDay = {
         ...this.state.byDay_temp,
         [this.state.newEventStart0.getDay()]: week_days[
@@ -196,6 +196,8 @@ export default class MainPage extends React.Component {
 
   // Entry of the page
   componentDidMount() {
+
+
     axios
       .get("/TALogInStatus")
       .then((response) => {
@@ -217,6 +219,7 @@ export default class MainPage extends React.Component {
       .catch((error) => {
         console.log(error);
       });
+    
   }
 
   /*This will obtain the notifications from the database
@@ -747,7 +750,7 @@ export default class MainPage extends React.Component {
               
               gr_array.push(gr);
             }
-             if ((this.state.calendarView === "Week" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
+             if ((this.state.calendarView === "WEEK" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
               gr_array.push(gr);
             }
             if ((this.state.calendarView === "Month" && goalDate.getTime() > monthStartDate.getTime() && goalDate.getTime() < monthEndDate.getTime())){
@@ -763,7 +766,7 @@ export default class MainPage extends React.Component {
                 routine_ids.push(gr["id"]);
                 routine.push(gr);
               }
-              if ((this.state.calendarView === "Week" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime())) {
+              if ((this.state.calendarView === "WEEK" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime())) {
                 routine_ids.push(gr["id"]);
                 routine.push(gr);
               }
@@ -781,7 +784,7 @@ export default class MainPage extends React.Component {
                 goal_ids.push(gr["id"]);
                 goal.push(gr);
               }
-               if ((this.state.calendarView === "Week" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
+               if ((this.state.calendarView === "WEEK" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
                 goal_ids.push(gr["id"]);
                 goal.push(gr);
               }
@@ -1587,8 +1590,8 @@ passed that into the form where the user can edit that data
       showAboutModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
-      repeatDropDown: "DAY",
-      repeatDropDown_temp: "DAY",
+      repeatDropDown: "",
+      repeatDropDown_temp: "",
       repeatMonthlyDropDown: "Monthly on day 13",
       repeatInputValue: "1",
       repeatInputValue_temp: "1",
@@ -2585,7 +2588,7 @@ this will close repeat modal.
     }
 
     // If repeatDropDown_temp is WEEK
-    else if (repeatDropDown_temp === "Week") {
+    else if (repeatDropDown_temp === "WEEK") {
       let selectedDays = [];
       for (let [key, value] of Object.entries(byDay_temp)) {
         value !== "" && selectedDays.push(value);
@@ -2734,7 +2737,7 @@ this will close repeat modal.
     }
 
     // If repeatDropDown_temp is YEAR
-    else if (repeatDropDown_temp === "YEAR") {
+    else if (repeatDropDown_temp === "Year") {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
@@ -3995,7 +3998,7 @@ this will close repeat modal.
                   day
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="Week"
+                  eventKey="WEEK"
                   onSelect={(eventKey) =>
                     this.handleRepeatDropDown(eventKey, week_days)
                   }
@@ -4003,7 +4006,7 @@ this will close repeat modal.
                   week
                 </Dropdown.Item>
                 <Dropdown.Item
-                  eventKey="Month"
+                  eventKey="MONTH"
                   onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   month
@@ -4017,7 +4020,7 @@ this will close repeat modal.
               </DropdownButton>
             </Form.Group>
             <Form.Group style={{ marginLeft: "5px" }}>
-              {this.state.repeatDropDown_temp === "Week" && weekSelected}
+              {this.state.repeatDropDown_temp === "WEEK" && weekSelected}
             </Form.Group>
             {/* {this.state.repeatDropDown === "MONTH" && monthSelected} */}
             <Form.Group

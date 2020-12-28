@@ -75,19 +75,19 @@ export default class WeekRoutines extends Component {
           let isDisplayedTodayCalculated = false;
 
           CurrentDate.setDate(CurrentDate.getDate()+j);
-          console.log(CurrentDate, startDate, arr[i].title, repeatEnds)
+          // console.log(CurrentDate, startDate, arr[i].title, repeatEnds)
           if (CurrentDate >= startDate) {
             if (repeatEnds == "On") {
               // repeatEndsOn.setDate(arr[i]["repeat_ends_on"])
             } else if (repeatEnds == "After") {
               if (repeatFrequency == "Day") {
                 repeatEndsOn = new Date(startDate);
-                console.log(repeatEndsOn)
-                console.log(startDate.getDate())
-                console.log(repeatOccurences, repeatEvery)
-                console.log( repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery))
+                // console.log(repeatEndsOn)
+                // console.log(startDate.getDate())
+                // console.log(repeatOccurences, repeatEvery)
+                // console.log( repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery))
                 repeatEndsOn.setDate(tempStartTime.getDate() + (repeatOccurences-1)*repeatEvery);
-                console.log(repeatEndsOn, arr[i].title)
+                // console.log(repeatEndsOn, arr[i].title)
               } else if (repeatFrequency == "Week"){
                 repeatEndsOn = new Date(startDate);
                 repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
@@ -102,12 +102,12 @@ export default class WeekRoutines extends Component {
               repeatEndsOn = CurrentDate;
             }
 
-            console.log(CurrentDate, repeatEndsOn, arr[i].title);
+            // console.log(CurrentDate, repeatEndsOn, arr[i].title);
             if (CurrentDate <= repeatEndsOn) {
               if (repeatFrequency == "Day") {
-                console.log( CurrentDate, startDate, tempStartTime, arr[i].title)
+                // console.log( CurrentDate, startDate, tempStartTime, arr[i].title)
                 isDisplayedTodayCalculated = Math.floor((repeatEndsOn.getTime() - CurrentDate.getTime())) % repeatEvery == 0;
-                console.log(isDisplayedTodayCalculated, CurrentDate, repeatEndsOn, arr[i].title )
+                // console.log(isDisplayedTodayCalculated, CurrentDate, repeatEndsOn, arr[i].title )
               } else if (repeatFrequency == "Week"){
                 // isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) && Math.floor((CurrentDate.getTime() - startDate.getTime())/(7*24*3600*1000)) % repeatEvery == 0;
                 isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) &&
@@ -257,6 +257,7 @@ export default class WeekRoutines extends Component {
 
               for (let i = 0; i < repeatOccurences; i++) {
                 let dow = repeatWeekDays[i];
+                console.log(dow);
                 if (i >= repeatWeekDays.length) {
                   numberOfWeek = Math.floor(i / repeatWeekDays.length);
                   dow = repeatWeekDays[i % repeatWeekDays.length];
@@ -270,6 +271,7 @@ export default class WeekRoutines extends Component {
                   .add(numberOfWeek * repeatEvery, "weeks")
                   .format("L");
                 occurence_dates.push(date);
+                console.log(occurence_dates)
               }
 
               //console.log("occurence_dates: ", occurence_dates);
@@ -280,6 +282,8 @@ export default class WeekRoutines extends Component {
                 curDate2.date()
               );
               let today = getFormattedDate(today_date_object);
+              console.log(today,occurence_dates)
+
 
               if (occurence_dates.includes(today)) {
                 console.log(today);

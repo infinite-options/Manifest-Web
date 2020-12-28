@@ -60,7 +60,7 @@ export default class AddNewGRItem extends Component {
       end_day_and_time: new Date(),
       repeat: false,
       repeat_every: "1",
-      repeat_frequency: "",
+      repeat_frequency: "Day",
       repeat_type: "",
       repeat_ends_on: "",
       repeat_occurences: "1",

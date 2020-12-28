@@ -41,26 +41,66 @@ export default class DayEvents extends Component {
 
   onEventClick = (e, i) => {
     var arr = this.props.dayEvents;
+    console.log(arr);
     e.stopPropagation();
     this.props.eventClickDayView(arr[i]);
   };
 
   sortEvents = () => {
     var arr = this.props.dayEvents;
-    var dic = {}
+    var dic = {};
+    let id = 0;
+    let nextnexttempStart;
+    let nexttempStart;
     for (let i = 0; i < arr.length; i++) {
+      
         let tempStart = arr[i].start.dateTime;
+
+        if(arr[i+1]!=null){
+         nexttempStart = arr[i+1].start.dateTime;
+        }
+        let  nexttempStartTime = new Date(new Date(nexttempStart).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        }));
+      
+       if(arr[i-1] != null){
+         nextnexttempStart = arr[i-1].start.dateTime;
+       }
         let tempEnd = arr[i].end.dateTime;
         let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
           timeZone: this.props.timeZone
         }));
-        let key = tempStartTime.getHours();
+       
+        let nextnexttempStartTime = new Date(new Date(nextnexttempStart).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        }));
+        
+        console.log(arr[i].summary)
+        let key = tempStartTime.getHours()+"_"+0;
+        
+        if(tempStartTime.getHours() === nexttempStartTime.getHours()){
+         id++;
+          key = tempStartTime.getHours()+"_"+id;
+          
+        }
+        if(tempStartTime.getHours() != nexttempStartTime.getHours() && tempStartTime.getHours() === nextnexttempStartTime.getHours()){
+          id++;
+          key = tempStartTime.getHours()+"_"+id;
+        }
+        // else if (nexttempStartTime.getHours() === tempStartTime.getHours() && nexttempStartTime.getHours() != nextnexttempStartTime.getHours()){
+        //   id++;
+        //   key = tempStartTime.getHours()+"_"+id;
+        // }
+      
         if (dic[key] == null) {
           dic[key] = [];
         }
+        
         dic[key].push(arr[i]);
         console.log(dic)
+      
     }
+  
     return dic;
   }
 
@@ -73,31 +113,36 @@ export default class DayEvents extends Component {
     var res = [];
     var tempStart = null;
     var tempEnd = null;
-
+console.log(dic)
     let arr = [];
 console.log(arr);
     var sameTimeEventCount = 0;
     var addmarginLeft = 0;
     let itemWidth = this.state.eventBoxSize;
     var fontSize = 10;
+
+
     for(var i = 0; i < 24; i++){
+      for(var j = 0; j < i; j++){
+      if(dic[i+"_"+j] != null){
 
-      if(dic[i] != null){
-
-        arr.push(dic[i]);
+        arr.push(dic[i+"_"+j]);
        
       }
+    }
     if (arr == null) {
       return;
     }
   }
+  console.log(arr);
     for (let i = 0; i < arr.length; i++) {
       
-      console.log(arr);
       if(!arr[i][0].start) break;
       for(var j = 0; j < arr[i].length; j++) {
-        console.log(arr[i][j])
       
+        if(arr[i].length > 1){
+
+        }
       tempStart = arr[i][j].start.dateTime;
       console.log(tempStart)
       tempEnd = arr[i][j].end.dateTime;

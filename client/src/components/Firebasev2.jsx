@@ -1914,7 +1914,13 @@ export default class FirebaseV2 extends React.Component {
                       style={{ color: this.state.availabilityColorCode }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        alert("Item Is Completed");
+                        // alert("Item Is Completed");
+                        this.getHistoryData(this.props.goals[i]);
+                        this.setState({
+                          historyViewShow: true,
+                          historyViewShowObject: this.props.goals[i],
+                          isRoutine: false,
+                        });
                       }}
                       icon={faTrophy}
                       size="lg"
@@ -1931,7 +1937,13 @@ export default class FirebaseV2 extends React.Component {
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        alert("Item Is Not Completed");
+                        // alert("Item Is Not Completed");
+                        this.getHistoryData(this.props.goals[i]);
+                        this.setState({
+                          historyViewShow: true,
+                          historyViewShowObject: this.props.goals[i],
+                          isRoutine: false,
+                        });
                       }}
                       icon={faRunning}
                       size="lg"
@@ -2086,7 +2098,13 @@ export default class FirebaseV2 extends React.Component {
                       style={{ color: this.state.availabilityColorCode }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        alert("Item Is Completed");
+                        // alert("Item Is Completed");
+                        this.getHistoryData(this.props.routines[i]);
+                this.setState({
+                  historyViewShow: true,
+                  historyViewShowObject: this.props.routines[i],
+                  isRoutine: true,
+                });
                       }}
                       icon={faTrophy}
                       size="lg"
@@ -2104,7 +2122,13 @@ export default class FirebaseV2 extends React.Component {
                       onClick={(e) => {
                         console.log(this);
                         e.stopPropagation();
-                        alert("Item Is Not Completed???");
+                        // alert("Item Is Not Completed???");
+                        this.getHistoryData(this.props.routines[i]);
+                this.setState({
+                  historyViewShow: true,
+                  historyViewShowObject: this.props.routines[i],
+                  isRoutine: true,
+                });
                       }}
                       icon={faRunning}
                       size="lg"
@@ -2427,6 +2451,7 @@ shows entire list of goals and routines
     let grId = {"id":{}};
     let grStatus = {"id":{}};
     const url = `https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/${userId}`;
+    console.log(url);
     axios.get(url).then((res)=>{  
       const data = res.data.result;
       this.setState({dataObj: res.data.result});

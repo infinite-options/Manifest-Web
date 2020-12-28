@@ -82,7 +82,7 @@ export default class WeekGoals extends Component {
             } else if (repeatEnds == "After") {
               if (repeatFrequency == "Day") {
                 repeatEndsOn = new Date(startDate);
-                repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery);
+                repeatEndsOn.setDate(tempStartTime.getDate() + (repeatOccurences-1)*repeatEvery);
               } else if (repeatFrequency == "Week"){
                 repeatEndsOn = new Date(startDate);
                 repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
@@ -99,7 +99,7 @@ export default class WeekGoals extends Component {
 
             if (CurrentDate <= repeatEndsOn) {
               if (repeatFrequency == "Day") {
-                isDisplayedTodayCalculated = Math.floor((CurrentDate.getTime() - startDate.getTime())/(24*3600*1000)) % repeatEvery == 0;
+                isDisplayedTodayCalculated = Math.floor((repeatEndsOn.getTime() - CurrentDate.getTime())) % repeatEvery == 0;
               } else if (repeatFrequency == "Week"){
                 // isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) && Math.floor((CurrentDate.getTime() - startDate.getTime())/(7*24*3600*1000)) % repeatEvery == 0;
                 isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) &&
