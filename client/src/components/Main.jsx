@@ -2381,20 +2381,25 @@ this will toggle show hide of the firebase modal currently
   };
 
   nextDay = () => {
-    let dateContext = Object.assign({}, this.state.dateContext);
-    dateContext = moment(dateContext).add(1, "day");
+    let newdateContext = Object.assign({}, this.state.dateContext);
+    console.log(newdateContext)
+    newdateContext = moment(newdateContext).add(1, "day");
+    console.log(newdateContext)
     this.setState(
       {
-        dateContext: dateContext,
+        dateContext: newdateContext,
         dayEvents: [],
       },
       this.updateEventsArray
     );
+    console.log(this.state.dateContext, this.state.dayEvents)
   };
 
   prevDay = () => {
     let dateContext = Object.assign({}, this.state.dateContext);
+    console.log(dateContext)
     dateContext = moment(dateContext).subtract(1, "day");
+    console.log(dateContext)
     this.setState(
       {
         dateContext: dateContext,
@@ -2402,6 +2407,7 @@ this will toggle show hide of the firebase modal currently
       },
       this.updateEventsArray
     );
+    console.log(this.state.dateContext, this.state.dayEvents);
   };
 
   nextWeek = () => {
@@ -2451,8 +2457,10 @@ updates the array if the month view changes to a different month.
     } else if (this.state.calendarView === "Day") {
       let startObject = this.state.dateContext.clone();
       let endObject = this.state.dateContext.clone();
+      console.log(startObject, endObject)
       let startDay = startObject.startOf("day");
       let endDay = endObject.endOf("day");
+      console.log(startDay, endDay)
       let startDate = new Date(startDay.format("MM/DD/YYYY"));
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
       startDate.setHours(0, 0, 0);
