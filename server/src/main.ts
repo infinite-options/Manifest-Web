@@ -548,6 +548,7 @@ app.get("/getEventsByInterval", function (req, result) {
   } else {
     var startParam = new Date(req.query.start as any);
     var endParam = new Date(req.query.end as any);
+    console.log(startParam, endParam);
     const name = req.query.name;
     var id = req.query.id;
     //console.log("start : ", startParam, " end:", endParam);
@@ -575,6 +576,7 @@ app.get("/getEventsByInterval", function (req, result) {
         if (err) {
           return result.send(401);
         }
+        console.log(res);
         //console.log(res.data, "geteventsbyinterval");
         result.json(res.data.items);
       }

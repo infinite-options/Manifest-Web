@@ -2457,6 +2457,7 @@ updates the array if the month view changes to a different month.
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
       startDate.setHours(0, 0, 0);
       endDate.setHours(23, 59, 59);
+      console.log(startDate, endDate, this.state.currentUserTimeZone);
       this.getEventsByIntervalDayVersion(
         this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
         this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
@@ -4974,6 +4975,7 @@ this will close repeat modal.
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
+    console.log(startDate, endDate, start_call)
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -4987,7 +4989,9 @@ this will close repeat modal.
       })
       .then((response) => {
         // console.log("what are the events", response.data);
+        console.log(response);
         var events = response.data;
+        console.log(events);
         var end_call = +new Date();
         console.log(
           "Retrieve " + response.data.length + " items in: ",
