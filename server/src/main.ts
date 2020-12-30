@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as debug from "debug";
@@ -215,6 +216,10 @@ app.get("/test", (req, res) => {
 
 app.get("/buildNumber", (req, res) => {
   res.sendFile(path.join(__basedir, "public", "build_number.txt"));
+});
+
+app.get("/buildDate", (req, res) => {
+  res.sendFile(path.join(__basedir, "public", "build_date.txt"));
 });
 
 app.get("/favicon", (req, res) => {
