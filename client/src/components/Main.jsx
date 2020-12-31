@@ -4986,15 +4986,22 @@ this will close repeat modal.
     const end_date = new Date (startDate);
     end_date.setHours(23,59,59,999);
     console.log(end_date);
+    // var newDate = new Date(end_date.getTime()+end_date.getTimezoneOffset()*60*1000);
+
+    // var offset = end_date.getTimezoneOffset() / 60;
+    // var hours = end_date.getHours();
+
+    // newDate.setHours(hours - offset);
+    // console.log(newDate.toLocaleString())
     console.log(startDate, endDate, start_call)
     end_date.setMinutes(end_date.getMinutes() - end_date.getTimezoneOffset());
-    console.log(end_date);
+    console.log(end_date.toLocaleString());
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
           start: startDate.toString(),
-          end: end_date.toString(),
+          end: end_date.toLocaleString(),
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
