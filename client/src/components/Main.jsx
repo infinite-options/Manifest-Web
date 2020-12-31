@@ -145,7 +145,9 @@ export default class MainPage extends React.Component {
       theCurrentUserEmail: {},
       newAccountID: "",
 
-      versionNumber: this.getVersionNumber(),
+      versionDate: this.getBuildDate(),
+
+      versionNumber: this.getVersionNumber()
     };
   }
 
@@ -3234,7 +3236,7 @@ this will close repeat modal.
                 }
               >
                 {this.showCalendarView()}
-                <div>V1.47.{this.state.versionNumber}</div>
+                <div>V1.47.{this.state.versionNumber} {this.state.versionDate}</div>
                 <div
                   style={{ marginTop: "50px", textAlign: "center" }}
                   className="fancytext"
@@ -3251,8 +3253,19 @@ this will close repeat modal.
 
   getVersionNumber = () => {
     axios.get("/buildNumber", {}).then((response) => {
+      console.log("Version", response)
       this.setState({
         versionNumber: response.data,
+      });
+
+    });
+  };
+
+  getBuildDate = () => {
+    axios.get("/buildDate", {}).then((response) => {
+      console.log("Build date", response.data)
+      this.setState({
+        versionDate: response.data,
       });
     });
   };
