@@ -145,9 +145,7 @@ export default class MainPage extends React.Component {
       theCurrentUserEmail: {},
       newAccountID: "",
 
-      versionDate: this.getBuildDate(),
-
-      versionNumber: this.getVersionNumber()
+      versionNumber: this.getVersionNumber(),
     };
   }
 
@@ -3236,7 +3234,7 @@ this will close repeat modal.
                 }
               >
                 {this.showCalendarView()}
-                <div>V1.47.{this.state.versionNumber} {this.state.versionDate}</div>
+                <div>V1.47.{this.state.versionNumber}</div>
                 <div
                   style={{ marginTop: "50px", textAlign: "center" }}
                   className="fancytext"
@@ -3253,19 +3251,8 @@ this will close repeat modal.
 
   getVersionNumber = () => {
     axios.get("/buildNumber", {}).then((response) => {
-      console.log("Version", response)
       this.setState({
         versionNumber: response.data,
-      });
-
-    });
-  };
-
-  getBuildDate = () => {
-    axios.get("/buildDate", {}).then((response) => {
-      console.log("Build date", response.data)
-      this.setState({
-        versionDate: response.data,
       });
     });
   };
@@ -4996,17 +4983,18 @@ this will close repeat modal.
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
-    const end_day = moment(startDate).endOf('day');
-    console.log(end_day);
-    const end_time = moment.utc(end_day);
-    console.log(end_time);
+    const end_date = new Date (startDate);
+    end_date.setHours(23,59,59,999);
+    console.log(end_date);
     console.log(startDate, endDate, start_call)
+    end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset());
+    console.log(end_date);
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
           start: startDate.toString(),
-          end: end_time.toString(),
+          end: end_date.toString(),
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
