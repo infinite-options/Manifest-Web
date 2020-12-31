@@ -4983,8 +4983,9 @@ this will close repeat modal.
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
-
-    const end_time = moment(startDate).format("MMM DD YYYY 23:59:59.000Z");
+    const end_day = moment(startDate).endOf('day');
+    console.log(end_day);
+    const end_time = moment.utc(end_day);
     console.log(end_time);
     console.log(startDate, endDate, start_call)
     axios
