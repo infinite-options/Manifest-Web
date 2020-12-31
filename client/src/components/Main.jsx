@@ -4987,7 +4987,7 @@ this will close repeat modal.
     end_date.setHours(23,59,59,999);
     console.log(end_date);
     console.log(startDate, endDate, start_call)
-    end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset());
+    end_date.setMinutes(end_date.getMinutes() - end_date.getTimezoneOffset());
     console.log(end_date);
     axios
       .get("/getEventsByInterval", {
