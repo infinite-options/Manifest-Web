@@ -4995,9 +4995,9 @@ this will close repeat modal.
 
     // newDate.setHours(hours - offset);
     // console.log(newDate.toLocaleString())
-    // start_date.setMinutes(start_date.getHours() - start_date.getTimezoneOffset() );
+    start_date.setMinutes(start_date.getHours() + start_date.getTimezoneOffset() );
 
-    // end_date.setMinutes(end_date.getMinutes() - end_date.getTimezoneOffset() );
+    end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset() );
     console.log(start_date, end_date);
     console.log(start_date.toLocaleString(), end_date.toLocaleString());
     axios
