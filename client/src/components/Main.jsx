@@ -4986,7 +4986,7 @@ this will close repeat modal.
     const start_date = new Date(startDate);
     const end_date = new Date (startDate);
     end_date.setHours(23,59,59,999);
-    console.log(end_date);
+    console.log(start_date, end_date);
     // var newDate = new Date(end_date.getTime()-end_date.getTimezoneOffset()*60*1000);
 
     // var offset = end_date.getTimezoneOffset() / 60;
@@ -4994,18 +4994,17 @@ this will close repeat modal.
 
     // newDate.setHours(hours - offset);
     // console.log(newDate.toLocaleString())
-    start_date.setMinutes(start_date.getHours() - start_date.getTimezoneOffset() * 0.001);
-    console.log(start_date.toLocaleString());
-    console.log(startDate, endDate, start_call)
-    end_date.setMinutes(end_date.getMinutes() - end_date.getTimezoneOffset() * 0.001);
-    console.log(end_date.toLocaleString());
-    console.log(startDate.toLocaleString(), endDate.toLocaleString(), startDate.toString(), endDate.toString());
+    start_date.setMinutes(start_date.getHours() + start_date.getTimezoneOffset() );
+
+    end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset() );
+    console.log(start_date, end_date);
+    console.log(start_date.toLocaleString(), end_date.toLocaleString());
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: start_date.toLocaleString(),
-          end: end_date.toLocaleString(),
+          start: start_date.toString(),
+          end: end_date.toString(),
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
@@ -5014,6 +5013,7 @@ this will close repeat modal.
       .then((response) => {
         // console.log("what are the events", response.data);
         console.log(response);
+        console.log(start_date.toString(), end_date.toString());
         var events = response.data;
         console.log(events);
         var end_call = +new Date();
