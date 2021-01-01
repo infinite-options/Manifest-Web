@@ -5003,8 +5003,8 @@ this will close repeat modal.
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: start_date.toString(),
-          end: end_date.toString(),
+          start: start_date.toLocaleString(),
+          end: end_date.toLocaleString(),
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
@@ -5013,7 +5013,7 @@ this will close repeat modal.
       .then((response) => {
         // console.log("what are the events", response.data);
         console.log(response);
-        console.log(start_date.toString(), end_date.toString());
+        console.log(start_date.toLocaleString(), end_date.toLocaleString());
         var events = response.data;
         console.log(events);
         var end_call = +new Date();
