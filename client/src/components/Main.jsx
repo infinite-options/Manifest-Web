@@ -2471,11 +2471,11 @@ updates the array if the month view changes to a different month.
       console.log(startDate, endDate, this.state.currentUserTimeZone);
       console.log(  this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
       this.LocalDateToISOString(endDate, this.state.currentUserTimeZone))
-      this.getEventsByIntervalDayVersion(
-        this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
-        this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
-      );
-      // this.getEventsByIntervalDayVersion(startDate, endDate);
+      // this.getEventsByIntervalDayVersion(
+      //   this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
+      //   this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
+      // );
+      this.getEventsByIntervalDayVersion(startDate, endDate);
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
       let endObject = this.state.dateContext.clone();
@@ -4989,11 +4989,12 @@ this will close repeat modal.
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
-    const start_date = new Date(startDate);
-    start_date.setHours(0, 0, 0, 0)
-    const end_date = new Date (startDate);
-    end_date.setHours(23,59,59,999);
-    console.log(start_date, end_date);
+    console.log(startDate, endDate);
+    // const start_date = new Date(startDate);
+    // start_date.setHours(0, 0, 0, 0)
+    // const end_date = new Date (startDate);
+    // end_date.setHours(23,59,59,999);
+    // console.log(start_date, end_date);
     // var newDate = new Date(end_date.getTime()-end_date.getTimezoneOffset()*60*1000);
 
     // var offset = end_date.getTimezoneOffset() / 60;
@@ -5001,17 +5002,17 @@ this will close repeat modal.
 
     // newDate.setHours(hours - offset);
     // console.log(newDate.toLocaleString())
-    start_date.setMinutes(start_date.getHours() + start_date.getTimezoneOffset() );
+    // start_date.setMinutes(start_date.getHours() + start_date.getTimezoneOffset() );
 
-    end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset() );
-    console.log(start_date, end_date);
-    console.log(start_date.toString(), end_date.toString());
+    // end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset() );
+    // console.log(start_date, end_date);
+    // console.log(start_date.toString(), end_date.toString());
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: start_date.toString(),
-          end: end_date.toString(),
+          start: startDate.toString(),
+          end: endDate.toString(),
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
