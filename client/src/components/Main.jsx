@@ -4983,6 +4983,7 @@ this will close repeat modal.
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
+    const start_date = new Date(startDate);
     const end_date = new Date (startDate);
     end_date.setHours(23,59,59,999);
     console.log(end_date);
@@ -4993,15 +4994,17 @@ this will close repeat modal.
 
     // newDate.setHours(hours - offset);
     // console.log(newDate.toLocaleString())
+    start_date.setMinutes(start_date.getMinutes() - start_date.getTimezoneOffset());
+    console.log(start_date.toLocaleString());
     console.log(startDate, endDate, start_call)
     end_date.setMinutes(end_date.getMinutes() - end_date.getTimezoneOffset());
     console.log(end_date.toLocaleString());
-    console.log(endDate.toLocaleString(), endDate.toString());
+    console.log(startDate.toLocaleString(), endDate.toLocaleString(), startDate.toString(), endDate.toString());
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: startDate.toString(),
+          start: startDate.toLocaleString(),
           end: endDate.toLocaleString(),
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
