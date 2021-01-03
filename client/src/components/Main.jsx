@@ -2465,13 +2465,7 @@ updates the array if the month view changes to a different month.
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
       startDate.setHours(0, 0, 0);
       endDate.setHours(23, 59, 59);
-      startDate.setMinutes(startDate.getHours() + startDate.getTimezoneOffset() );
 
-      endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset() );
-      console.log(startDate, endDate, this.state.currentUserTimeZone);
-      console.log(  this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
-      this.LocalDateToISOString(endDate, this.state.currentUserTimeZone))
-      console.log(startDate.toISOString(), endDate.toISOString());
       this.getEventsByIntervalDayVersion(
         this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
         this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
@@ -3338,6 +3332,8 @@ this will close repeat modal.
         </Container>
         <Row>
           {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)} */}
+          {console.log(this.state.dateContext)}
+          {console.log(this.state.dayEvents)}
           <DayEvents
             dateContext={this.state.dateContext}
             eventClickDayView={this.handleDayEventClick}
@@ -5001,7 +4997,9 @@ this will close repeat modal.
 
     // var offset = end_date.getTimezoneOffset() / 60;
     // var hours = end_date.getHours();
+    // startDate.setMinutes(startDate.getHours() + startDate.getTimezoneOffset() );
 
+    // endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset() );
     // newDate.setHours(hours - offset);
     // console.log(newDate.toLocaleString())
     // start_date.setMinutes(start_date.getHours() + start_date.getTimezoneOffset() );
@@ -5013,8 +5011,8 @@ this will close repeat modal.
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: startDate,
-          end: endDate,
+          start: startDate.toString(),
+          end: endDate.toString(),
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
