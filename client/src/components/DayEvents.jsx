@@ -53,6 +53,7 @@ export default class DayEvents extends Component {
     let id = 0;
     let nextnexttempStart;
     let nexttempStart;
+    if(arr.length != undefined){
     for (let i = 0; i < arr.length; i++) {
       
         let tempStart = arr[i].start.dateTime;
@@ -101,7 +102,7 @@ export default class DayEvents extends Component {
         console.log(dic)
       
     }
-  
+    }
     return dic;
   }
 
