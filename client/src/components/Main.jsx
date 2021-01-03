@@ -2465,7 +2465,7 @@ updates the array if the month view changes to a different month.
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
       startDate.setHours(0, 0, 0);
       endDate.setHours(23, 59, 59);
-
+console.log(startDate, endDate);
       this.getEventsByIntervalDayVersion(
         this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
         this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
@@ -5019,9 +5019,21 @@ this will close repeat modal.
         },
       })
       .then((response) => {
+        let currentDate = moment(startDate).format("MM DD YYYY");
+        var events;
         // console.log("what are the events", response.data);
         console.log(response);
-        var events = response.data;
+        response.data.forEach((date)=>{
+          console.log(date.start["dateTime"]);
+          let dateStart = moment(date.start["dateTime"]).format("MM DD YYYY");
+          console.log(dateStart, currentDate)
+          if(dateStart === currentDate){
+            console.log(date);
+            events = response.data;
+          }
+          
+        
+         
         console.log(events);
         var end_call = +new Date();
         console.log(
@@ -5035,6 +5047,7 @@ this will close repeat modal.
           },
           () => {}
         );
+        })
         console.log(this.state.dayEvents)
       })
       .catch((error) => {
