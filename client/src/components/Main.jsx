@@ -2465,19 +2465,19 @@ updates the array if the month view changes to a different month.
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
       startDate.setHours(0, 0, 0);
       endDate.setHours(23, 59, 59);
-      // startDate.setMinutes(startDate.getHours() + startDate.getTimezoneOffset() );
+      startDate.setMinutes(startDate.getHours() + startDate.getTimezoneOffset() );
 
-      // endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset() );
+      endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset() );
       console.log(startDate, endDate, this.state.currentUserTimeZone);
       console.log(  this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
       this.LocalDateToISOString(endDate, this.state.currentUserTimeZone))
       console.log(startDate.toISOString(), endDate.toISOString());
-      // this.getEventsByIntervalDayVersion(
-      //   this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
-      //   this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
-      // );
+      this.getEventsByIntervalDayVersion(
+        this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
+        this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
+      );
       
-      this.getEventsByIntervalDayVersion(startDate, endDate);
+      // this.getEventsByIntervalDayVersion(startDate, endDate);
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
       let endObject = this.state.dateContext.clone();
@@ -5009,15 +5009,12 @@ this will close repeat modal.
     // end_date.setMinutes(end_date.getMinutes() + end_date.getTimezoneOffset() );
     // console.log(start_date, end_date);
     // console.log(start_date.toString(), end_date.toString());
-    const start_date = startDate.toString();
-    const end_date = endDate.toString();
-    console.log(start_date.toString(), end_date.toString())
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: start_date,
-          end: end_date,
+          start: startDate,
+          end: endDate,
           timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
