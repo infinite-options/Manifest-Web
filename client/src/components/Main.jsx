@@ -5030,7 +5030,7 @@ this will close repeat modal.
           if(dateStart === currentDate){
             console.log(date);
             events = response.data;
-          }
+          
           
         
          
@@ -5047,6 +5047,7 @@ this will close repeat modal.
           },
           () => {}
         );
+          }
         })
         console.log(this.state.dayEvents)
       })
