@@ -5020,7 +5020,7 @@ this will close repeat modal.
       })
       .then((response) => {
         let currentDate = moment(startDate).format("MM DD YYYY");
-        var events;
+        var events = [];
         // console.log("what are the events", response.data);
         console.log(response);
         response.data.forEach((date)=>{
@@ -5029,9 +5029,11 @@ this will close repeat modal.
           console.log(dateStart, currentDate)
           if(dateStart === currentDate){
             console.log(date);
-            events = response.data;
+            console.log(response.data)
+            // events = response.data;
+            events.push(date);
           
-          
+          console.log(events);
         
          
         console.log(events);
