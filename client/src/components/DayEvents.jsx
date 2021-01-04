@@ -49,7 +49,6 @@ export default class DayEvents extends Component {
   sortEvents = () => {
     var arr = this.props.dayEvents;
     console.log(arr);
-    console.log(arr.length);
     var dic = {};
     let id = 0;
     let nextnexttempStart;
