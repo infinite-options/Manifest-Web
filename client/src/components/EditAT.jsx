@@ -240,7 +240,7 @@ export default class editAT extends Component {
 
   setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
-    temp.photo = photo;
+    temp.photo = photo_url;
     this.setState({ itemToEdit: temp, photo_url: photo_url, type: type });
     console.log(this.state.photo_url)
   };

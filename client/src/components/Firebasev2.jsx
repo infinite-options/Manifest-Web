@@ -2514,7 +2514,7 @@ axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/cur
             : "0" + (date.getMonth() + 1)) +
           "_" +
           (date.getDate() > 9 ? date.getDate() : "0" + date.getDate());
-        date_string = "_Today";
+        date_string = "Today";
         let currentDateHistory = {
           date: date_string,
           // title: object.title,
@@ -2567,7 +2567,7 @@ axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/cur
               key={"history_header:" +  logs[i].date}
               style={{ width: "80px", textAlign: "center" }}
             >
-              {logs[i].date === "_Today" ? logs[i].date : moment(logs[i].date).format("MM/DD/YY")}
+              {logs[i].date === "Today" ? logs[i].date : moment(logs[i].date).format("MM/DD/YY")}
             </th>                     
           );
         }

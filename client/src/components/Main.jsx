@@ -4631,8 +4631,8 @@ this will close repeat modal.
                 <Row>
                   <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
-                      // value={this.state.newEventNotification}
-                      // onChange={this.handleNotificationChange}
+                      value={this.state.newEventNotification}
+                      onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="5"
                       style={{ width: "70px", marginTop: ".25rem" }}
@@ -4689,8 +4689,8 @@ this will close repeat modal.
                 <Row style={{ marginTop: "10px" }}>
                   <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
-                      // value={this.state.newEventNotification}
-                      // onChange={this.handleNotificationChange}
+                      value={this.state.newEventNotification}
+                      onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="30"
                       style={{ width: "70px", marginTop: ".25rem" }}
@@ -4748,8 +4748,8 @@ this will close repeat modal.
                 <Row style={{ marginTop: "10px" }}>
                   <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
-                      // value={this.state.newEventNotification}
-                      // onChange={this.handleNotificationChange}
+                      value={this.state.newEventNotification}
+                      onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="5"
                       style={{ width: "70px", marginTop: ".25rem" }}

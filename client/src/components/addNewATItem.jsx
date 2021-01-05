@@ -23,7 +23,7 @@ export default class AddNewATItem extends Component {
         type: "",
         id: "",
         title: "",
-        photo: "",
+        photo: "https://manifest-image-db.s3-us-west-1.amazonaws.com/action.png",
         photo_url:
           "https://manifest-image-db.s3-us-west-1.amazonaws.com/action.png",
         audio: "",
@@ -320,7 +320,7 @@ export default class AddNewATItem extends Component {
 
   setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
-    temp.photo = photo;
+    temp.photo = photo_url;
     temp.photo_url = photo_url;
     temp.type = type;
     this.setState({ itemToEdit: temp });
