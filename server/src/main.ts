@@ -137,7 +137,7 @@ the google calendar BUT convert it to the format that is accepted by Full Calend
 */
 
 app.get("/fullCalByInterval", function (req, result) {
-  //console.log("server get fullCalByInterval");
+  console.log("server get fullCalByInterval");
   // console.log("passed in params start date "  + req.query.start);
   // console.log("passed in params end date"  + req.query.end);
   // result.json({result: "We have sucessfully sent back "});
@@ -545,21 +545,22 @@ data is retrieve.
 app.get("/getEventsByInterval", function (req, result) {
   //console.log("passed in params start date ", req.query.start);
   // console.log("passed in params end date", req);
-
+  console.log("Prashant", req.query.start, req.query.end)
   if (!req.query.start || !req.query.end) {
     const date = new Date();
+    console.log("Inside somethin")
     var startParam = new Date(date.getFullYear(), date.getMonth(), 1);
     var endParam = new Date(date.getFullYear(), date.getMonth() + 1, 0);
   } else {
     var startParam = new Date(req.query.start as any);
     var endParam = new Date(req.query.end as any);
-    console.log(startParam, endParam);
+    console.log("inside intervals", startParam, endParam);
     const name = req.query.name;
     var id = req.query.id;
-    //console.log("start : ", startParam, " end:", endParam);
+    console.log(name, id);
     startParam.setHours(0, 0, 0, 0);
     endParam.setHours(23, 59, 59, 999);
-    //console.log("start : ", startParam, " end:", endParam);
+    console.log("start : ", startParam, " end:", endParam);
   }
 
   
@@ -576,7 +577,6 @@ app.get("/getEventsByInterval", function (req, result) {
         timeZone: req.query.timeZone,
       },
       (err, res) => {
-        //console.log(res);
         //CallBack
         if (err) {
           return result.send(401);
@@ -584,6 +584,7 @@ app.get("/getEventsByInterval", function (req, result) {
         console.log(res);
         //console.log(res.data, "geteventsbyinterval");
         result.json(res.data.items);
+        console.log("events daily", result)
       }
     );
   });
@@ -639,6 +640,8 @@ given a start and a end date from req, it will query those In the
 google calendar and return events between those dates
 */
 app.post("/getEventsByInterval", function (req, result) {
+  console.log(req.query)
+
   if (!req.body.time.start || !req.body.time.end) {
     //If no parameters is passed, we return the current months events
     const date = new Date();

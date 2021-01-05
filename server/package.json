@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "ts-node-dev app.ts",
-    "build": "webpack",
+    "build": "node ../increaseVersionNumber.js && webpack",
     "start": "NODE_ENV=production ts-node app.ts",
     "stop": "forever stopall"
   },

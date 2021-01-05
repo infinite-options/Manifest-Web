@@ -146,6 +146,7 @@ export default class MainPage extends React.Component {
       newAccountID: "",
 
       versionNumber: this.getVersionNumber(),
+      date: this.getVersionDate()
     };
   }
 
@@ -3236,7 +3237,7 @@ this will close repeat modal.
                 }
               >
                 {this.showCalendarView()}
-                <div>V1.47.{this.state.versionNumber}</div>
+                <div>V1.47.{this.state.versionNumber} {this.state.date}</div>
                 <div
                   style={{ marginTop: "50px", textAlign: "center" }}
                   className="fancytext"
@@ -3255,6 +3256,15 @@ this will close repeat modal.
     axios.get("/buildNumber", {}).then((response) => {
       this.setState({
         versionNumber: response.data,
+      });
+    });
+  };
+
+  getVersionDate = () => {
+    axios.get("/buildDate", {}).then((response) => {
+      console.log(response.data)
+      this.setState({
+        date: response.data,
       });
     });
   };
@@ -4943,6 +4953,7 @@ this will close repeat modal.
       */
   getEventsByInterval = (start0, end0) => {
     var start_call = +new Date();
+    console.log(start0, end0)
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -5019,12 +5030,13 @@ this will close repeat modal.
         },
       })
       .then((response) => {
+        console.log("Respone evehts", response)
         let currentDate = moment(startDate).format("MM DD YYYY");
         var events = [];
         // console.log("what are the events", response.data);
-        console.log(response);
+        console.log("resonse", response);
         response.data.forEach((date)=>{
-          console.log(date.start["dateTime"]);
+          console.log("hi", date.start["dateTime"]);
           let dateStart = moment(date.start["dateTime"]).format("MM DD YYYY");
           console.log(dateStart, currentDate)
           if(dateStart === currentDate){
