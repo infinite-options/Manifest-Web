@@ -88,6 +88,7 @@ class ShowNotifications extends React.Component {
                   onChange={(e) => {
                     e.stopPropagation();
                     let temp = this.props.itemToEditPassedIn;
+                    console.log(temp);
                     temp.user_notifications.before.is_enabled = !temp.user_notifications.before.is_enabled;
                     this.props.notificationChange(temp);
                   }}

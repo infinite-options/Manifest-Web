@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import queryString from "query-string";
 import { Redirect } from "react-router-dom";
+import ShowNotifications from "./ShowNotifications";
 import {
   Form,
   Button,
@@ -39,6 +40,89 @@ export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      itemToEdit: {
+        title: "",
+        id: "",
+        is_persistent: this.props.isRoutine,
+        photo: "",
+        photo_url: "",
+        type: "",
+        is_complete: false,
+        is_available: true,
+  
+        is_displayed_today: false,
+        is_in_progress: false,
+        // todayDateObject: this.props.todayDateObject,
+        // available_end_time: this.props.singleGR.available_end_time,
+        // available_start_time: this.props.singleGR.available_start_time,
+        available_end_time: "23:59:59",
+        available_start_time: "00:00:00",
+        datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
+        datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
+        audio: "",
+        is_timed: false,
+        expected_completion_time: "01:00:00",
+        is_sublist_available: true,
+  
+        //this is fro the reapeat routine and goals
+        start_day_and_time: new Date(),
+        end_day_and_time: new Date(),
+        repeat: false,
+        repeat_every: "1",
+        repeat_frequency: "Day",
+        repeat_type: "",
+        repeat_ends_on: "",
+        repeat_occurences: "1",
+        repeat_week_days: {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: "",
+        },
+        ta_notifications: {
+          before: {
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00",
+          },
+          during: {
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:30:00",
+          },
+          after: {
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00",
+          },
+        },
+        user_notifications: {
+          before: {
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00",
+          },
+          during: {
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:30:00",
+          },
+          after: {
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00",
+          },
+        },
+      },
       createUserParam: false,
       loaded: false,
       loggedIn: false,
@@ -4638,7 +4722,25 @@ this will close repeat modal.
               </Form.Group>
               <Form.Group>
                 <Form.Label>Notifications:</Form.Label>
-                <Row>
+                <input
+                style={{ marginTop: "5px", marginLeft: "5px" }}
+                name="Available"
+                type="checkbox"
+                checked={this.state.itemToEdit.is_available}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.is_available = e.target.checked;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+              {this.state.itemToEdit.is_available && (
+              <ShowNotifications
+                itemToEditPassedIn={this.state.itemToEdit}
+                notificationChange={this.handleNotificationChange}
+              />
+            )}
+                {/* <Row>
                   <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
                       value={this.state.newEventNotification}
@@ -4660,6 +4762,12 @@ this will close repeat modal.
                     <Form.Text style={{ fontSize: "65%" }}> User</Form.Text>
                   </Col>
                   <Col xs={8}>
+                  {this.state.itemToEdit.is_available && (
+              <ShowNotifications
+                itemToEditPassedIn={this.state.itemToEdit}
+                notificationChange={this.handleNotificationChange}
+              />
+            )}
                     <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
@@ -4673,6 +4781,7 @@ this will close repeat modal.
                         placeholder="Enter Message Here"
                         style={{ marginLeft: "10px" }}
                       />
+                      
                     </Form.Check>
                   </Col>
                 </Row>
@@ -4813,7 +4922,7 @@ this will close repeat modal.
                       />
                     </Form.Check>
                   </Col>
-                </Row>
+                </Row> */}
               </Form.Group>
               <Form.Group controlId="Description">
                 <Form.Label>Description:</Form.Label>
@@ -4933,8 +5042,11 @@ this will close repeat modal.
     this.setState({ newEventLocation: event.target.value });
   };
 
-  handleNotificationChange = (event) => {
-    this.setState({ newEventNotification: event.target.value });
+  // handleNotificationChange = (event) => {
+  //   this.setState({ newEventNotification: event.target.value });
+  // };
+  handleNotificationChange = (temp) => {
+    this.setState({ itemToEdit: temp });
   };
 
   handleDescriptionChange = (event) => {
