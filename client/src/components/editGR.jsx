@@ -313,7 +313,7 @@ export default class editGR extends Component {
          "Sun, 23 Feb 2020 00:08:43 GMT";
     }
   
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateGR"
+    let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateGR"
   
     let body = temp
   

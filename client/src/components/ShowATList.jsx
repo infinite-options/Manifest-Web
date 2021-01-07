@@ -23,7 +23,7 @@ export default class ShowATList extends React.Component {
       });
     }
     let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
+      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
 
     const id = this.props.Array[this.props.Index].id;
 
@@ -55,7 +55,7 @@ export default class ShowATList extends React.Component {
 
   hasActions = async () => {
     let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
+      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
 
     const id = this.props.Array[this.props.Index].id;
 

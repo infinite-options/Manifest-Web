@@ -268,7 +268,7 @@ export default class FirebaseV2 extends React.Component {
   //modal for the action/task
   getATList = async (id, title, persist, tempGR) => {
     let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
+      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
 
     axios
       .get(url + id)
@@ -1961,77 +1961,83 @@ export default class FirebaseV2 extends React.Component {
   };
 
   resetRoutinesGoals = (gr_object) => {
-    let db = firebase.firestore();
-    db.collection("users")
-      .doc(this.props.theCurrentUserID)
-      .get()
-      .then((doc) => {
-        let arrs = doc.data()["goals&routines"];
-        arrs.forEach((gr) => {
-          if (gr.id == gr_object.id) {
-            gr_object["is_in_progress"] = false;
-            gr_object["is_complete"] = false;
-            gr["is_in_progress"] = false;
-            gr["is_complete"] = false;
-            Object.keys(gr["ta_notifications"]).forEach((k) => {
-              gr["ta_notifications"][k].is_set = false;
-            });
-            Object.keys(gr["user_notifications"]).forEach((k) => {
-              gr["user_notifications"][k].is_set = false;
-            });
-          }
-        });
-        db.collection("users")
-          .doc(this.props.theCurrentUserID)
-          .update({ "goals&routines": arrs });
+    console.log(gr_object.id)
+    let gr_id = gr_object.id;
+    console.log(gr_id)
 
-        db.collection("users")
-          .doc(doc.id)
-          .collection("goals&routines")
-          .get()
-          .then((snapshot) => {
-            if (!snapshot.empty) {
-              snapshot.forEach((gr_doc) => {
-                let gr = gr_doc.data();
-                gr["actions&tasks"].forEach((at) => {
-                  at.is_complete = false;
-                  at.is_in_progress = false;
-                  db.collection("users")
-                    .doc(doc.id)
-                    .collection("goals&routines")
-                    .doc(gr_doc.id)
-                    .collection("actions&tasks")
-                    .get()
-                    .then((is_snapshot) => {
-                      if (!is_snapshot.empty) {
-                        is_snapshot.forEach((is_doc) => {
-                          let is = is_doc.data();
-                          is["instructions&steps"].forEach((x) => {
-                            x.is_complete = false;
-                            x.is_in_progress = false;
-                          });
-                          db.collection("users")
-                            .doc(doc.id)
-                            .collection("goals&routines")
-                            .doc(gr_doc.id)
-                            .collection("actions&tasks")
-                            .doc(is_doc.id)
-                            .update(is);
-                        });
-                      }
-                    });
-                });
-                db.collection("users")
-                  .doc(doc.id)
-                  .collection("goals&routines")
-                  .doc(gr_doc.id)
-                  .update(gr);
-              });
-            }
-          });
-        this.setState({});
-        alert("Item is reset");
-      });
+    let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/resetGR"
+    axios.post(url + `/${gr_id}`).then(() => {console.log("reset goal/routine")})
+    // let db = firebase.firestore();
+    // db.collection("users")
+    //   .doc(this.props.theCurrentUserID)
+    //   .get()
+    //   .then((doc) => {
+    //     let arrs = doc.data()["goals&routines"];
+    //     arrs.forEach((gr) => {
+    //       if (gr.id == gr_object.id) {
+    //         gr_object["is_in_progress"] = false;
+    //         gr_object["is_complete"] = false;
+    //         gr["is_in_progress"] = false;
+    //         gr["is_complete"] = false;
+    //         Object.keys(gr["ta_notifications"]).forEach((k) => {
+    //           gr["ta_notifications"][k].is_set = false;
+    //         });
+    //         Object.keys(gr["user_notifications"]).forEach((k) => {
+    //           gr["user_notifications"][k].is_set = false;
+    //         });
+    //       }
+    //     });
+    //     db.collection("users")
+    //       .doc(this.props.theCurrentUserID)
+    //       .update({ "goals&routines": arrs });
+
+    //     db.collection("users")
+    //       .doc(doc.id)
+    //       .collection("goals&routines")
+    //       .get()
+    //       .then((snapshot) => {
+    //         if (!snapshot.empty) {
+    //           snapshot.forEach((gr_doc) => {
+    //             let gr = gr_doc.data();
+    //             gr["actions&tasks"].forEach((at) => {
+    //               at.is_complete = false;
+    //               at.is_in_progress = false;
+    //               db.collection("users")
+    //                 .doc(doc.id)
+    //                 .collection("goals&routines")
+    //                 .doc(gr_doc.id)
+    //                 .collection("actions&tasks")
+    //                 .get()
+    //                 .then((is_snapshot) => {
+    //                   if (!is_snapshot.empty) {
+    //                     is_snapshot.forEach((is_doc) => {
+    //                       let is = is_doc.data();
+    //                       is["instructions&steps"].forEach((x) => {
+    //                         x.is_complete = false;
+    //                         x.is_in_progress = false;
+    //                       });
+    //                       db.collection("users")
+    //                         .doc(doc.id)
+    //                         .collection("goals&routines")
+    //                         .doc(gr_doc.id)
+    //                         .collection("actions&tasks")
+    //                         .doc(is_doc.id)
+    //                         .update(is);
+    //                     });
+    //                   }
+    //                 });
+    //             });
+    //             db.collection("users")
+    //               .doc(doc.id)
+    //               .collection("goals&routines")
+    //               .doc(gr_doc.id)
+    //               .update(gr);
+    //           });
+    //         }
+    //       });
+    //     this.setState({});
+    //     alert("Item is reset");
+    //   });
   };
 
   getRoutinesStatus = () => {
@@ -2450,7 +2456,7 @@ shows entire list of goals and routines
     let logstatus = [];
     let grId = {"id":{}};
     let grStatus = {"id":{}};
-    const url = `https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/${userId}`;
+    const url = `https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/${userId}`;
     console.log(url);
     axios.get(url).then((res)=>{  
       const data = res.data.result;
@@ -2473,7 +2479,7 @@ shows entire list of goals and routines
 
 
 
-axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/currentStatus/${userId}`).then((response) => {
+axios.get(`https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/currentStatus/${userId}`).then((response) => {
   const data = response.data.result;
     // const dataDate = moment(info.date).format("MM/DD/YYYY");
     // const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
@@ -2743,7 +2749,7 @@ axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/cur
   //   let ids = [];
   //   let weekDate = [];
   //   let grRepeat =[];
-  //   const url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/100-000045";
+  //   const url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/100-000045";
   //   axios.get(url).then((res)=>{  
   //     console.log(res.data.result)
   //     const data = res.data.result;

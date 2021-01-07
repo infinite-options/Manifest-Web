@@ -27,7 +27,7 @@ export default class deleteAT extends Component {
   
   tempdeleteArrPortion = () => {
   
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/deleteAT";
+    let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/deleteAT";
 
     let items = [...this.props.Array];
     let i = this.props.deleteIndex;
