@@ -353,7 +353,7 @@ export default class MainPage extends React.Component {
     let email = this.getUrlParam("email", query);
     let userID = this.getUrlParam("userID", query);
 
-    let existingUserUrl = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/existingUser";
+    let existingUserUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/existingUser";
     
     this.setState({createUserParam: result})
     console.log("before")
@@ -443,7 +443,7 @@ export default class MainPage extends React.Component {
     });
 
     // // Fetching all TA's to populate advisorIdAndNames
-    // axios.get("https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
+    // axios.get("https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
     //    .then((response) => {
     //
     //      if(response.data.result.length !== 0) {
@@ -545,7 +545,7 @@ export default class MainPage extends React.Component {
     console.log(this.state.currentUserPicUrl);
     axios
       .get(
-        "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" +
+        "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" +
           this.state.currentUserId
       )
       .then((response) => {
@@ -563,7 +563,7 @@ export default class MainPage extends React.Component {
 
   grabFireBaseRoutinesGoalsData = () => {
     let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
 
     let routine = [];
     let routine_ids = [];
@@ -2963,7 +2963,7 @@ this will close repeat modal.
     // console.log(this.state.currentAdvisorCandidateId);
 
     let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/anotherTAAccess";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/anotherTAAccess";
 
     let body = {
       ta_people_id: this.state.advisorIdAndNames[
