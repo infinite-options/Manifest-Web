@@ -785,6 +785,7 @@ export default class MainPage extends React.Component {
             console.log(gr)
             gr.title = x[i].gr_title;
             console.log(x);
+            console.log(gr.title, gr.is_sublist_available);
             var goalDate = new Date(gr.end_day_and_time);
             //For Today Goals and Routines
             let startOfDay = moment(goalDate);
@@ -3016,8 +3017,9 @@ this will close repeat modal.
   };
 
   updateFBGR = () => {
-    this.grabFireBaseRoutinesGoalsData();
-  };
+       this.grabFireBaseRoutinesGoalsData();
+       this.props.refresh();
+      };
 
   render() {
     if (this.state.loaded && !this.state.loggedIn) {
@@ -5147,6 +5149,15 @@ this will close repeat modal.
         var events = [];
         // console.log("what are the events", response.data);
         console.log("resonse", response);
+        if(response.data.length === 0){
+          this.setState(
+            {
+              dayEvents: events,
+            },
+            () => {}
+          );
+        }
+        else{
         response.data.forEach((date)=>{
           console.log("hi", date.start["dateTime"]);
           let dateStart = moment(date.start["dateTime"]).format("MM DD YYYY");
@@ -5159,8 +5170,7 @@ this will close repeat modal.
           
           console.log(events);
         
-         
-        console.log(events);
+        
         var end_call = +new Date();
         console.log(
           "Retrieve " + response.data.length + " items in: ",
@@ -5175,6 +5185,7 @@ this will close repeat modal.
         );
           }
         })
+      }
         console.log(this.state.dayEvents)
       })
       .catch((error) => {

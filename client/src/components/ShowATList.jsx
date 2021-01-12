@@ -18,9 +18,9 @@ export default class ShowATList extends React.Component {
       // console.log("this is the item");
       // console.log("this si the for the person 2",items[this.props.Index] )
       // console.log("this is what it is supposed to be 2",items[this.props.Index]['is_sublist_available']);
-      this.setState({
-        iconShow: items[this.props.Index]["is_sublist_available"],
-      });
+      // this.setState({
+      //   iconShow: items[this.props.Index]["is_sublist_available"],
+      // });
     }
     let url =
       "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
@@ -48,9 +48,9 @@ export default class ShowATList extends React.Component {
 
     // console.log("this si the for the person",items[this.props.Index] )
     // console.log("this is what it is supposed to be",items[this.props.Index]['is_sublist_available']);
-    this.setState({
-      iconShow: items[this.props.Index]["is_sublist_available"],
-    });
+    // this.setState({
+    //   iconShow: items[this.props.Index]["is_sublist_available"],
+    // });
   }
 
   hasActions = async () => {
