@@ -255,7 +255,7 @@ class AboutModal extends React.Component {
   // Currently working on right now
   grabFireBaseAllPeopleNames = () => {
     let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/listPeople/";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listPeople/";
 
     let allPeopleList = {};
     let importantPeopleArray = [];
@@ -522,7 +522,7 @@ class AboutModal extends React.Component {
 
   grabFireBaseAboutMeData = () => {
     let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/aboutme/";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/aboutme/";
 
     // console.log("!!")
     // console.log(this.props.theCurrentUserId)
@@ -888,7 +888,7 @@ class AboutModal extends React.Component {
       currentPeople.phone_number = people[i].phone_number;
       currentPeople.ta_id = this.props.theCurrentTAId;
       let peopleUrl =
-        "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/updatePeople";
+        "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updatePeople";
 
       let peopleFormData = new FormData();
       Object.entries(currentPeople).forEach((entry) => {
@@ -934,7 +934,7 @@ class AboutModal extends React.Component {
     }
 
     let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAboutMe";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAboutMe";
 
     let formData = new FormData();
     Object.entries(body).forEach((entry) => {
@@ -945,7 +945,8 @@ class AboutModal extends React.Component {
       } else if (entry[1] instanceof Object) {
         entry[1] = JSON.stringify(entry[1]);
         formData.append(entry[0], entry[1]);
-      } else {
+      } 
+     else {
         formData.append(entry[0], entry[1]);
       }
     });

@@ -170,7 +170,7 @@ export default class AddNewGRItem extends Component {
 
   getGRDataFromFB = () => {
     let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
 
     axios
       .get(url + this.props.theCurrentUserId)
@@ -463,7 +463,7 @@ export default class AddNewGRItem extends Component {
 
   addNewDoc = () => {
     let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR";
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR";
 
     let newArr = this.state.grArr;
     let temp = this.state.itemToEdit;

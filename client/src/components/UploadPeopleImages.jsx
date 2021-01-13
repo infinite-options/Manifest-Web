@@ -53,7 +53,7 @@ export default class UploadPeopleImages extends Component {
   };
 
   onHandleShowClick = () => {
-    let url  = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/getPeopleImages/";
+    let url  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getPeopleImages/";
     let imageList = []
     console.log(this.props.currentTAId)
     axios.get(url+this.props.currentTAId).then(
