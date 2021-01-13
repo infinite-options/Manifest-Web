@@ -157,7 +157,7 @@ axios.get(url5).then(
 
   var arrButtonsFood = []
     for (let i = 0; i < this.state.iconList3.length; i++) { 
-      arrButtonsFood.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconLis3t[i].url)}><img
+      arrButtonsFood.push(<button onClick={(e) =>  this.onPhotoClick(this.state.iconList3[i].url)}><img
          height="70px"
          width="70px"
          src={this.state.iconList3[i].url}

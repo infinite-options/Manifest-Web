@@ -25,9 +25,11 @@
     "morgan": "^1.10.0",
     "open": "^7.0.3",
     "react-google-login": "^5.1.20",
+    "react-loader": "^2.4.7",
     "react-modal-resizable-draggable": "^0.1.4",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "react-spinners": "^0.10.4",
     "styled-components": "^5.0.0",
     "ts-node": "^8.10.1",
     "typescript": "^3.9.2"
