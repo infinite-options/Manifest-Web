@@ -945,7 +945,8 @@ class AboutModal extends React.Component {
       } else if (entry[1] instanceof Object) {
         entry[1] = JSON.stringify(entry[1]);
         formData.append(entry[0], entry[1]);
-      } else {
+      } 
+     else {
         formData.append(entry[0], entry[1]);
       }
     });

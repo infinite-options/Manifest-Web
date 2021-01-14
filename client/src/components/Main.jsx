@@ -11,8 +11,11 @@ import {
   Col,
   Modal,
   Dropdown,
-  DropdownButton,
+  DropdownButton
 } from "react-bootstrap";
+import Spinner from 'react-bootstrap/Spinner';
+import ReactSpinner from 'react-bootstrap-spinner'
+
 import firebase from "./firebase";
 import Firebasev2 from "./Firebasev2.jsx";
 import "./App.css";
@@ -34,6 +37,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+// import Loader from "react-spinners/CircleLoader";
+var Loader = require('react-loader');
 
 
 export default class MainPage extends React.Component {
@@ -230,7 +235,8 @@ export default class MainPage extends React.Component {
       newAccountID: "",
 
       versionNumber: this.getVersionNumber(),
-      date: this.getVersionDate()
+      date: this.getVersionDate(),
+      loading: false
     };
   }
 
@@ -785,6 +791,7 @@ export default class MainPage extends React.Component {
             console.log(gr)
             gr.title = x[i].gr_title;
             console.log(x);
+            console.log(gr.title, gr.is_sublist_available);
             var goalDate = new Date(gr.end_day_and_time);
             //For Today Goals and Routines
             let startOfDay = moment(goalDate);
@@ -2466,6 +2473,7 @@ this will toggle show hide of the firebase modal currently
   };
 
   nextDay = () => {
+    this.setState({loading: true});
     let newdateContext = Object.assign({}, this.state.dateContext);
     console.log(newdateContext)
     newdateContext = moment(newdateContext).add(1, "day");
@@ -2473,11 +2481,12 @@ this will toggle show hide of the firebase modal currently
     this.setState(
       {
         dateContext: newdateContext,
-        dayEvents: [],
-      },
+        dayEvents: []      },
       this.updateEventsArray
     );
     console.log(this.state.dateContext, this.state.dayEvents)
+    this.setState({loading: false});
+
   };
 
   prevDay = () => {
@@ -2496,6 +2505,7 @@ this will toggle show hide of the firebase modal currently
   };
 
   nextWeek = () => {
+
     let dateContext = Object.assign({}, this.state.dateContext);
     dateContext = moment(dateContext).add(1, "week");
     this.setState(
@@ -2505,6 +2515,7 @@ this will toggle show hide of the firebase modal currently
       },
       this.updateEventsArray
     );
+
   };
 
   prevWeek = () => {
@@ -3016,8 +3027,9 @@ this will close repeat modal.
   };
 
   updateFBGR = () => {
-    this.grabFireBaseRoutinesGoalsData();
-  };
+       this.grabFireBaseRoutinesGoalsData();
+       this.props.refresh();
+      };
 
   render() {
     if (this.state.loaded && !this.state.loggedIn) {
@@ -3384,7 +3396,7 @@ this will close repeat modal.
             <Col>
               <div>
                 <FontAwesomeIcon
-                  style={{ marginLeft: "100px" }}
+                  style={{ marginLeft: "150px" }}
                   icon={faChevronLeft}
                   size="2x"
                   className="X"
@@ -3396,7 +3408,7 @@ this will close repeat modal.
             </Col>
             <Col
               md="auto"
-              style={{ textAlign: "center" }}
+              style={{ textAlign: "center" , marginLeft: "100px"}}
               className="bigfancytext"
             >
               <p>
@@ -3413,15 +3425,32 @@ this will close repeat modal.
             <Col>
               <FontAwesomeIcon
                 // style={{ marginLeft: "50%" }}
-                style={{ float: "right", marginRight: "100px" }}
+                style={{ float: "right", marginRight: "0px"}}
                 icon={faChevronRight}
                 size="2x"
                 className="X"
                 onClick={(e) => {
                   this.nextDay();
                 }}
+             
               />
+             
             </Col>
+            <Col>
+            {this.state.loading === true ?(
+                <div
+                style={{  float: "right"}}>
+                <Loader lines={13} length={5} width={2} radius={5}
+                  corners={1} rotate={0} direction={1} color="#000" speed={1}
+                  trail={60} shadow={false} hwaccel={false} className="spinner"
+                  zIndex={2e9} top="50%" left="50%" scale={1.00}
+                  loadedClassName="loadedContent"/>
+
+                </div>
+            ):(<div></div>)
+          }
+              
+              </Col>
           </Row>
         </Container>
         <Row>
@@ -3514,9 +3543,27 @@ this will close repeat modal.
                   size="2x"
                   className="X"
                   onClick={(e) => {
+                    {this.setState({loading: true})}
                     this.nextWeek();
                   }}
                 />
+                        <Col>
+            {this.state.loading === true ?(
+                <div
+                style={{  float: "right"}}>
+                <Loader lines={13} length={5} width={2} radius={5}
+                  corners={1} rotate={0} direction={1} color="#000" speed={1}
+                  trail={60} shadow={false} hwaccel={false} className="spinner"
+                  zIndex={2e9} top="50%" left="50%" scale={1.00}
+                  loadedClassName="loadedContent"/>
+
+                </div>
+            ):(<div></div>)
+          }
+              
+              </Col>
+                
+             
               </Col>
             </Row>
           </Container>
@@ -3795,6 +3842,7 @@ this will close repeat modal.
               </p>
             </Col>
             <Col>
+
               <FontAwesomeIcon
                 style={{ marginLeft: "50%" }}
                 icon={faChevronRight}
@@ -5111,6 +5159,8 @@ this will close repeat modal.
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
     console.log(startDate, endDate);
+    // startDate = "Mon Jan 04 2021 00:00:00 GMT-0800 (Pacific Standard Time)"
+    // endDate = "Mon Jan 04 2021 23:59:59 GMT-0800 (Pacific Standard Time)"
     // const start_date = new Date(startDate);
     // start_date.setHours(0, 0, 0, 0)
     // const end_date = new Date (startDate);
@@ -5147,6 +5197,15 @@ this will close repeat modal.
         var events = [];
         // console.log("what are the events", response.data);
         console.log("resonse", response);
+        if(response.data.length === 0){
+          this.setState(
+            {
+              dayEvents: events,
+            },
+            () => {}
+          );
+        }
+        else{
         response.data.forEach((date)=>{
           console.log("hi", date.start["dateTime"]);
           let dateStart = moment(date.start["dateTime"]).format("MM DD YYYY");
@@ -5159,8 +5218,7 @@ this will close repeat modal.
           
           console.log(events);
         
-         
-        console.log(events);
+        
         var end_call = +new Date();
         console.log(
           "Retrieve " + response.data.length + " items in: ",
@@ -5175,6 +5233,7 @@ this will close repeat modal.
         );
           }
         })
+      }
         console.log(this.state.dayEvents)
       })
       .catch((error) => {
