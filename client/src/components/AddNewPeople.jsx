@@ -56,7 +56,7 @@ import axios from 'axios';
    
      newPersonInputSubmit = ( ) => {
         
-        let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addPeople"
+        let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/addPeople"
         
         let body = {
            user_id : this.props.currentUserId,
