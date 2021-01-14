@@ -11,35 +11,35 @@ export default class ShowATList extends React.Component {
       hasAction: true,
     };
   }
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.Array != this.props.Array) {
-      // console.log("is is going in here at least");
-      let items = [...this.props.Array];
-      // console.log("this is the item");
-      // console.log("this si the for the person 2",items[this.props.Index] )
-      // console.log("this is what it is supposed to be 2",items[this.props.Index]['is_sublist_available']);
-      // this.setState({
-      //   iconShow: items[this.props.Index]["is_sublist_available"],
-      // });
-    }
-    let url =
-      "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevProps.Array != this.props.Array) {
+  //     // console.log("is is going in here at least");
+  //     let items = [...this.props.Array];
+  //     // console.log("this is the item");
+  //     // console.log("this si the for the person 2",items[this.props.Index] )
+  //     // console.log("this is what it is supposed to be 2",items[this.props.Index]['is_sublist_available']);
+  //     // this.setState({
+  //     //   iconShow: items[this.props.Index]["is_sublist_available"],
+  //     // });
+  //   }
+  //   let url =
+  //     "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
 
-    const id = this.props.Array[this.props.Index].id;
+  //   const id = this.props.Array[this.props.Index].id;
 
-    axios
-      .get(url + id)
-      .then((response) => {
-        if (response.data.result && response.data.result.length > 0) {
-          this.setState({ hasAction: true });
-        } else {
-          this.setState({ hasAction: false });
-        }
-      })
-      .catch((error) => {
-        console.log("Error Occurred " + error);
-      });
-  }
+  //   axios
+  //     .get(url + id)
+  //     .then((response) => {
+  //       if (response.data.result && response.data.result.length > 0) {
+  //         this.setState({ hasAction: true });
+  //       } else {
+  //         this.setState({ hasAction: false });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error Occurred " + error);
+  //     });
+  // }
 
   async componentDidMount() {
     let items = [...this.props.Array];
