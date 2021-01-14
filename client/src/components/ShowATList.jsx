@@ -30,15 +30,22 @@ export default class ShowATList extends React.Component {
     axios
       .get(url + id)
       .then((response) => {
+        if(prevState.hasAction != this.state.hasAction){
         if (response.data.result && response.data.result.length > 0) {
           this.setState({ hasAction: true });
-        } else {
-          this.setState({ hasAction: false });
-        }
+        } 
+      }
+      else if(prevState.hasAction === this.state.hasAction){
+        if (response.data.result && response.data.result.length > 0) {
+          this.setState({ hasAction: true });
+        } 
+      }
       })
       .catch((error) => {
         console.log("Error Occurred " + error);
       });
+
+      this.hasActions();
   }
 
   async componentDidMount() {
