@@ -936,11 +936,18 @@ class AboutModal extends React.Component {
       body.photo_url = "";
     }
 
+    if(body.message_card === null){
+      body.message_card = "";
+    }
+    if(body.message_day === null){
+      body.message_day = "";
+    }
     let url =
       "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAboutMe";
 
     let formData = new FormData();
     Object.entries(body).forEach((entry) => {
+      console.log(body, entry)
       if (entry[1].name != undefined) {
         if (typeof entry[1].name === "string") {
           formData.append(entry[0], entry[1]);
