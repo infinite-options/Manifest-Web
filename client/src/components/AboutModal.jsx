@@ -144,6 +144,7 @@ class AboutModal extends React.Component {
     let temp = this.state.importantPeople1;
     temp.pic = photo;
     temp.url = photo_url;
+    temp.have_pic = true;
     this.setState({ importantPeople1: temp });
   };
 
@@ -151,6 +152,7 @@ class AboutModal extends React.Component {
     let temp = this.state.importantPeople2;
     temp.pic = photo;
     temp.url = photo_url;
+    temp.have_pic = true;
     this.setState({ importantPeople2: temp });
     console.log(this.state.importantPeople2);
   };
@@ -159,6 +161,7 @@ class AboutModal extends React.Component {
     let temp = this.state.importantPeople3;
     temp.pic = photo;
     temp.url = photo_url;
+    temp.have_pic = true;
     this.setState({ importantPeople3: temp });
   };
 
