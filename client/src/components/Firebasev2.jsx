@@ -1383,12 +1383,12 @@ export default class FirebaseV2 extends React.Component {
   };
 
   showRoutineRepeatStatus = (i) => {
-    console.log(this.props.routines)
+    console.log("All routines" , this.props.routines)
     let selectedDays = [];
       for (let [key, value] of Object.entries(this.props.routines[i]["repeat_week_days"])) {
         value !== "" && selectedDays.push(value);
       }
-      console.log(selectedDays)
+      console.log("Routine Selected Days" , selectedDays)
     // const date = moment(this.props.routines[i]["repeat_ends_on"]).format("MMMM DD,YYYY")
     if (!this.props.routines[i]["repeat"]) {
       return <div style={{ fontSize: "12px" }}> One time only </div>;
