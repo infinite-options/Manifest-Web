@@ -82,7 +82,7 @@ export default class MainPage extends React.Component {
           </Col>
           <Col>
             <GoogleLogin
-              clientId="1009120542229-9nq0m80rcnldegcpi716140tcrfl0vbt.apps.googleusercontent.com"
+              clientId="1009120542229-c14hf5cn65ce5aekullm7bscmqi6d42l.apps.googleusercontent.com"
               buttonText="Log In"
               onSuccess={this.responseGoogle}
               onFailure={this.responseGoogle}
