@@ -991,6 +991,7 @@ By passing in a empty interval, this method will get a response from the server 
 the current month's events
 */
   getThisMonthEvents = () => {
+    console.log("Get Month by Interval")
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -3366,10 +3367,11 @@ this will close repeat modal.
   };
 
   googleLogIn = () => {
+    console.log("In Google LogIn")
     axios
       .get("/auth-url")
       .then((response) => {
-        console.log(response);
+        console.log("Auth Url Response" ,response);
         window.location.href = response.data;
       })
       .catch((error) => {
@@ -5113,7 +5115,8 @@ this will close repeat modal.
       */
   getEventsByInterval = (start0, end0) => {
     var start_call = +new Date();
-    console.log(start0, end0)
+    console.log(start0, end0);
+    console.log("Another Get Events")
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -5159,6 +5162,7 @@ this will close repeat modal.
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
     console.log(startDate, endDate);
+    console.log("EvenstByIntervalDay");
     // startDate = "Mon Jan 04 2021 00:00:00 GMT-0800 (Pacific Standard Time)"
     // endDate = "Mon Jan 04 2021 23:59:59 GMT-0800 (Pacific Standard Time)"
     // const start_date = new Date(startDate);
@@ -5244,6 +5248,7 @@ this will close repeat modal.
   //Get and store events by week, take first and last day of the week as parameters as date object
   getEventsByIntervalWeekVersion = (start0, end0) => {
     var start_call = +new Date();
+    console.log("Event Week Version")
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use

@@ -51,7 +51,8 @@ var firebaseConfig;
 var FAVICON_URL;
 var BASE_URL;
 
-if (hostname == "manifestmylife") {
+if (hostname == "manifestmy.life") {
+  console.log("In Manifest My Life")
   var key_url = "/etc/letsencrypt/live/manifestmy.life/privkey.pem";
   var cert_url = "/etc/letsencrypt/live/manifestmy.life/fullchain.pem";
   REDIRECTED_ADD_USER_URI = "https://manifestmy.life/adduser";
@@ -68,6 +69,7 @@ if (hostname == "manifestmylife") {
   BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MyLife-60x60@3x.png";
 } else {
+  console.log("In Manifest My Space")
   var key_url = "/etc/letsencrypt/live/manifestmy.space/privkey.pem";
   var cert_url = "/etc/letsencrypt/live/manifestmy.space/fullchain.pem";
   REDIRECTED_ADD_USER_URI = "https://manifestmy.space/adduser";
@@ -548,6 +550,8 @@ data is retrieve.
 app.get("/getEventsByInterval", function (req, result) {
   //console.log("passed in params start date ", req.query.start);
   // console.log("passed in params end date", req);
+  // console.log("All of Req", req);
+  // console.log("All of Result", result);
   console.log("Prashant", req.query.start, req.query.end)
   if (!req.query.start || !req.query.end) {
     const date = new Date();
@@ -558,6 +562,7 @@ app.get("/getEventsByInterval", function (req, result) {
     var startParam = new Date(req.query.start as any);
     var endParam = new Date(req.query.end as any);
     console.log("inside intervals", startParam, endParam);
+    console.log("Req" , req.query.name, "Req id", req.query.id);
     const name = req.query.name;
     var id = req.query.id;
     console.log(name, id);
@@ -568,6 +573,8 @@ app.get("/getEventsByInterval", function (req, result) {
 
   
   setUpAuthById(id, (auth) => {
+    console.log("Running Auth", id);
+    console.log("Auth", auth)
     calendar = google.calendar({ version: "v3", auth });
     calendar.events.list(
       {
@@ -943,6 +950,7 @@ app.post("/TASocialSignUp", function (req, result) {
 });
 
 app.get("/auth-url", function (req, result) {
+  console.log("Before read file")
   fs.readFile(credentials_url, (err, content) => {
     if (err) return console.log("Error loading client secret file:", err);
     // Authorize a client with credentials, then call the Google Calendar API.
@@ -1061,6 +1069,7 @@ function authorize(credentials, callback) {
 }
 
 function authorizeById(credentials, id, callback) {
+  console.log("credentials: " , credentials)
   const { client_secret, client_id, redirect_uris } = credentials.web;
   let oAuth2Client = new google.auth.OAuth2(
     client_id,
@@ -1071,16 +1080,21 @@ function authorizeById(credentials, id, callback) {
   // RDS Update
   let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersToken/";
   // console.log("******")
-  console.log(id)
-  console.log(url + id)
+  console.log("Id" , id)
+  console.log("Url" , url + id)
+  console.log("After")
   axios.get(url + id).then(
      (response) => {
+       console.log("Get Response");
        if (response.data) {
+         console.log("Access Token: " , response.data.google_auth_token);
+         console.log("Refresh Token: " , response.data.google_refresh_token)
          // console.log(response.data)
          oAuth2Client.setCredentials({
            access_token: response.data.google_auth_token,
            refresh_token: response.data.google_refresh_token
          });
+         console.log("OAuth2Client:", oAuth2Client)
          callback(oAuth2Client);
          return;
        } else {
@@ -1176,7 +1190,10 @@ function setUpAuth() {
 }
 
 function setUpAuthById(id, callback) {
+  console.log("Other Callback:" , callback);
+  console.log("Id from setupAuth", id)
   fs.readFile(credentials_url, (err, content) => {
+    console.log("Content" , JSON.parse(content))
     if (err) return console.log("Error loading client secret file:", err);
     // Authorize a client with credentials, then call the Google Calendar
     authorizeById(JSON.parse(content), id, callback); //Tyler: saveCredentials has been altered to just set-up, no listing events
