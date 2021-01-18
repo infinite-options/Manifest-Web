@@ -49,8 +49,10 @@ var REDIRECTED_ADD_USER_URI;
 var firebase = require("firebase");
 var firebaseConfig;
 var FAVICON_URL;
+var BASE_URL;
 
-if (hostname == "manifestmylife") {
+if (hostname == "manifestmy.life") {
+  console.log("In Manifest My Life")
   var key_url = "/etc/letsencrypt/live/manifestmy.life/privkey.pem";
   var cert_url = "/etc/letsencrypt/live/manifestmy.life/fullchain.pem";
   REDIRECTED_ADD_USER_URI = "https://manifestmy.life/adduser";
@@ -64,8 +66,10 @@ if (hostname == "manifestmylife") {
     appId: "1:717980399518:web:553aadeb783bd8090d088f",
     measurementId: "G-CL3BMK155G",
   };
+  BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MyLife-60x60@3x.png";
 } else {
+  console.log("In Manifest My Space")
   var key_url = "/etc/letsencrypt/live/manifestmy.space/privkey.pem";
   var cert_url = "/etc/letsencrypt/live/manifestmy.space/fullchain.pem";
   REDIRECTED_ADD_USER_URI = "https://manifestmy.space/adduser";
@@ -79,6 +83,7 @@ if (hostname == "manifestmylife") {
     appId: "1:287117315224:web:c7af6690d5e269a7ab54ed",
     measurementId: "G-WRGR8M5LRN",
   };
+  BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MySpace-60x60@3x.png";
 }
 
@@ -545,6 +550,8 @@ data is retrieve.
 app.get("/getEventsByInterval", function (req, result) {
   //console.log("passed in params start date ", req.query.start);
   // console.log("passed in params end date", req);
+  console.log("All of Req", req);
+  console.log("All of")
   console.log("Prashant", req.query.start, req.query.end)
   if (!req.query.start || !req.query.end) {
     const date = new Date();
@@ -555,6 +562,7 @@ app.get("/getEventsByInterval", function (req, result) {
     var startParam = new Date(req.query.start as any);
     var endParam = new Date(req.query.end as any);
     console.log("inside intervals", startParam, endParam);
+    console.log("Req" , req.query.name, "Req id", req.query.id);
     const name = req.query.name;
     var id = req.query.id;
     console.log(name, id);
@@ -565,6 +573,8 @@ app.get("/getEventsByInterval", function (req, result) {
 
   
   setUpAuthById(id, (auth) => {
+    console.log("Running Auth", id);
+    console.log("Auth", auth)
     calendar = google.calendar({ version: "v3", auth });
     calendar.events.list(
       {
@@ -748,7 +758,7 @@ function formatEmail(email) {
 }
 
 app.post("/updateNewUser", function (req, result) {
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
+  let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
   // let body = {
   //   ta_people_id: req.body.ta_people_id,
   //   ta_email: req.body.ta_email,
@@ -782,7 +792,7 @@ app.post("/TALogIn", function (req, result) {
   let givenPass = req.body.password;
   let emailId1 = emailId.toLowerCase();
   let emailId_final = formatEmail(emailId1);
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginTA/";
+  let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginTA/";
 
   axios.get(url + emailId_final + "/" + givenPass).then(
     (response) => {
@@ -813,7 +823,7 @@ Attempt to sign in as trusted advisor
 */
 app.get("/usersOfTA", function (req, result) {
   let emailId = req.query.emailId;
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersOfTA/";
+  let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersOfTA/";
   axios.get(url + emailId).then(
     (response) => {
       result.json(response.data.result);
@@ -833,7 +843,7 @@ app.post("/TASocialLogIn", function (req, result) {
   let emailId = req.body.username;
   let emailId1 = emailId.toLowerCase();
   let emailId_final = formatEmail(emailId1);
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginSocialTA/";
+  let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginSocialTA/";
 
   axios.get(url + emailId_final).then(
     (response) => {
@@ -894,7 +904,7 @@ Trusted advisor sign up
 app.post("/TASignUp", function (req, result) {
   let db = firebase.firestore();
   let newTARef = db.collection("trusted_advisor").doc();
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewTA";
+  let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewTA";
   let body = {
     email_id: formatEmail(req.body.username),
     password: req.body.password,
@@ -921,7 +931,7 @@ app.post("/TASocialSignUp", function (req, result) {
   //console.log(req.body);
   let db = firebase.firestore();
   let newTARef = db.collection("trusted_advisor").doc();
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewSocialTA";
+  let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewSocialTA";
   let body = {
     email_id: formatEmail(req.body.username),
     first_name: req.body.fName,
@@ -940,6 +950,7 @@ app.post("/TASocialSignUp", function (req, result) {
 });
 
 app.get("/auth-url", function (req, result) {
+  console.log("Before read file")
   fs.readFile(credentials_url, (err, content) => {
     if (err) return console.log("Error loading client secret file:", err);
     // Authorize a client with credentials, then call the Google Calendar API.
@@ -989,7 +1000,7 @@ app.get("/adduser", function (req, result) {
           emailId = formatEmail(emailId);
           // let socialId = oAuth2Client.client_id
           // console.log(socialId)
-          let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
+          let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
           let body = {
             email_id: emailId,
             google_auth_token: token.access_token,
@@ -1058,6 +1069,7 @@ function authorize(credentials, callback) {
 }
 
 function authorizeById(credentials, id, callback) {
+  console.log("credentials: " , credentials)
   const { client_secret, client_id, redirect_uris } = credentials.web;
   let oAuth2Client = new google.auth.OAuth2(
     client_id,
@@ -1066,18 +1078,23 @@ function authorizeById(credentials, id, callback) {
   );
   
   // RDS Update
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersToken/";
+  let url = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersToken/";
   // console.log("******")
-  console.log(id)
-  console.log(url + id)
+  console.log("Id" , id)
+  console.log("Url" , url + id)
+  console.log("After")
   axios.get(url + id).then(
      (response) => {
+       console.log("Get Response");
        if (response.data) {
+         console.log("Access Token: " , response.data.google_auth_token);
+         console.log("Refresh Token: " , response.data.google_refresh_token)
          // console.log(response.data)
          oAuth2Client.setCredentials({
            access_token: response.data.google_auth_token,
            refresh_token: response.data.google_refresh_token
          });
+         console.log("OAuth2Client:", oAuth2Client)
          callback(oAuth2Client);
          return;
        } else {
@@ -1173,7 +1190,10 @@ function setUpAuth() {
 }
 
 function setUpAuthById(id, callback) {
+  console.log("Other Callback:" , callback);
+  console.log("Id from setupAuth", id)
   fs.readFile(credentials_url, (err, content) => {
+    console.log("Content" , JSON.parse(content))
     if (err) return console.log("Error loading client secret file:", err);
     // Authorize a client with credentials, then call the Google Calendar
     authorizeById(JSON.parse(content), id, callback); //Tyler: saveCredentials has been altered to just set-up, no listing events
