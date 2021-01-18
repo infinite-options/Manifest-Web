@@ -550,8 +550,8 @@ data is retrieve.
 app.get("/getEventsByInterval", function (req, result) {
   //console.log("passed in params start date ", req.query.start);
   // console.log("passed in params end date", req);
-  console.log("All of Req", req);
-  console.log("All of")
+  // console.log("All of Req", req);
+  // console.log("All of")
   console.log("Prashant", req.query.start, req.query.end)
   if (!req.query.start || !req.query.end) {
     const date = new Date();
