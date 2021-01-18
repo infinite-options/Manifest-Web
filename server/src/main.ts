@@ -49,9 +49,10 @@ var REDIRECTED_ADD_USER_URI;
 var firebase = require("firebase");
 var firebaseConfig;
 var FAVICON_URL;
-var BASE_URL;
 
+//need to change to localhost name 
 if (hostname == "manifestmy.life") {
+  console.log(hostname)
   console.log("In Manifest My Life")
   var key_url = "/etc/letsencrypt/live/manifestmy.life/privkey.pem";
   var cert_url = "/etc/letsencrypt/live/manifestmy.life/fullchain.pem";
@@ -66,10 +67,10 @@ if (hostname == "manifestmy.life") {
     appId: "1:717980399518:web:553aadeb783bd8090d088f",
     measurementId: "G-CL3BMK155G",
   };
-  BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MyLife-60x60@3x.png";
-} else {
+}else {
   console.log("In Manifest My Space")
+  console.log(hostname)
   var key_url = "/etc/letsencrypt/live/manifestmy.space/privkey.pem";
   var cert_url = "/etc/letsencrypt/live/manifestmy.space/fullchain.pem";
   REDIRECTED_ADD_USER_URI = "https://manifestmy.space/adduser";
@@ -83,7 +84,6 @@ if (hostname == "manifestmy.life") {
     appId: "1:287117315224:web:c7af6690d5e269a7ab54ed",
     measurementId: "G-WRGR8M5LRN",
   };
-  BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MySpace-60x60@3x.png";
 }
 

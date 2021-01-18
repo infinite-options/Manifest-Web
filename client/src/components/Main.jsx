@@ -292,6 +292,7 @@ export default class MainPage extends React.Component {
     axios
       .get("/TALogInStatus")
       .then((response) => {
+        console.log(response.data.ta_people_id);
         this.setState({
           loaded: true,
           loggedIn: response.data.username,
@@ -363,6 +364,8 @@ export default class MainPage extends React.Component {
     
     this.setState({createUserParam: result})
     console.log("before")
+    console.log("Email", email)
+    console.log(this.state.ta_people_id)
     if(email){
       let body = {
         email_id: email,
@@ -396,6 +399,7 @@ export default class MainPage extends React.Component {
   updateProfileFromFirebase = () => {
     // console.log("**")
     // console.log(this.state);
+    console.log(this.state.loggedIn);
     axios.get("/usersOfTA?emailId=" + this.state.loggedIn).then((response) => {
       // console.log(response.data);
       let nameIdObject = {};
@@ -991,7 +995,6 @@ By passing in a empty interval, this method will get a response from the server 
 the current month's events
 */
   getThisMonthEvents = () => {
-    console.log("Get Month by Interval")
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -3244,6 +3247,7 @@ this will close repeat modal.
           </Row> */}
               {/* </Col> */}
               <Col xs={8} style={{ paddingLeft: "0px" }}>
+                {console.log(this.state.ta_people_id)}
                 {this.state.showNewAccountmodal && (
                   <CreateNewAccountModal
                     closeModal={this.hideNewAccountForm}
