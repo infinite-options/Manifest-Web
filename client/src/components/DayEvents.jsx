@@ -464,6 +464,7 @@ console.log(arr);
    */
   dayViewItems = () => {
     let dic = this.sortEvents();
+    console.log(dic);
     var arr = [];
     for (let i = 0; i < 24; ++i) {
       arr.push(

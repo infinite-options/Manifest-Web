@@ -51,9 +51,9 @@ var firebaseConfig;
 var FAVICON_URL;
 
 // //need to change to localhost name 
-// if (hostname == "manifestmy.life") {
-// if (hostname == "MSI") {
-if (hostname == "manifestmylife") {
+// if (hostname == "manifestmy.life") {            This hostname probably does not work
+// if (hostname == "MSI") { 
+if (hostname == "MSI") {
   console.log(hostname)
   console.log("In Manifest My Life")
   var key_url = "/etc/letsencrypt/live/manifestmy.life/privkey.pem";
