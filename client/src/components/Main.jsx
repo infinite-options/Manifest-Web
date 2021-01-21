@@ -2313,11 +2313,18 @@ calls the backend API to delete a item with a particular eventID
   };
 
   LocalDateToISOString = (date, timeZone) => {
+    var newDate;
+    console.log(date, timeZone, this.state.currentUserTimeZone);
     let a = date.getTime();
     let b = new Date(
       date.toLocaleString("en-US", { timeZone: this.state.currentUserTimeZone })
     ).getTime();
-    return new Date(a - (b - a));
+    console.log(a,b);
+    let dates = new Date(a- (b-a));
+    console.log(date, dates, (b-a)/60/60/1000);
+    (b-a) > 0 ? newDate = new Date(a + (b - a)) : newDate = new Date(a - (b - a));
+    console.log(newDate);
+    return newDate;
   };
 
   /*
@@ -2557,7 +2564,7 @@ updates the array if the month view changes to a different month.
     } else if (this.state.calendarView === "Day") {
       let startObject = this.state.dateContext.clone();
       let endObject = this.state.dateContext.clone();
-      console.log(startObject, endObject)
+      console.log(startObject, endObject);
       let startDay = startObject.startOf("day");
       let endDay = endObject.endOf("day");
       console.log(startDay, endDay)
@@ -5165,7 +5172,7 @@ this will close repeat modal.
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
-    console.log(startDate, endDate);
+    console.log(startDate, endDate,this.state.currentUserTimeZone,this.state.currentUserName, this.state.currentUserId);
     console.log("EvenstByIntervalDay");
     // startDate = "Mon Jan 04 2021 00:00:00 GMT-0800 (Pacific Standard Time)"
     // endDate = "Mon Jan 04 2021 23:59:59 GMT-0800 (Pacific Standard Time)"

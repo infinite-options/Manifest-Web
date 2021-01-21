@@ -136,7 +136,7 @@ console.log(arr);
       return;
     }
   }
-  console.log(arr);
+  // console.log(arr);
     for (let i = 0; i < arr.length; i++) {
       
       if(!arr[i][0].start) break;

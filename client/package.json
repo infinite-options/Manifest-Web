@@ -16,6 +16,7 @@
 		"jquery": "^3.4.1",
 		"mem": ">=4.0.0",
 		"moment": "^2.25.3",
+		"moment-timezone": "^0.5.32",
 		"preval.macro": "^5.0.0",
 		"rc-dialog": "^7.6.0",
 		"react": "^16.12.0",

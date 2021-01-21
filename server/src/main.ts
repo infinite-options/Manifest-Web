@@ -52,8 +52,8 @@ var FAVICON_URL;
 
 // //need to change to localhost name 
 // if (hostname == "manifestmy.life") {            This hostname probably does not work
-// if (hostname == "MSI") { 
-if (hostname == "MSI") {
+if (hostname == "MSI") { 
+// if (hostname == "manifestmylife") {
   console.log(hostname)
   console.log("In Manifest My Life")
   var key_url = "/etc/letsencrypt/live/manifestmy.life/privkey.pem";
@@ -563,6 +563,7 @@ app.get("/getEventsByInterval", function (req, result) {
   } else {
     var startParam = new Date(req.query.start as any);
     var endParam = new Date(req.query.end as any);
+    console.log("Timezone" , req.query.timeZone)
     console.log("inside intervals", startParam, endParam);
     console.log("Req" , req.query.name, "Req id", req.query.id);
     const name = req.query.name;
