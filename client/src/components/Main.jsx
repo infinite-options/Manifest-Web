@@ -2332,11 +2332,18 @@ calls the backend API to delete a item with a particular eventID
   };
 
   LocalDateToISOString = (date, timeZone) => {
+    var newDate;
+    console.log(date, timeZone, this.state.currentUserTimeZone);
     let a = date.getTime();
     let b = new Date(
       date.toLocaleString("en-US", { timeZone: this.state.currentUserTimeZone })
     ).getTime();
-    return new Date(a - (b - a));
+    console.log(a,b);
+    let dates = new Date(a- (b-a));
+    console.log(date, dates, (b-a)/60/60/1000);
+    (b-a) > 0 ? newDate = new Date(a + (b - a)) : newDate = new Date(a - (b - a));
+    console.log(newDate);
+    return newDate;
   };
 
   /*
