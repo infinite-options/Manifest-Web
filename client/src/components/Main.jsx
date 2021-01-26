@@ -5492,6 +5492,9 @@ this will close repeat modal.
    * gets exactly the days worth of events from the google calendar
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
+    // var startDay = "Thu Jan 21 2021 00:00:00 GMT-0800 (Pacific Standard Time)";
+    // var endDay = "Thu Jan 21 2021 23:59:59 GMT-0800 (Pacific Standard Time)";
+  // getEventsByIntervalDayVersion = (startDate, endDate) => {
     var start_call = +new Date();
     console.log(startDate, endDate);
     // const start_date = new Date(startDate);

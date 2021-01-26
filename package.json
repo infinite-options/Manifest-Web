@@ -9,6 +9,8 @@
 	},
 	"dependencies": {
 		"@fortawesome/free-regular-svg-icons": "^5.13.0",
+		"chart.js": "^2.9.4",
+		"react-chartjs-2": "^2.11.1",
 		"react-promise-tracker": "^2.1.0"
 	}
 }
