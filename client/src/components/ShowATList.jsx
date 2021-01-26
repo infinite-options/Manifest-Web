@@ -105,7 +105,7 @@ export default class ShowATList extends React.Component {
     this.setState({ iconShow: false }, () => {
       let items = [...this.props.Array];
       items[this.props.Index]["is_sublist_available"] = false;
-      this.props.Path.update({ "goals&routines": items }).then((doc) => {});
+      // this.props.Path.update({ "goals&routines": items }).then((doc) => {});
     });
   };
 
@@ -113,7 +113,7 @@ export default class ShowATList extends React.Component {
     this.setState({ iconShow: true }, () => {
       let items = [...this.props.Array];
       items[this.props.Index]["is_sublist_available"] = true;
-      this.props.Path.update({ "goals&routines": items }).then((doc) => {});
+      // this.props.Path.update({ "goals&routines": items }).then((doc) => {});
     });
   };
 

@@ -115,15 +115,15 @@ export default class AddNewGRItem extends Component {
       },
     }, //this is essentially the new item
     //below are references to firebase directories
-    routineDocsPath: firebase
-      .firestore()
-      .collection("users")
-      .doc(this.props.theCurrentUserId)
-      .collection("goals&routines"),
-    arrPath: firebase
-      .firestore()
-      .collection("users")
-      .doc(this.props.theCurrentUserId),
+    // routineDocsPath: firebase
+    //   .firestore()
+    //   .collection("users")
+    //   .doc(this.props.theCurrentUserId)
+    //   .collection("goals&routines"),
+    // arrPath: firebase
+    //   .firestore()
+    //   .collection("users")
+    //   .doc(this.props.theCurrentUserId),
 
     showRepeatModal: false,
     repeatOption: false,
@@ -599,16 +599,16 @@ export default class AddNewGRItem extends Component {
   // };
 
   //This function below will essentially take in a array and have a key map to it
-  updateEntireArray = (newArr) => {
-    // 2. update adds to the document
-    let db = this.state.arrPath;
-    db.update({ "goals&routines": newArr }).then((doc) => {
-      this.getGRDataFromFB();
-      if (this.props != null) {
-        this.props.refresh();
-      }
-    });
-  };
+  // updateEntireArray = (newArr) => {
+  //   // 2. update adds to the document
+  //   let db = this.state.arrPath;
+  //   db.update({ "goals&routines": newArr }).then((doc) => {
+  //     this.getGRDataFromFB();
+  //     if (this.props != null) {
+  //       this.props.refresh();
+  //     }
+  //   });
+  // };
 
   convertTimeToHRMMSS = (e) => {
     let num = e.target.value;

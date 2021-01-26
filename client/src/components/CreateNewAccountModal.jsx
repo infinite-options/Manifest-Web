@@ -19,9 +19,9 @@ export default class AddNewPeople extends Component {
     copy_from_user: "",
     copy_from_user_name: "Copy Exisiting Client",
     unique_id: "",
-    UserDocsPath: firebase
-    .firestore()
-    .collection("users"),
+    // UserDocsPath: firebase
+    // .firestore()
+    // .collection("users"),
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
   };
   
