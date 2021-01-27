@@ -205,6 +205,7 @@ export default class AddNewATItem extends Component {
 
         this.props.hideNewATModal();
         this.props.refresh(newArr);
+        this.props.refreshGR();
         // this.updateEntireArray(newArr);
 
         console.log("Added Action/Task to Database");

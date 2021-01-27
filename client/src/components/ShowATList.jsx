@@ -168,7 +168,7 @@ export default class ShowATList extends React.Component {
   };
 
   render() {
-    this.hasActions()
+    // this.hasActions()
     return (
       <div>
         {/* {console.log("this state is ", this.state.iconShow)} */}
