@@ -11,6 +11,8 @@
 		"@fortawesome/free-regular-svg-icons": "^5.13.0",
 		"chart.js": "^2.9.4",
 		"react-chartjs-2": "^2.11.1",
-		"react-promise-tracker": "^2.1.0"
+		"react-charts": "^2.0.0-beta.7",
+		"react-promise-tracker": "^2.1.0",
+		"recharts": "^2.0.3"
 	}
 }
