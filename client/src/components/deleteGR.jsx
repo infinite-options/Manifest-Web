@@ -93,25 +93,25 @@ export default class deleteGR extends Component {
   //   });
   // };
 
-  deleteArrPortion = () => {
-    // console.log("request was made to delete this  element " +  this.props.deleteIndex);
-    let items = [...this.props.Array];
-    // console.log("delete with: ");
-    let i = this.props.deleteIndex;
-    const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
-    // console.log("delete 2 with: ");
-    // console.log(newArr);
-    this.props.Path.update({ "goals&routines": newArr }).then((doc) => {
-      // console.log('updateEntireArray Finished')
-      // console.log(doc);
-      if (this.props != null) {
-        // console.log("refreshing FireBasev2 from delete ISItem");
-        this.props.refresh();
-      } else {
-        console.log("delete failure");
-      }
-    });
-  };
+  // deleteArrPortion = () => {
+  //   // console.log("request was made to delete this  element " +  this.props.deleteIndex);
+  //   let items = [...this.props.Array];
+  //   // console.log("delete with: ");
+  //   let i = this.props.deleteIndex;
+  //   const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
+  //   // console.log("delete 2 with: ");
+  //   // console.log(newArr);
+  //   this.props.Path.update({ "goals&routines": newArr }).then((doc) => {
+  //     // console.log('updateEntireArray Finished')
+  //     // console.log(doc);
+  //     if (this.props != null) {
+  //       // console.log("refreshing FireBasev2 from delete ISItem");
+  //       this.props.refresh();
+  //     } else {
+  //       console.log("delete failure");
+  //     }
+  //   });
+  // };
 
   confirmation = () => {
     const r = window.confirm("Confirm Delete");
