@@ -865,7 +865,7 @@ export default class MainPage extends React.Component {
               
               gr_array.push(gr);
             }
-             if ((this.state.calendarView === "WEEK" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
+             if ((this.state.calendarView === "Week" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
               gr_array.push(gr);
             }
             if ((this.state.calendarView === "Month" && goalDate.getTime() > monthStartDate.getTime() && goalDate.getTime() < monthEndDate.getTime())){
@@ -881,7 +881,7 @@ export default class MainPage extends React.Component {
                 routine_ids.push(gr["id"]);
                 routine.push(gr);
               }
-              if ((this.state.calendarView === "WEEK" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime())) {
+              if ((this.state.calendarView === "Week" && goalDate.getTime() > todayStartDate.getTime() &&goalDate.getTime() < todayEndDate.getTime())) {
                 routine_ids.push(gr["id"]);
                 routine.push(gr);
               }
@@ -899,7 +899,7 @@ export default class MainPage extends React.Component {
                 goal_ids.push(gr["id"]);
                 goal.push(gr);
               }
-               if ((this.state.calendarView === "WEEK" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
+               if ((this.state.calendarView === "Week" && goalDate.getTime() > startDate.getTime() && goalDate.getTime() < endDate.getTime())){
                 goal_ids.push(gr["id"]);
                 goal.push(gr);
               }

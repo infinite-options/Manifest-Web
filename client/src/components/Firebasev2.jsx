@@ -1937,6 +1937,7 @@ export default class FirebaseV2 extends React.Component {
                   onClick={(e) => {
                     e.stopPropagation();
                     this.resetRoutinesGoals(this.props.goals[i]);
+                    this.grabFireBaseRoutinesGoalsData();
                   }}
                 >
                   Reset
@@ -2127,6 +2128,7 @@ export default class FirebaseV2 extends React.Component {
                   onClick={(e) => {
                     e.stopPropagation();
                     this.resetRoutinesGoals(this.props.routines[i]);
+                    this.grabFireBaseRoutinesGoalsData();
                   }}
                 >
                   Reset
