@@ -9,6 +9,8 @@ import TimePicker from "./TimePicker";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
+import axios from "axios";
+
 
 /**
  *
@@ -30,9 +32,11 @@ export default class AddNewISItem extends Component {
     itemToEdit: {
       //new item to add to array
       id: "",
+      type: "",
       title: "",
-      photo:
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask2.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838",
+      photo:"https://manifest-image-db.s3-us-west-1.amazonaws.com/instruction.png",
+      photo_url:
+        "https://manifest-image-db.s3-us-west-1.amazonaws.com/instruction.png",
       is_complete: false,
       is_available: true,
       available_end_time: this.props.timeSlot[1],
@@ -86,11 +90,14 @@ export default class AddNewISItem extends Component {
     },
   };
 
-  setPhotoURLFunction = (photo_url) => {
+  setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
+    temp.photo_url = photo_url;
+    temp.type = type;
     this.setState({ itemToEdit: temp });
   };
+
 
   componentDidMount() {
     // console.log("AddNewISItem did mount");
@@ -156,61 +163,98 @@ export default class AddNewISItem extends Component {
       return;
     }
 
-    if (!this.validateTime()) {
-      return;
+    if (this.state.itemToEdit.photo_url === "") {
+      this.state.itemToEdit.photo_url =
+        "https://manifest-image-db.s3-us-west-1.amazonaws.com/instruction.png";
     }
 
-    // console.log("Submitting Input: " + this.state.itemToEdit.title);
+    // if (!this.validateTime()) {
+    //   return;
+    // }
 
-    this.props.ISItem.fbPath
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          var x = doc.data();
-          if (x["instructions&steps"] != undefined) {
-            x = x["instructions&steps"];
-            this.setState({
-              ISArr: x,
-            });
+    let url =
+    "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addIS";
 
-            this.state.ISArr.push(this.state.itemToEdit);
-            this.updateEntireArray(this.state.ISArr);
-          }
-        } else {
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-        alert("Error getting document:", error);
+    if (this.props.ISArray.length > 0) {
+      this.setState({
+        ISArr: this.props.ISArray,
       });
-    //this.state.ISArr.push(this.state.itemToEdit);
-    //this.updateEntireArray(this.state.ISArr);
+    }
+
+  let body = this.state.itemToEdit;
+
+  if (body.ta_notifications) delete body.ta_notifications;
+  if (body.user_notifications) delete body.user_notifications;
+  if (body.available_end_time) delete body.available_end_time;
+  if (body.available_start_time) delete body.available_start_time;
+  if (body.datetime_completed) delete body.datetime_completed;
+  if (body.datetime_started) delete body.datetime_started;
+  if (body.audio) delete body.audio;
+  if (body.id || body.id === "") delete body.id;
+
+  body.at_id = this.props.ISItem.id;
+
+  // console.log("BODY")
+  console.log(body);
+
+  let formData = new FormData();
+  Object.entries(body).forEach((entry) => {
+    if (entry[1] instanceof Object) {
+      entry[1] = JSON.stringify(entry[1]);
+      formData.append(entry[0], entry[1]);
+    } else {
+      formData.append(entry[0], entry[1]);
+    }
+  });
+  console.log(formData);
+
+  axios
+    .post(url, formData)
+    .then((response) => {
+      let newArr = this.state.ISArr;
+      let temp = this.state.itemToEdit;
+      temp.id = response.data.result;
+      temp.unique_id = response.data.result;
+
+      // console.log("*****")
+      // console.log(response.data.result)
+      // console.log(newArr)
+      newArr.push(temp);
+
+      this.props.hideNewISModal();
+      this.props.refresh(newArr);
+      // this.updateEntireArray(newArr);
+
+      console.log("Added Instuction/Step to Database");
+    })
+    .catch((err) => {
+      console.log("Error adding Action/TaskInstuction/Step", err);
+    });
   };
 
-  //This function will below will essentially take in a array and have a key map to it
-  updateEntireArray = (newArr) => {
-    // 2. update adds to the document
+  // //This function will below will essentially take in a array and have a key map to it
+  // updateEntireArray = (newArr) => {
+  //   // 2. update adds to the document
 
-    this.props.ISItem.fbPath
-      .update({ "instructions&steps": newArr })
-      .then((doc) => {
-        // console.log(this.props.ISItem.fbPath.path.split('/')[3]);
-        this.props.updateNewWentThroughATListObjIS(
-          this.props.ISItem.fbPath.path.split("/")[3]
-        );
-        // console.log("updateEntireArray Finished");
-        // console.log(doc);
-        if (this.props != null) {
-          this.props.hideNewISModal();
-          // console.log("refreshing FireBasev2 from ISItem");
-          this.props.refresh(newArr);
-        } else {
-          // console.log("removing newly added item due to failure");
-          this.props.ISArray.pop();
-        }
-      });
-  };
+  //   this.props.ISItem.fbPath
+  //     .update({ "instructions&steps": newArr })
+  //     .then((doc) => {
+  //       // console.log(this.props.ISItem.fbPath.path.split('/')[3]);
+  //       this.props.updateNewWentThroughATListObjIS(
+  //         this.props.ISItem.fbPath.path.split("/")[3]
+  //       );
+  //       // console.log("updateEntireArray Finished");
+  //       // console.log(doc);
+  //       if (this.props != null) {
+  //         this.props.hideNewISModal();
+  //         // console.log("refreshing FireBasev2 from ISItem");
+  //         this.props.refresh(newArr);
+  //       } else {
+  //         // console.log("removing newly added item due to failure");
+  //         this.props.ISArray.pop();
+  //       }
+  //     });
+  // };
 
   convertTimeToHRMMSS = (e) => {
     // console.log(e.target.value);
@@ -257,6 +301,7 @@ export default class AddNewISItem extends Component {
   };
 
   render() {
+    console.log("In render IS")
     return (
       <Modal.Dialog style={{ marginLeft: "0", width: this.props.width }}>
         <Modal.Header
@@ -289,21 +334,24 @@ export default class AddNewISItem extends Component {
             </div>
             <Form.Label> Photo </Form.Label>
             <Row>
-              <AddIconModal parentFunction={this.setPhotoURLFunction} />
-              <UploadImage parentFunction={this.setPhotoURLFunction} />
+            <AddIconModal parentFunction={this.setPhotoURLFunction} />
+              <UploadImage
+                parentFunction={this.setPhotoURLFunction}
+                currentUserId={this.props.currentUserId}
+              />
               <br />
             </Row>
             <div style={{ marginTop: "10px", marginBottom: "10px" }}>
               <label>Icon: </label>
               <img
                 alt="None"
-                src={this.state.itemToEdit.photo}
+                src={this.state.itemToEdit.photo_url}
                 height="70"
                 width="auto"
               ></img>
             </div>
 
-            <Row style={{ marginLeft: "3px" }}>
+            {/* <Row style={{ marginLeft: "3px" }}>
               <section>
                 Start Time
                 <TimePicker
@@ -321,7 +369,7 @@ export default class AddNewISItem extends Component {
                   time={this.state.itemToEdit.available_end_time}
                 />
               </section>
-            </Row>
+            </Row> */}
             <br />
 
             <label>This Takes Me</label>
@@ -371,7 +419,7 @@ export default class AddNewISItem extends Component {
 
             <div className="input-group mb-3">
               <label className="form-check-label">
-                Available to thee user?
+                Available to the user?
               </label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}

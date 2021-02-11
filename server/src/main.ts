@@ -93,8 +93,10 @@ firebase
 .signInAnonymously()
 .catch(function (error) {
   // Handle Errors here.
+  console.log("API Key")
   const errorCode = error.code;
   const errorMessage = error.message;
+  console.log("After api key", errorCode, errorMessage)
   // ...
 });
 
@@ -726,6 +728,7 @@ create new Event
 */
 app.post("/createNewEvent", function (req, res) {
   let id = req.body.id;
+
   setUpAuthById(id, (auth) => {
     console.log("Signed in correctly");
     calendar = google.calendar({ version: "v3", auth });

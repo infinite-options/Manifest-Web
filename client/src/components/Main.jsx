@@ -12,6 +12,7 @@ import {
   Modal,
   Dropdown,
   DropdownButton,
+  Spinner,
 } from "react-bootstrap";
 import firebase from "./firebase";
 import Firebasev2 from "./Firebasev2.jsx";
@@ -307,6 +308,10 @@ export default class MainPage extends React.Component {
       repeatOccurrence_temp: eventKey,
     });
   };
+
+  componentDidUpdate(){
+
+  }
 
   // Entry of the page
   componentDidMount() {
@@ -1035,6 +1040,7 @@ the current month's events
 
     var guestList = "";
     console.log("handleDayEventClick , A :", A);
+    console.log("Original time", A.reminders.overrides)
     if (A.recurringEventId) {
       axios
         .get("/getRecurringRules", {
@@ -1091,7 +1097,7 @@ the current month's events
       newEventLocation: A.location ? A.location : "",
       newEventNotification: A.reminders.overrides
         ? A.reminders.overrides[0].minutes
-        : "",
+        : 30,
       newEventDescription: A.description ? A.description : "",
       dayEventSelected: true,
       isEvent: true,
@@ -1918,7 +1924,7 @@ updates the google calendar based  on
       });
     }
 
-    var minutesNotification = 30;
+    var minutesNotification = '30';
     if (this.state.newEventNotification) {
       minutesNotification = this.state.newEventNotification;
     }
@@ -2384,7 +2390,10 @@ Basically creates a new event based on details given
     }
 
     var minutesNotification = 30;
+    console.log("Event notification", this.state.newEventNotification)
+
     if (this.state.newEventNotification) {
+
       minutesNotification = this.state.newEventNotification;
     }
 
@@ -2429,6 +2438,7 @@ Basically creates a new event based on details given
       attendees: formattedEmail,
     };
     console.log("create Event, event: ", event);
+    console.log("reminder", minutesNotification)
     axios
       .post("/createNewEvent", {
         newEvent: event,
@@ -3526,6 +3536,7 @@ this will close repeat modal.
                     size="2x"
                     className="X"
                     onClick={(e) => {
+                      
                       this.prevWeek();
                     }}
                   />
@@ -4801,9 +4812,8 @@ this will close repeat modal.
                 type="number"
                 placeholder=""
                 style={{ width: "70px", marginTop: ".25rem" }}
-                value={ this.state.itemToEdit.ta_notifications.before.time === "00:00:00" ? "" : this.convertToMinutes(
-                  this.state.itemToEdit.ta_notifications.before.time
-                )}
+                {...console.log("E time", this.state.newEventNotification)}
+                value={this.state.newEventNotification}
                 onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
@@ -4812,9 +4822,11 @@ this will close repeat modal.
                   temp.ta_notifications.before.time = this.convertTimeToHRMMSS(
                     e
                   );
-                  temp.user_notifications.before.time = this.convertTimeToHRMMSS(
+                  {console.log("In react", this.convertTimeToHRMMSS(e))}
+                  {console.log("After parsing",  parseInt(this.convertTimeToHRMMSS(e)))}
+                  this.state.newEventNotification = this.convertToMinutes(this.convertTimeToHRMMSS(
                     e
-                  );
+                  ));
                   this.handleNotificationChange(temp);
                 }}
               />

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 // import { Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+
 /**
  *
  * This class is responsible for adding a new elemnt to the
@@ -23,53 +25,25 @@ export default class DeleteISItem extends Component {
   }
 
   submitRequest = () => {
-    //Delete from the firebase
-    /*const url = "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
-        const Data = {
-            data : {
-                "path" : this.props.ISItem.fbPath.path //<<<<< Entire path of the document to delete
-            }
-        };
-        console.log("path " +  this.props.ISItem.fbPath.path);
-        
-        const param = {
-            headers:{
-                //"content-type":"application/json; charset=UTF-8"
-                "content-type": "application/json"
-            },
-            body: JSON.stringify(Data),
-            method: "POST"
-        };
-        
-        fetch(url, param)
-        .then((response) => response.json())
-        .then((result) => { console.log(result); } )
-        .catch((error) => { console.error(error); });*/
-
-    // console.log("request was made to delete for element " +  this.props.deleteIndex);
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/deleteIS";
+    console.log(url)
     let items = [...this.props.ISArray];
-    // console.log("delete with: ")
-    console.log(items);
     let i = this.props.deleteIndex;
     const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
-    // console.log("delete 2 with: ")
-    console.log(newArr);
-    this.props.ISItem.fbPath
-      .update({ "instructions&steps": newArr })
-      .then((doc) => {
-        // console.log('updateEntireArray Finished')
-        // console.log(doc);
-        if (this.props != null) {
-          this.props.updateNewWentThroughISDelete(
-            this.props.ISItem.fbPath.path.split("/")[3]
-          );
-          //   console.log(this.props.ISItem.fbPath.path);
-          // console.log("refreshing FireBasev2 from delete ISItem");
-          this.props.refresh(newArr);
-        } else {
-          console.log("delete failure");
-        }
-      });
+    console.log(items)
+    let body = {
+      is_id: items[i]["id"]
+    }
+    console.log("IS_ID", body)
+    axios.post(url, body)
+       .then(() => {
+         console.log("Deleted Instruction/Step to Database")
+         this.props.refresh(newArr);
+
+       })
+       .catch((err) => {
+         console.log("Error deleting Action/Task", err);
+       });
   };
 
   confirmation = () => {
@@ -83,6 +57,7 @@ export default class DeleteISItem extends Component {
   };
 
   render() {
+    console.log("Delete IS render")
     return (
       <div>
         <FontAwesomeIcon

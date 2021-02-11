@@ -228,6 +228,7 @@ export default class FirebaseV2 extends React.Component {
     this.setState({
       singleISitemArr: arr,
     });
+    console.log("All IS", arr)
     let resArr = this.createListofIS(arr);
     let singleAt = this.state.singleAT;
     console.log("Before delete singleAt", singleAt.title, singleAt.arr);
@@ -448,7 +449,7 @@ export default class FirebaseV2 extends React.Component {
             action
             onClick={() => {
               // Disable IS layer
-              // this.ATonClickEvent(tempTitle, tempID);
+              this.ATonClickEvent(tempTitle, tempID);
             }}
             variant="light"
             style={{ marginBottom: "3px" }}
@@ -632,6 +633,7 @@ export default class FirebaseV2 extends React.Component {
     let res = [];
     for (let i = 0; i < A.length; i++) {
       let tempPhoto = A[i]["photo"];
+      console.log("In create list", tempPhoto)
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
       res.push(
@@ -874,73 +876,82 @@ export default class FirebaseV2 extends React.Component {
    * and we will need to grab all steps/Instructions related to this action/task,
    *
    */
-  // ATonClickEvent = (title, id) => {
-  //   let stepsInstructionArrayPath = firebase
-  //     .firestore()
-  //     .collection("users")
-  //     .doc(this.props.theCurrentUserID)
-  //     .collection("goals&routines")
-  //     .doc(this.state.singleGR.id)
-  //     .collection("actions&tasks")
-  //     .doc(id);
+  ATonClickEvent = (title, id) => {
+    this.getISList(id, title);
+  };
 
-  //   //setting timeSlot for IS according its parent AT time
-  //   firebase
-  //     .firestore()
-  //     .collection("users")
-  //     .doc(this.props.theCurrentUserID)
-  //     .collection("goals&routines")
-  //     .doc(this.state.singleGR.id)
-  //     .get()
-  //     .then((snapshot) => {
-  //       let userData = snapshot.data()["actions&tasks"];
-  //       userData.forEach((doc) => {
-  //         if (doc.id === id) {
-  //           let timeSlot = [doc.available_start_time, doc.available_end_time];
-  //           this.setState({ timeSlotForIS: timeSlot });
-  //           console.log("timeSLotForIS:", this.state.timeSlotForIS); //timeSlotForIS[0] == start_time, timeSlotForIS[1] == end_time
-  //         }
-  //       });
-  //     });
+  getISList = async (id, title) => {
+    
+    let url =
+      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/instructionsSteps/";
 
-  //   let temp = {
-  //     show: true,
-  //     type: "Action/Task",
-  //     title: title,
-  //     id: id,
-  //     arr: [],
-  //     fbPath: stepsInstructionArrayPath,
-  //   };
-  //   stepsInstructionArrayPath
-  //     .get()
-  //     .then((doc) => {
-  //       console.log("ths is the doc that doesn exist", doc);
-  //       if (doc.exists) {
-  //         console.log("Grabbing steps/instructions data:");
-  //         console.log(doc.data());
-  //         var x = doc.data();
-  //         x = x["instructions&steps"];
-  //         if (x == null) {
-  //           this.setState({ singleAT: temp });
-  //           return;
-  //         }
-  //         //Below is a fix for fbPath Null when we pass it
-  //         //createListofIS and DeleteISItem.jsx, we need a path
-  //         //to delete the item, so we set the path then create the
-  //         //the array and reset it.
-  //         this.setState({ singleAT: temp, singleISitemArr: x });
-  //         temp.arr = this.createListofIS(x);
-  //         this.setState({ singleAT: temp, singleISitemArr: x });
-  //       } else {
-  //         // doc.data() will be undefined in this case
-  //         console.log("No Instruction/Step documents!");
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       console.log("Error getting document:", error);
-  //       alert("Error getting document:", error);
-  //     });
-  // };
+    axios
+      .get(url + id)
+      .then((response) => {
+        if (response.data.result && response.data.result.length > 0) {
+          let x = response.data.result;
+
+          for (let i = 0; i < x.length; ++i) {
+     
+            x[i].id = x[i].unique_id;
+            x[i].is_available = x[i].is_available.toLowerCase() === "true";
+            x[i].is_complete = x[i].is_complete.toLowerCase() === "true";
+            x[i].is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
+            x[i].is_timed = x[i].is_timed.toLowerCase() === "true";
+            x[i].title = x[i].title;
+          }
+
+          let singleAT = {
+            //initialise without list to pass fbPath to child
+            show: true,
+            title: title,
+            id: id,
+            arr: [], //array of current action/task in this singular Routine
+            // fbPath: docRef,
+          };
+
+          this.setState({
+            singleAT: singleAT,
+            singleISitemArr: x,
+          });
+          let resArr = this.createListofIS(x);
+          //assemble singleGR template here:
+
+          singleAT = {
+            show: true,
+            title: title,
+            id: id,
+            arr: resArr, //array of current action/task in this singular Routine
+            // fbPath: docRef,
+          };
+
+          this.setState({
+            singleAT: singleAT,
+          });
+          // console.log(this.state.singleATitemArr);
+        } else {
+          console.log("there are  no instructions/steps");
+          console.log(response.data);
+
+          let singleAT = {
+            //Variable to hold information about the parent Goal/ Routine
+            show: true,
+            title: title,
+            id: id,
+         
+            arr: [],
+            // fbPath: docRef,
+          };
+          this.setState({
+            singleAT: singleAT,
+            singleISitemArr: [],
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("Error Occurred in Retrieving Instructions/Steps" + error);
+      });
+  };
 
   /**
    * findIndexByID:

@@ -223,7 +223,7 @@ axios.get(url5).then(
                   Close
                 </Button>
                 <Button variant="primary" onClick={this.onUploadIcon}>
-                  Upload Icon
+                  Upload New Icon
                 </Button>
                   <Modal show={this.state.modal} onHide={this.onUploadIcon}>
                     <Modal.Header closeButton>
@@ -254,7 +254,7 @@ axios.get(url5).then(
                     </Modal.Footer>
                   </Modal>
                 <Button variant="primary" onClick={this.onSubmitIcon}>
-                  Add Icon
+                  Select Icon
                 </Button>
               </Modal.Footer>
               </Modal>

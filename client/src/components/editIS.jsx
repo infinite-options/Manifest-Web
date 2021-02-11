@@ -10,14 +10,17 @@ import TimeField from "react-simple-timefield";
 import TimePicker from "./TimePicker";
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
+import axios from "axios";
 
 export default class editIS extends Component {
   constructor(props) {
     super(props);
     console.log("from editIS: ", this.props.timeSlot);
     this.state = {
+      type: "",
       showEditModal: false,
       itemToEdit: this.props.ISArray[this.props.i],
+      photo_url: this.props.ISArray[this.props.i].photo
     };
   }
 
@@ -27,10 +30,10 @@ export default class editIS extends Component {
     }
   }
 
-  setPhotoURLFunction = (photo_url) => {
+  setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
-    temp.photo = photo_url;
-    this.setState({ itemToEdit: temp });
+    temp.photo = photo;
+    this.setState({ itemToEdit: temp, photo_url: photo_url, type: type });
   };
 
   newInputSubmit = () => {
@@ -41,40 +44,53 @@ export default class editIS extends Component {
       alert("Missing title");
       return "";
     }
-    if (!this.validateTime()) {
-      return;
-    }
+    // if (!this.validateTime()) {
+    //   return;
+    // }
 
-    if (this.state.itemToEdit.photo === "") {
-      this.state.itemToEdit.photo =
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask2.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
+    if (this.state.itemToEdit.photo_url === "") {
+      this.state.itemToEdit.photo_url =
+        "https://manifest-image-db.s3-us-west-1.amazonaws.com/instruction.png";
     }
+    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateIS"
 
-    newArr[this.props.i] = this.state.itemToEdit;
+let body = newArr[this.props.i]
 
-    //Add the below attributes in case they don't already exists
-    if (!newArr[this.props.i]["datetime_completed"]) {
-      newArr[this.props.i]["datetime_completed"] =
-        "Sun, 23 Feb 2020 00:08:43 GMT";
-    }
-    if (!newArr[this.props.i]["datetime_started"]) {
-      newArr[this.props.i]["datetime_started"] =
-        "Sun, 23 Feb 2020 00:08:43 GMT";
-    }
+body.photo_url = this.state.photo_url
+    body.type = this.state.type
+    if (body.at_id) delete body.at_id;
+  if (body.ta_notifications) delete body.ta_notifications;
+  if (body.user_notifications) delete body.user_notifications;
+  if (body.available_end_time) delete body.available_end_time;
+  if (body.available_start_time) delete body.available_start_time;
+  if (body.datetime_completed) delete body.datetime_completed;
+  if (body.datetime_started) delete body.datetime_started;
+  if (body.audio) delete body.audio;
+  if (body.id) delete body.id;
+  if (body.is_sequence) delete body.is_sequence;
 
-    if (!newArr[this.props.i]["audio"]) {
-      newArr[this.props.i]["audio"] = "";
+  let formData = new FormData();
+  Object.entries(body).forEach((entry) => {
+    if (entry[1] instanceof Object) {
+      entry[1] = JSON.stringify(entry[1]);
+      formData.append(entry[0], entry[1]);
+    } else {
+      formData.append(entry[0], entry[1]);
     }
-    this.props.FBPath.update({ "instructions&steps": newArr }).then((doc) => {
-      console.log("this is the path ", this.props.FBPath.path.split('/')[3]);
-      this.props.updateWentThroughATListObjIS(this.props.FBPath.path.split('/')[3]);
-      if (this.props != null) {
-        // console.log("refreshing FireBasev2 from updating ISItem");
-        this.setState({ showEditModal: false });
-        this.props.refresh(newArr);
-      } else {
-        console.log("update failure");
-      }
+  });
+  console.log(formData);
+
+  axios
+    .post(url, formData)
+    .then((response) => {
+      this.setState({ showEditModal: false });
+      this.props.refresh(newArr);
+      // this.updateEntireArray(newArr);
+
+      console.log("Added Instuction/Step to Database");
+    })
+    .catch((err) => {
+      console.log("Error adding Action/TaskInstuction/Step", err);
     });
   };
   convertTimeToHRMMSS = (e) => {
@@ -196,8 +212,9 @@ export default class editIS extends Component {
         <Form.Group>
           <Form.Label> Photo </Form.Label>
           <Row>
-            <AddIconModal parentFunction={this.setPhotoURLFunction} />
-            <UploadImage parentFunction={this.setPhotoURLFunction} />
+          <AddIconModal parentFunction={this.setPhotoURLFunction} />
+            <UploadImage parentFunction={this.setPhotoURLFunction} 
+              currentUserId = {this.props.currentUserId}/>
             <br />
           </Row>
 
@@ -206,14 +223,14 @@ export default class editIS extends Component {
 
             <img
               alt="None"
-              src={this.state.itemToEdit.photo}
+              src={this.state.photo_url}
               height="70"
               width="auto"
             ></img>
           </div>
         </Form.Group>
 
-        <Row style={{ marginLeft: "3px" }}>
+        {/* <Row style={{ marginLeft: "3px" }}>
           <section>
             Start Time
             <TimePicker
@@ -231,7 +248,7 @@ export default class editIS extends Component {
               time={this.state.itemToEdit.available_end_time}
             />
           </section>
-        </Row>
+        </Row> */}
         <div>
           <br />
           This Takes Me
