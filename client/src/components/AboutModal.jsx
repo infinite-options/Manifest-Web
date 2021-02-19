@@ -22,10 +22,11 @@ class AboutModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firebaseRootPath: firebase
-        .firestore()
-        .collection("users")
-        .doc(this.props.theCurrentUserId),
+      // firebaseRootPath: firebase
+      //   .firestore()
+      //   .collection("users")
+      //   .doc(this.props.theCurrentUserId),
+      imageChanged: false,
       importantPeople1id: null,
       importantPeople2id: null,
       importantPeople3id: null,
@@ -119,6 +120,7 @@ class AboutModal extends React.Component {
 
     this.setState({
       saveButtonEnabled: false,
+      imageChanged: true,
     });
 
     let targetFile = file;
@@ -270,20 +272,33 @@ class AboutModal extends React.Component {
       .get(url + this.props.theCurrentUserId)
       .then((response) => {
         let peopleList = response.data.result.result;
+        console.log(" All People", peopleList)
         if (peopleList && peopleList.length !== 0) {
           console.log(peopleList);
           peopleList.forEach((d, i) => {
             allPeopleList[d.ta_people_id] = d;
-            if (d.important.toLowerCase() === "true") {
+            if ((d.important.toLowerCase() === "true") && (importantPeopleArray.length < 3)) {
               importantPeopleArray.push(d);
               impCount++;
-            } else if (d.important.toLowerCase() === "false") {
+            } else if ((d.important.toLowerCase() === "false") || (importantPeopleArray.length == 3)){
               test[d.ta_people_id] = d.name;
               nonImportantPeople[d.ta_people_id] = d;
             }
           });
 
           if (importantPeopleArray.length >= 3) {
+            // console.log("Before", nonImportantPeople)
+            // if(importantPeopleArray.length > 3){
+            //   console.log("Inside")
+            //   nonImportantPeople = {
+            //     ...nonImportantPeople,
+            //     ...importantPeopleArray.slice(3,importantPeopleArray.length)
+            //   }
+                
+            // }
+            // console.log("After", nonImportantPeople)
+
+            console.log(nonImportantPeople)
             this.setState({
               peopleNamesArray: test,
               enableDropDown: true,
@@ -967,6 +982,14 @@ class AboutModal extends React.Component {
       .then(() => {
         console.log("Updated Details");
         this.hideAboutForm();
+     
+        if(this.state.imageChanged){
+          this.props.updateProfilePic(body.first_name + " " + body.last_name, this.state.url)
+        }
+        else{
+          this.props.updateProfilePic(body.first_name + " " + body.last_name, this.state.aboutMeObject.pic)
+        }
+        this.props.updateProfileTimeZone(this.state.aboutMeObject.timeSettings['timeZone'])
       })
       .catch((err) => {
         console.log("Error updating Details", err);

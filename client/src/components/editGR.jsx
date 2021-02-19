@@ -147,6 +147,7 @@ export default class editGR extends Component {
     temp.photo = photo;
     console.log(photo_url)
     this.setState({ itemToEdit: temp, photo_url: photo_url, type: type });
+    console.log(this.state.photo_url)
     // this.props.changePhoto(photo_url);
   };
 

@@ -41,6 +41,8 @@ export default class deleteAT extends Component {
        .then(() => {
          console.log("Deleted Action/Task to Database")
          this.props.refresh(newArr);
+         this.props.refreshGR();
+
        })
        .catch((err) => {
          console.log("Error deleting Action/Task", err);

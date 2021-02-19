@@ -47,6 +47,9 @@ export default class showHistory extends Component {
         </ListGroup>
         </Modal.Body>
         <Modal.Footer>
+        <Button variant="warning">
+        Graph
+        </Button>
         <Button
         style={{}}
         onClick={(e) => {

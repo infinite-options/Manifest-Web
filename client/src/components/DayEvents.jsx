@@ -117,7 +117,7 @@ export default class DayEvents extends Component {
     var tempEnd = null;
 console.log(dic)
     let arr = [];
-console.log(arr);
+console.log("Day Event 120 " , arr);
     var sameTimeEventCount = 0;
     var addmarginLeft = 0;
     let itemWidth = this.state.eventBoxSize;

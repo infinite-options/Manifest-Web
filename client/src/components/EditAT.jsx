@@ -69,6 +69,7 @@ export default class editAT extends Component {
     // let body = JSON.parse(JSON.stringify(newArr[this.props.i]));
   
     let body = newArr[this.props.i];
+    newArr[this.props.i]['photo'] = this.state.photo_url
     // changes to request body to make it compatible with RDS
     if (body.at_sequence) delete body.at_sequence;
     if (body.goal_routine_id) delete body.goal_routine_id;

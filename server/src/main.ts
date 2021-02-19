@@ -49,6 +49,7 @@ var REDIRECTED_ADD_USER_URI;
 var firebase = require("firebase");
 var firebaseConfig;
 var FAVICON_URL;
+var BASE_URL;
 
 // //need to change to localhost name 
 // if (hostname == "manifestmy.life") {            This hostname probably does not work
@@ -69,6 +70,7 @@ if (hostname == "manifestmylife") {
     appId: "1:717980399518:web:553aadeb783bd8090d088f",
     measurementId: "G-CL3BMK155G",
   };
+  BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MyLife-60x60@3x.png";
 }else {
   console.log("In Manifest My Space")
@@ -86,6 +88,7 @@ if (hostname == "manifestmylife") {
     appId: "1:287117315224:web:c7af6690d5e269a7ab54ed",
     measurementId: "G-WRGR8M5LRN",
   };
+  BASE_URL = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MySpace-60x60@3x.png";
 }
 
@@ -95,8 +98,10 @@ firebase
 .signInAnonymously()
 .catch(function (error) {
   // Handle Errors here.
+  console.log("API Key")
   const errorCode = error.code;
   const errorMessage = error.message;
+  console.log("After api key", errorCode, errorMessage)
   // ...
 });
 
@@ -247,194 +252,194 @@ app.get(
   }
 );
 
-app.get("/isdisplayedugh", (req, res) => {
-  let CurrentDate = new Date(
-    new Date().toLocaleString("en-US", {
-      timeZone: "America/Los_Angeles",
-    })
-  );
-  CurrentDate.setHours(0, 0, 0, 0);
-  let db = firebase.firestore();
-  let grs = [];
-  db.collection("users")
-  .get()
-  .then((snapshot) => {
-    snapshot.forEach((doc) => {
-      if (doc.data()["goals&routines"] != null) {
-        let arrs = doc.data()["goals&routines"];
-        arrs.forEach((gr) => {
-          let startDate = new Date(
-            new Date(gr["start_day_and_time"]).toLocaleString("en-US", {
-              timeZone: "America/Los_Angeles",
-            })
-          );
-          startDate.setHours(0, 0, 0, 0);
-          let isDisplayedTodayCalculated: boolean = false;
-          let repeatOccurences = parseInt(gr["repeat_occurences"]);
-          let repeatEvery = parseInt(gr["repeat_every"]);
-          let repeatEnds = gr["repeat_type"];
-          let repeatEndsOn: Date = new Date(
-            new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
-              timeZone: "America/Los_Angeles",
-            })
-          );
-          repeatEndsOn.setHours(0, 0, 0, 0);
-          let repeatFrequency: string = gr["repeat_frequency"];
-          let repeatWeekDays: number[] = [];
-          if (gr["repeat_week_days"] != null) {
-            Object.keys(gr["repeat_week_days"]).forEach((k: string) => {
-              if (gr["repeat_week_days"][k] != "") {
-                repeatWeekDays.push(parseInt(k));
-              }
-            });
-          }
+// app.get("/isdisplayedugh", (req, res) => {
+//   let CurrentDate = new Date(
+//     new Date().toLocaleString("en-US", {
+//       timeZone: "America/Los_Angeles",
+//     })
+//   );
+//   CurrentDate.setHours(0, 0, 0, 0);
+//   let db = firebase.firestore();
+//   let grs = [];
+//   db.collection("users")
+//   .get()
+//   .then((snapshot) => {
+//     snapshot.forEach((doc) => {
+//       if (doc.data()["goals&routines"] != null) {
+//         let arrs = doc.data()["goals&routines"];
+//         arrs.forEach((gr) => {
+//           let startDate = new Date(
+//             new Date(gr["start_day_and_time"]).toLocaleString("en-US", {
+//               timeZone: "America/Los_Angeles",
+//             })
+//           );
+//           startDate.setHours(0, 0, 0, 0);
+//           let isDisplayedTodayCalculated: boolean = false;
+//           let repeatOccurences = parseInt(gr["repeat_occurences"]);
+//           let repeatEvery = parseInt(gr["repeat_every"]);
+//           let repeatEnds = gr["repeat_type"];
+//           let repeatEndsOn: Date = new Date(
+//             new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
+//               timeZone: "America/Los_Angeles",
+//             })
+//           );
+//           repeatEndsOn.setHours(0, 0, 0, 0);
+//           let repeatFrequency: string = gr["repeat_frequency"];
+//           let repeatWeekDays: number[] = [];
+//           if (gr["repeat_week_days"] != null) {
+//             Object.keys(gr["repeat_week_days"]).forEach((k: string) => {
+//               if (gr["repeat_week_days"][k] != "") {
+//                 repeatWeekDays.push(parseInt(k));
+//               }
+//             });
+//           }
 
-          if (!gr.repeat) {
-            isDisplayedTodayCalculated =
-            CurrentDate.getTime() - startDate.getTime() == 0;
-          } else {
-            if (CurrentDate >= startDate) {
-              if (repeatEnds == "On") {
-              } else if (repeatEnds == "After") {
-                if (repeatFrequency == "Day") {
-                  repeatEndsOn = new Date(startDate);
-                  repeatEndsOn.setDate(
-                    startDate.getDate() + (repeatOccurences - 1) * repeatEvery
-                  );
-                } else if (repeatFrequency == "Week") {
-                  repeatEndsOn = new Date(startDate);
-                  repeatEndsOn.setDate(
-                    startDate.getDate() +
-                    (repeatOccurences - 1) * 7 * repeatEvery
-                  );
-                } else if (repeatFrequency == "Month") {
-                  repeatEndsOn = new Date(startDate);
-                  repeatEndsOn.setMonth(
-                    startDate.getMonth() +
-                    (repeatOccurences - 1) * repeatEvery
-                  );
-                } else if (repeatFrequency == "YEAR") {
-                  repeatEndsOn = new Date(startDate);
-                  repeatEndsOn.setFullYear(
-                    startDate.getFullYear() +
-                    (repeatOccurences - 1) * repeatEvery
-                  );
-                }
-              } else if (repeatEnds == "Never") {
-                repeatEndsOn = CurrentDate;
-              }
+//           if (!gr.repeat) {
+//             isDisplayedTodayCalculated =
+//             CurrentDate.getTime() - startDate.getTime() == 0;
+//           } else {
+//             if (CurrentDate >= startDate) {
+//               if (repeatEnds == "On") {
+//               } else if (repeatEnds == "After") {
+//                 if (repeatFrequency == "Day") {
+//                   repeatEndsOn = new Date(startDate);
+//                   repeatEndsOn.setDate(
+//                     startDate.getDate() + (repeatOccurences - 1) * repeatEvery
+//                   );
+//                 } else if (repeatFrequency == "Week") {
+//                   repeatEndsOn = new Date(startDate);
+//                   repeatEndsOn.setDate(
+//                     startDate.getDate() +
+//                     (repeatOccurences - 1) * 7 * repeatEvery
+//                   );
+//                 } else if (repeatFrequency == "Month") {
+//                   repeatEndsOn = new Date(startDate);
+//                   repeatEndsOn.setMonth(
+//                     startDate.getMonth() +
+//                     (repeatOccurences - 1) * repeatEvery
+//                   );
+//                 } else if (repeatFrequency == "YEAR") {
+//                   repeatEndsOn = new Date(startDate);
+//                   repeatEndsOn.setFullYear(
+//                     startDate.getFullYear() +
+//                     (repeatOccurences - 1) * repeatEvery
+//                   );
+//                 }
+//               } else if (repeatEnds == "Never") {
+//                 repeatEndsOn = CurrentDate;
+//               }
 
-              if (CurrentDate <= repeatEndsOn) {
-                if (repeatFrequency == "Day") {
-                  isDisplayedTodayCalculated =
-                  Math.floor(
-                    (CurrentDate.getTime() - startDate.getTime()) /
-                    (24 * 3600 * 1000)
-                  ) %
-                  repeatEvery ==
-                  0;
-                } else if (repeatFrequency == "Week") {
-                  isDisplayedTodayCalculated =
-                  repeatWeekDays.includes(CurrentDate.getDay()) &&
-                  Math.floor(
-                    (CurrentDate.getTime() - startDate.getTime()) /
-                    (7 * 24 * 3600 * 1000)
-                  ) %
-                  repeatEvery ==
-                  0;
-                } else if (repeatFrequency == "Month") {
-                  isDisplayedTodayCalculated =
-                  CurrentDate.getDate() == startDate.getDate() &&
-                  ((CurrentDate.getFullYear() - startDate.getFullYear()) *
-                  12 +
-                  CurrentDate.getMonth() -
-                  startDate.getMonth()) %
-                  repeatEvery ==
-                  0;
-                } else if (repeatFrequency == "YEAR") {
-                  isDisplayedTodayCalculated =
-                  startDate.getDate() == CurrentDate.getDate() &&
-                  CurrentDate.getMonth() == startDate.getMonth() &&
-                  (CurrentDate.getFullYear() - startDate.getFullYear()) %
-                  repeatEvery ==
-                  0;
-                }
-              }
-            }
-          }
-          grs.push({
-            userId: doc.id,
-            title: gr.title,
-            repeat: gr.repeat,
-            startDate: startDate,
-            repeatOccurences: repeatOccurences,
-            repeatEndsOn: repeatEndsOn,
-            currentDate: CurrentDate,
-            isDisplayedToday: gr["is_displayed_today"],
-            isDisplayedTodayCalculated: isDisplayedTodayCalculated,
-          });
-          // gr["is_displayed_today"] = isDisplayedTodayCalculated
-        });
-        // db.collection("users")
-        // .doc(doc.id)
-        // .update({ "goals&routines": arrs });
-      }
-    });
-    res.json(grs);
-  });
-});
+//               if (CurrentDate <= repeatEndsOn) {
+//                 if (repeatFrequency == "Day") {
+//                   isDisplayedTodayCalculated =
+//                   Math.floor(
+//                     (CurrentDate.getTime() - startDate.getTime()) /
+//                     (24 * 3600 * 1000)
+//                   ) %
+//                   repeatEvery ==
+//                   0;
+//                 } else if (repeatFrequency == "Week") {
+//                   isDisplayedTodayCalculated =
+//                   repeatWeekDays.includes(CurrentDate.getDay()) &&
+//                   Math.floor(
+//                     (CurrentDate.getTime() - startDate.getTime()) /
+//                     (7 * 24 * 3600 * 1000)
+//                   ) %
+//                   repeatEvery ==
+//                   0;
+//                 } else if (repeatFrequency == "Month") {
+//                   isDisplayedTodayCalculated =
+//                   CurrentDate.getDate() == startDate.getDate() &&
+//                   ((CurrentDate.getFullYear() - startDate.getFullYear()) *
+//                   12 +
+//                   CurrentDate.getMonth() -
+//                   startDate.getMonth()) %
+//                   repeatEvery ==
+//                   0;
+//                 } else if (repeatFrequency == "YEAR") {
+//                   isDisplayedTodayCalculated =
+//                   startDate.getDate() == CurrentDate.getDate() &&
+//                   CurrentDate.getMonth() == startDate.getMonth() &&
+//                   (CurrentDate.getFullYear() - startDate.getFullYear()) %
+//                   repeatEvery ==
+//                   0;
+//                 }
+//               }
+//             }
+//           }
+//           grs.push({
+//             userId: doc.id,
+//             title: gr.title,
+//             repeat: gr.repeat,
+//             startDate: startDate,
+//             repeatOccurences: repeatOccurences,
+//             repeatEndsOn: repeatEndsOn,
+//             currentDate: CurrentDate,
+//             isDisplayedToday: gr["is_displayed_today"],
+//             isDisplayedTodayCalculated: isDisplayedTodayCalculated,
+//           });
+//           // gr["is_displayed_today"] = isDisplayedTodayCalculated
+//         });
+//         // db.collection("users")
+//         // .doc(doc.id)
+//         // .update({ "goals&routines": arrs });
+//       }
+//     });
+//     res.json(grs);
+//   });
+// });
 
-app.get("/ishistoryugh", (req, res) => {
-  var date = new Date(
-    new Date().toLocaleString("en-US", {
-      timeZone: "America/Los_Angeles",
-    })
-  );
-  // log for previous day
-  date.setDate(date.getDate() - 1);
-  let date_string =
-  date.getFullYear() +
-  "_" +
-  (date.getMonth() > 8 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) +
-  "_" +
-  (date.getDate() > 9 ? date.getDate() : "0" + date.getDate());
-  let users = [];
-  let db = firebase.firestore();
-  db.collection("users")
-  .get()
-  .then((snapshot) => {
-    snapshot.forEach((doc) => {
-      var data = doc.data()["goals&routines"];
-      if (data != null) {
-        let usr = {
-          email_id: doc.data().email_id,
-          "goals&routines": [],
-          user_id: doc.id,
-        };
-        data.forEach((gr) => {
-          usr["goals&routines"].push({
-            id: gr["id"],
-            title: gr["title"],
-            is_complete: gr["is_complete"],
-          });
-        });
-        users.push(usr);
-      }
-    });
-    users.forEach((usr) => {
-      let docRef = db.collection("history").doc(usr.user_id);
-      let logRef = docRef.collection("goals&routines").doc(date_string);
-      docRef.set({
-        email_id: usr.email_id,
-      });
-      logRef.set({
-        date: date_string,
-        log: usr["goals&routines"],
-      });
-    });
-    res.json("Success");
-  });
-});
+// app.get("/ishistoryugh", (req, res) => {
+//   var date = new Date(
+//     new Date().toLocaleString("en-US", {
+//       timeZone: "America/Los_Angeles",
+//     })
+//   );
+//   // log for previous day
+//   date.setDate(date.getDate() - 1);
+//   let date_string =
+//   date.getFullYear() +
+//   "_" +
+//   (date.getMonth() > 8 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) +
+//   "_" +
+//   (date.getDate() > 9 ? date.getDate() : "0" + date.getDate());
+//   let users = [];
+//   let db = firebase.firestore();
+//   db.collection("users")
+//   .get()
+//   .then((snapshot) => {
+//     snapshot.forEach((doc) => {
+//       var data = doc.data()["goals&routines"];
+//       if (data != null) {
+//         let usr = {
+//           email_id: doc.data().email_id,
+//           "goals&routines": [],
+//           user_id: doc.id,
+//         };
+//         data.forEach((gr) => {
+//           usr["goals&routines"].push({
+//             id: gr["id"],
+//             title: gr["title"],
+//             is_complete: gr["is_complete"],
+//           });
+//         });
+//         users.push(usr);
+//       }
+//     });
+//     users.forEach((usr) => {
+//       let docRef = db.collection("history").doc(usr.user_id);
+//       let logRef = docRef.collection("goals&routines").doc(date_string);
+//       docRef.set({
+//         email_id: usr.email_id,
+//       });
+//       logRef.set({
+//         date: date_string,
+//         log: usr["goals&routines"],
+//       });
+//     });
+//     res.json("Success");
+//   });
+// });
 
 //Landing Page
 /*
@@ -729,6 +734,7 @@ create new Event
 */
 app.post("/createNewEvent", function (req, res) {
   let id = req.body.id;
+
   setUpAuthById(id, (auth) => {
     console.log("Signed in correctly");
     calendar = google.calendar({ version: "v3", auth });

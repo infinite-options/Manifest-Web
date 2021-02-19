@@ -205,6 +205,7 @@ export default class AddNewATItem extends Component {
 
         this.props.hideNewATModal();
         this.props.refresh(newArr);
+        this.props.refreshGR();
         // this.updateEntireArray(newArr);
 
         console.log("Added Action/Task to Database");
@@ -300,23 +301,23 @@ export default class AddNewATItem extends Component {
   //     });
   // };
 
-  //This function will below will essentially take in a array and have a key map to it
-  updateEntireArray = (newArr) => {
-    // 2. update adds to the document
-    this.props.ATItem.fbPath.update({ "actions&tasks": newArr }).then((doc) => {
-      console.log(this.props.ATItem.fbPath.path.split("/")[3]);
-      this.props.updateNewWentThroughATListObj(
-        this.props.ATItem.fbPath.path.split("/")[3]
-      );
-      console.log("updateEntireArray Finished");
-      // console.log(doc);
-      if (this.props != null) {
-        this.props.hideNewATModal();
-        console.log("refreshing FireBasev2 from AddNewATItem");
-        this.props.refresh(newArr);
-      }
-    });
-  };
+  // //This function will below will essentially take in a array and have a key map to it
+  // updateEntireArray = (newArr) => {
+  //   // 2. update adds to the document
+  //   this.props.ATItem.fbPath.update({ "actions&tasks": newArr }).then((doc) => {
+  //     console.log(this.props.ATItem.fbPath.path.split("/")[3]);
+  //     this.props.updateNewWentThroughATListObj(
+  //       this.props.ATItem.fbPath.path.split("/")[3]
+  //     );
+  //     console.log("updateEntireArray Finished");
+  //     // console.log(doc);
+  //     if (this.props != null) {
+  //       this.props.hideNewATModal();
+  //       console.log("refreshing FireBasev2 from AddNewATItem");
+  //       this.props.refresh(newArr);
+  //     }
+  //   });
+  // };
 
   setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;

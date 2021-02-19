@@ -97,7 +97,7 @@ export default class UploadImage extends Component {
           style={{ marginRight: "15px", marginLeft: "15px"}}
           onClick={this.onHandleShowClick}
         >
-          Change Image
+          Users Icon
         </Button>
         <Modal show={this.state.show} onHide={this.onHandleShowClick}>
           <Modal.Header closeButton>
@@ -118,7 +118,7 @@ export default class UploadImage extends Component {
                   Close
                 </Button>
                 <Button variant="primary" onClick={this.onUploadImage}>
-                  Upload Image
+                  Upload New Image
                 </Button>
                   <Modal show={this.state.modal} onHide={this.onUploadImage}>
                     <Modal.Header closeButton>
@@ -149,7 +149,7 @@ export default class UploadImage extends Component {
                     </Modal.Footer>
                   </Modal>
                 <Button variant="primary" onClick={this.onSubmitImage}>
-                  Add Image
+                  Select Image
                 </Button>
               </Modal.Footer>
               </Modal>

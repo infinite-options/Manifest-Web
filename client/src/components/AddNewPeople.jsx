@@ -20,12 +20,12 @@ import axios from 'axios';
         unique_id: "",
         email: ""
       }, 
-      saveChangesButtonEnabled: true,
-      peopleDocsPath: firebase
-        .firestore()
-        .collection("users")
-        .doc(this.props.currentUserId)
-        .collection("people")
+      saveChangesButtonEnabled: true
+      // peopleDocsPath: firebase
+      //   .firestore()
+      //   .collection("users")
+      //   .doc(this.props.currentUserId)
+      //   .collection("people")
     };
   
     handleFileSelected = event => {
@@ -114,15 +114,15 @@ import axios from 'axios';
     //       });
     // }
 
-    updateWithId = ( ) => {
-        this.state.peopleDocsPath.doc(this.state.itemToEdit.unique_id).update(this.state.itemToEdit).then(
-            (doc) => {
+    // updateWithId = ( ) => {
+    //     this.state.peopleDocsPath.doc(this.state.itemToEdit.unique_id).update(this.state.itemToEdit).then(
+    //         (doc) => {
                 
-                this.props.closeModal(); 
-                this.props.newPersonAdded(); 
-            }
-        )
-    }
+    //             this.props.closeModal(); 
+    //             this.props.newPersonAdded(); 
+    //         }
+    //     )
+    // }
 
   
     render() {
