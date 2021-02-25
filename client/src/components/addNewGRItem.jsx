@@ -169,8 +169,7 @@ export default class AddNewGRItem extends Component {
   }
 
   getGRDataFromFB = () => {
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
+    let url = this.props.BASE_URL + "getgoalsandroutines/";
 
     axios
       .get(url + this.props.theCurrentUserId)
@@ -462,8 +461,7 @@ export default class AddNewGRItem extends Component {
   };
 
   addNewDoc = () => {
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addGR";
+    let url =  this.props.BASE_URL + "addGR";
 
     let newArr = this.state.grArr;
     let temp = this.state.itemToEdit;
@@ -1465,8 +1463,11 @@ this will close repeat modal.
             </Form.Group>
             <Form.Label> Photo </Form.Label>
             <Row>
-              <AddIconModal parentFunction={this.setPhotoURLFunction} />
+              <AddIconModal 
+              BASE_URL={this.props.BASE_URL}
+              parentFunction={this.setPhotoURLFunction} />
               <UploadImage
+              BASE_URL={this.props.BASE_URL}
                 parentFunction={this.setPhotoURLFunction}
                 currentUserId={this.props.theCurrentUserId}
               />

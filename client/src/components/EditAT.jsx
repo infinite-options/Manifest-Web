@@ -64,7 +64,7 @@ export default class editAT extends Component {
          "Sun, 23 Feb 2020 00:08:43 GMT";
     }
     
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAT"
+    let url = this.props.BASE_URL +  "updateAT"
   
     // let body = JSON.parse(JSON.stringify(newArr[this.props.i]));
   
@@ -295,8 +295,12 @@ export default class editAT extends Component {
         <Form.Group>
           <Form.Label> Photo </Form.Label>
           <Row>
-            <AddIconModal parentFunction={this.setPhotoURLFunction} />
-            <UploadImage parentFunction={this.setPhotoURLFunction} 
+            <AddIconModal 
+            BASE_URL={this.props.BASE_URL}
+            parentFunction={this.setPhotoURLFunction} />
+            <UploadImage 
+            BASE_URL={this.props.BASE_URL}
+            parentFunction={this.setPhotoURLFunction} 
               currentUserId = {this.props.currentUserId}/>
             <br />
           </Row>

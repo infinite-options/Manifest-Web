@@ -52,7 +52,7 @@ export default class editIS extends Component {
       this.state.itemToEdit.photo_url =
         "https://manifest-image-db.s3-us-west-1.amazonaws.com/instruction.png";
     }
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateIS"
+    let url = this.props.BASE_URL +  "updateIS"
 
 let body = newArr[this.props.i]
 
@@ -212,8 +212,12 @@ body.photo_url = this.state.photo_url
         <Form.Group>
           <Form.Label> Photo </Form.Label>
           <Row>
-          <AddIconModal parentFunction={this.setPhotoURLFunction} />
-            <UploadImage parentFunction={this.setPhotoURLFunction} 
+          <AddIconModal 
+          BASE_URL={this.props.BASE_URL}
+          parentFunction={this.setPhotoURLFunction} />
+            <UploadImage 
+            BASE_URL={this.props.BASE_URL}
+            parentFunction={this.setPhotoURLFunction} 
               currentUserId = {this.props.currentUserId}/>
             <br />
           </Row>

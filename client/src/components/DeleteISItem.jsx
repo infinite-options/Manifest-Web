@@ -25,20 +25,30 @@ export default class DeleteISItem extends Component {
   }
 
   submitRequest = () => {
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/deleteIS";
+    let url = this.props.BASE_URL +  "deleteIS";
     console.log(url)
     let items = [...this.props.ISArray];
     let i = this.props.deleteIndex;
     const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
+    const atArr = [...this.props.Array]
     console.log(items)
     let body = {
       is_id: items[i]["id"]
     }
     console.log("IS_ID", body)
     axios.post(url, body)
-       .then(() => {
+       .then((response) => {
+         console.log(response)
          console.log("Deleted Instruction/Step to Database")
+         var res = response.data.result
+
+         for (let i = 0; i < atArr.length; ++i){
+            if(res.at_id == atArr[i].id){
+              atArr[i].is_sublist_available = res.is_sublist_available.toLowerCase() === "true"
+            }
+         }
          this.props.refresh(newArr);
+         this.props.refreshAT(atArr)
 
        })
        .catch((err) => {

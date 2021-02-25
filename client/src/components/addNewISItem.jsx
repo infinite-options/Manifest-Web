@@ -172,8 +172,8 @@ export default class AddNewISItem extends Component {
     //   return;
     // }
 
-    let url =
-    "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addIS";
+    let url =  this.props.BASE_URL + "addIS";
+    const atArr = [...this.props.Array]
 
     if (this.props.ISArray.length > 0) {
       this.setState({
@@ -213,16 +213,22 @@ export default class AddNewISItem extends Component {
     .then((response) => {
       let newArr = this.state.ISArr;
       let temp = this.state.itemToEdit;
-      temp.id = response.data.result;
-      temp.unique_id = response.data.result;
+     
+      var res = response.data.result
 
-      // console.log("*****")
-      // console.log(response.data.result)
-      // console.log(newArr)
+         for (let i = 0; i < atArr.length; ++i){
+            if(res.at_id == atArr[i].id){
+              atArr[i].is_sublist_available = res.is_sublist_available.toLowerCase() === "true"
+            }
+         }
+         temp.id = res.id;
+      temp.unique_id = res.id;
+
       newArr.push(temp);
 
       this.props.hideNewISModal();
       this.props.refresh(newArr);
+      this.props.refreshAT(atArr)
       // this.updateEntireArray(newArr);
 
       console.log("Added Instuction/Step to Database");
@@ -334,8 +340,11 @@ export default class AddNewISItem extends Component {
             </div>
             <Form.Label> Photo </Form.Label>
             <Row>
-            <AddIconModal parentFunction={this.setPhotoURLFunction} />
+            <AddIconModal 
+            BASE_URL={this.props.BASE_URL}
+            parentFunction={this.setPhotoURLFunction} />
               <UploadImage
+              BASE_URL={this.props.BASE_URL}
                 parentFunction={this.setPhotoURLFunction}
                 currentUserId={this.props.currentUserId}
               />

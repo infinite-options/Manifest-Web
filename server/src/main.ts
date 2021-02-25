@@ -66,7 +66,7 @@ if (hostname == "manifestmy.life") {
     appId: "1:717980399518:web:553aadeb783bd8090d088f",
     measurementId: "G-CL3BMK155G",
   };
-  BASE_URL = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
+  BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MyLife-60x60@3x.png";
 } else {
   console.log("In Manifest My Space")
@@ -215,6 +215,10 @@ app.get("/fullCalByInterval", function (req, result) {
 
 app.get("/x", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
+
+app.get("/base_url", (req, res) => {
+  res.send(BASE_URL);
 });
 
 app.get("/test", (req, res) => {
@@ -761,7 +765,7 @@ function formatEmail(email) {
 }
 
 app.post("/updateNewUser", function (req, result) {
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateNewUser";
+  let url = BASE_URL + "updateNewUser";
   // let body = {
   //   ta_people_id: req.body.ta_people_id,
   //   ta_email: req.body.ta_email,
@@ -795,7 +799,7 @@ app.post("/TALogIn", function (req, result) {
   let givenPass = req.body.password;
   let emailId1 = emailId.toLowerCase();
   let emailId_final = formatEmail(emailId1);
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginTA/";
+  let url = BASE_URL + "loginTA/";
 
   axios.get(url + emailId_final + "/" + givenPass).then(
     (response) => {
@@ -826,7 +830,7 @@ Attempt to sign in as trusted advisor
 */
 app.get("/usersOfTA", function (req, result) {
   let emailId = req.query.emailId;
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersOfTA/";
+  let url = BASE_URL + "usersOfTA/";
   axios.get(url + emailId).then(
     (response) => {
       result.json(response.data.result);
@@ -846,7 +850,7 @@ app.post("/TASocialLogIn", function (req, result) {
   let emailId = req.body.username;
   let emailId1 = emailId.toLowerCase();
   let emailId_final = formatEmail(emailId1);
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/loginSocialTA/";
+  let url = BASE_URL +  "loginSocialTA/";
 
   axios.get(url + emailId_final).then(
     (response) => {
@@ -907,7 +911,7 @@ Trusted advisor sign up
 app.post("/TASignUp", function (req, result) {
   let db = firebase.firestore();
   let newTARef = db.collection("trusted_advisor").doc();
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewTA";
+  let url = BASE_URL +  "addNewTA";
   let body = {
     email_id: formatEmail(req.body.username),
     password: req.body.password,
@@ -934,7 +938,7 @@ app.post("/TASocialSignUp", function (req, result) {
   //console.log(req.body);
   let db = firebase.firestore();
   let newTARef = db.collection("trusted_advisor").doc();
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewSocialTA";
+  let url = BASE_URL +  "addNewSocialTA";
   let body = {
     email_id: formatEmail(req.body.username),
     first_name: req.body.fName,
@@ -1003,7 +1007,7 @@ app.get("/adduser", function (req, result) {
           emailId = formatEmail(emailId);
           // let socialId = oAuth2Client.client_id
           // console.log(socialId)
-          let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addNewUser";
+          let url = BASE_URL +  "addNewUser";
           let body = {
             email_id: emailId,
             google_auth_token: token.access_token,
@@ -1081,7 +1085,7 @@ function authorizeById(credentials, id, callback) {
   );
   
   // RDS Update
-  let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/usersToken/";
+  let url = BASE_URL +  "usersToken/";
   // console.log("******")
   console.log("Id" , id)
   console.log("Url" , url + id)

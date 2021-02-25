@@ -24,7 +24,7 @@ export default class deleteGR extends Component {
   
   tempdeleteArrPortion = () => {
   
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/deleteGR"
+    let url =  this.props.BASE_URL + "deleteGR"
   
     let items = [...this.props.Array];
     let i = this.props.deleteIndex;

@@ -42,17 +42,13 @@ class FutureModal extends React.Component {
   
   // Currently working on right now
   grabFireBaseAllPeopleNames = () => {
-    let url1 =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/motivation/";
+    let url1 =  this.props.BASE_URL + "motivation/";
 
-    let url2 =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/feelings/";
+    let url2 = this.props.BASE_URL + "feelings/";
 
-    let url3 =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/happy/";
+    let url3 = this.props.BASE_URL + "happy/";
 
-    let url4 =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/important/";
+    let url4 = this.props.BASE_URL + "important/";
 
     let motivationList = {};
     let feelingsList = {};
@@ -134,10 +130,10 @@ class FutureModal extends React.Component {
     let happyList = Object.values(this.state.happy);
 
     
-    let motivationUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateMotivation";
-    let feelingsUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateFeelings";
-    let importantUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateImportant";
-    let happyUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateHappy";
+    let motivationUrl = this.props.BASE_URL +  "updateMotivation";
+    let feelingsUrl = this.props.BASE_URL +  "updateFeelings";
+    let importantUrl = this.props.BASE_URL +  "updateImportant";
+    let happyUrl = this.props.BASE_URL +  "updateHappy";
 
     const body1 = {
       user_id: this.props.theCurrentUserId,

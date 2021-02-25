@@ -11,44 +11,7 @@ export default class ShowATList extends React.Component {
       hasAction: true,
     };
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevProps.Array != this.props.Array) {
-  //     // console.log("is is going in here at least");
-  //     let items = [...this.props.Array];
-  //     // console.log("this is the item");
-  //     // console.log("this si the for the person 2",items[this.props.Index] )
-  //     // console.log("this is what it is supposed to be 2",items[this.props.Index]['is_sublist_available']);
-  //     // this.setState({
-  //     //   iconShow: items[this.props.Index]["is_sublist_available"],
-  //     // });
-  //   }
-  //   let url =
-  //     "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
-
-  //   const id = this.props.Array[this.props.Index].id;
-
-  //   axios
-  //     .get(url + id)
-  //     .then((response) => {
-  //       console.log('hit')
-  //       if(prevState.hasAction != this.state.hasAction){
-  //       if (response.data.result && response.data.result.length > 0) {
-  //         this.setState({ hasAction: true });
-  //       } 
-  //     }
-  //     else if(prevState.hasAction === this.state.hasAction){
-  //       if (response.data.result && response.data.result.length > 0) {
-  //         this.setState({ hasAction: true });
-  //       } 
-  //     }
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error Occurred " + error);
-  //     });
-
-  //     this.hasActions();
-  // }
-
+ 
   async componentDidMount() {
     let items = [...this.props.Array];
 
@@ -62,8 +25,7 @@ export default class ShowATList extends React.Component {
   }
 
   hasActions = async () => {
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
+    let url =  this.props.BASE_URL + "actionsTasks/";
 
     const id = this.props.Array[this.props.Index].id;
 
@@ -79,26 +41,8 @@ export default class ShowATList extends React.Component {
       .catch((error) => {
         console.log("Error Occurred " + error);
       });
-
-    // const response = await this.props.Path.collection("goals&routines")
-    //    .doc(id)
-    //    .get();
-    // const actions = response.data()["actions&tasks"];
-    // if (actions.length === 0) {
-    //   this.setState({ hasAction: false });
-    // }
   };
 
-  // hasActions = async () => {
-  //   const id = this.props.Array[this.props.Index].id;
-  //   const response = await this.props.Path.collection("goals&routines")
-  //     .doc(id)
-  //     .get();
-  //   const actions = response.data()["actions&tasks"];
-  //   if (actions.length === 0) {
-  //     this.setState({ hasAction: false });
-  //   }
-  // };
 
   editFirBaseFalse = (e) => {
     // console.log("this should be false");

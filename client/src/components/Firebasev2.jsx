@@ -269,8 +269,7 @@ export default class FirebaseV2 extends React.Component {
   //for the routine or goal passed in and pops open the
   //modal for the action/task
   getATList = async (id, title, persist, tempGR) => {
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/actionsTasks/";
+    let url = this.props.BASE_URL + "actionsTasks/";
 
     axios
       .get(url + id)
@@ -438,7 +437,7 @@ export default class FirebaseV2 extends React.Component {
       let tempPhoto = A[i]["photo"];
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
-
+      let is_sublist_available = A[i]["is_sublist_available"]
       // console.log("in createlist")
       // console.log(this.state.timeSlotForAT)
       // console.log(this.state.singleATitemArr)
@@ -510,21 +509,39 @@ export default class FirebaseV2 extends React.Component {
                       </div>
                     )}
                     <ShowISList
+                    BASE_URL={this.props.BASE_URL}
                       Index={i}
                       Array={this.state.singleATitemArr}
                       Path={this.state.singleGR.fbPath}
                     />
 
                     <MustDoAT
+                    BASE_URL={this.props.BASE_URL}
                       Index={i}
                       Array={this.state.singleATitemArr}
                       SingleAT={this.state.singleATitemArr[i]}
                       Path={this.state.singleGR.fbPath}
                     />
-                  </Row>
 
+                    {is_sublist_available ? (
+                          <div>
+                          <FontAwesomeIcon
+                            icon={faList}
+                            title="SubList Available"
+                            style={{ color: "#D6A34C", marginLeft: "20px" }}
+                            size="lg"
+                          />
+                        </div>
+                        ) : (
+                          <div>
+                          </div>
+                        )}
+
+                  </Row>
+                 
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteAT
+                    BASE_URL={this.props.BASE_URL}
                       deleteIndex={i}
                       type={"actions&tasks"}
                       Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
@@ -536,6 +553,7 @@ export default class FirebaseV2 extends React.Component {
                       }
                     />
                     <EditAT
+                    BASE_URL={this.props.BASE_URL}
                       marginLeftV="-170px"
                       i={i} //index to edit
                       timeSlot={this.state.timeSlotForAT}
@@ -581,16 +599,39 @@ export default class FirebaseV2 extends React.Component {
                     </div>
                   )}
                   <ShowISList
+                  BASE_URL={this.props.BASE_URL}
                     Index={i}
                     Array={this.state.singleATitemArr}
                     Path={this.state.singleGR.fbPath}
                   />
+                  <MustDoAT
+                  BASE_URL={this.props.BASE_URL}
+                      Index={i}
+                      Array={this.state.singleATitemArr}
+                      SingleAT={this.state.singleATitemArr[i]}
+                      Path={this.state.singleGR.fbPath}
+                    />
+
+                    {is_sublist_available ? (
+                          <div>
+                          <FontAwesomeIcon
+                            icon={faList}
+                            title="SubList Available"
+                            style={{ color: "#D6A34C", marginLeft: "20px" }}
+                            size="lg"
+                          />
+                        </div>
+                        ) : (
+                          <div>
+                          </div>
+                        )}
                 </Row>
                 <Row
                   style={{ marginTop: "15px", marginLeft: "100px" }}
                   className="d-flex "
                 >
                   <DeleteAT
+                  BASE_URL={this.props.BASE_URL}
                     deleteIndex={i}
                     type={"actions&tasks"}
                     refreshGR={this.grabFireBaseRoutinesGoalsData}
@@ -602,6 +643,7 @@ export default class FirebaseV2 extends React.Component {
                     }
                   />
                   <EditAT
+                  BASE_URL={this.props.BASE_URL}
                     marginLeftV="-130px"
                     i={i} //index to edit
                     ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
@@ -697,16 +739,20 @@ export default class FirebaseV2 extends React.Component {
                   </Row>
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteISItem
+                    BASE_URL={this.props.BASE_URL}
                       deleteIndex={i}
+                      Array={this.state.singleATitemArr}
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshISItem}
+                      refreshAT={this.refreshATItem}
                       updateNewWentThroughISDelete={
                         this.handleWentThroughATListObj
                       }
                     />
 
                     <EditIS
+                    BASE_URL={this.props.BASE_URL}
                       marginLeftV="-170px"
                       timeSlot={this.state.timeSlotForAT}
                       i={i} //index to edit
@@ -757,16 +803,20 @@ export default class FirebaseV2 extends React.Component {
                   className="d-flex "
                 >
                   <DeleteISItem
+                  BASE_URL={this.props.BASE_URL}
                     deleteIndex={i}
+                    Array={this.state.singleATitemArr}
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                     ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                     refresh={this.refreshISItem}
+                    refreshAT={this.refreshATItem}
                     updateNewWentThroughISDelete={
                       this.handleWentThroughATListObj
                     }
                   />
 
                   <EditIS
+                  BASE_URL={this.props.BASE_URL}
                     marginLeftV="-130px"
                     i={i} //index to edit
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
@@ -882,8 +932,7 @@ export default class FirebaseV2 extends React.Component {
 
   getISList = async (id, title) => {
     
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/instructionsSteps/";
+    let url = this.props.BASE_URL + "instructionsSteps/";
 
     axios
       .get(url + id)
@@ -1083,6 +1132,7 @@ export default class FirebaseV2 extends React.Component {
                       </Row>
                       <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                         <DeleteGR
+                        BASE_URL={this.props.BASE_URL}
                           deleteIndex={this.findIndexByID(tempID)}
                           Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                           // Path={firebase
@@ -1115,6 +1165,7 @@ export default class FirebaseV2 extends React.Component {
                   </Row>
                   <Row>
                     <EditGR
+                    BASE_URL={this.props.BASE_URL}
                       closeEditModal={() => {
                         this.setState({ showEditModal: false });
                         this.props.updateFBGR();
@@ -1189,6 +1240,7 @@ export default class FirebaseV2 extends React.Component {
                     className="d-flex "
                   >
                     <DeleteGR
+                    BASE_URL={this.props.BASE_URL}
                       deleteIndex={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                       // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
@@ -1220,6 +1272,7 @@ export default class FirebaseV2 extends React.Component {
                   </Row>
                   <Row>
                     <EditGR
+                    BASE_URL={this.props.BASE_URL}
                       closeEditModal={() => {
                         this.setState({ showEditModal: false });
                         this.props.updateFBGR();
@@ -1601,6 +1654,7 @@ export default class FirebaseV2 extends React.Component {
                       </Row>
                       <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                         <DeleteGR
+                        BASE_URL={this.props.BASE_URL}
                           deleteIndex={this.findIndexByID(tempID)}
                           Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                           // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
@@ -1634,6 +1688,7 @@ export default class FirebaseV2 extends React.Component {
                   </Row>
                   <Row>
                     <EditGR
+                    BASE_URL={this.props.BASE_URL}
                       closeEditModal={() => {
                         this.setState({ showEditModal: false });
                         this.props.updateFBGR();
@@ -1706,6 +1761,7 @@ export default class FirebaseV2 extends React.Component {
                     className="d-flex "
                   >
                     <DeleteGR
+                    BASE_URL={this.props.BASE_URL}
                       deleteIndex={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                       // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
@@ -1737,6 +1793,7 @@ export default class FirebaseV2 extends React.Component {
                   </Row>
                   <Row>
                     <EditGR
+                    BASE_URL={this.props.BASE_URL}
                       closeEditModal={() => {
                         this.setState({ showEditModal: false });
                         this.props.updateFBGR();
@@ -2020,7 +2077,7 @@ export default class FirebaseV2 extends React.Component {
     let gr_id = gr_object.id;
     console.log(gr_id)
 
-    let url = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/resetGR"
+    let url = this.props.BASE_URL + "resetGR"
     axios.post(url + `/${gr_id}`).then(() => {console.log("reset goal/routine")})
     // let db = firebase.firestore();
     // db.collection("users")
@@ -2483,6 +2540,7 @@ shows entire list of goals and routines
         theCurrentUserId={this.props.theCurrentUserID}
         theCurrentTAID={this.props.theCurrentTAID}
         singleGR={this.state.singleGR}
+        BASE_URL={this.props.BASE_URL}
       />
     );
   };
@@ -2512,7 +2570,7 @@ shows entire list of goals and routines
     let logstatus = [];
     let grId = {"id":{}};
     let grStatus = {"id":{}};
-    const url = `https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getHistory/${userId}`;
+    const url =  this.props.BASE_URL +  `getHistory/${userId}`;
     console.log(url);
     axios.get(url).then((res)=>{  
       const data = res.data.result;
@@ -2535,7 +2593,7 @@ shows entire list of goals and routines
 
 
 
-axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/currentStatus/${userId}`).then((response) => {
+axios.get( this.props.BASE_URL + `currentStatus/${userId}`).then((response) => {
   const data = response.data.result;
     // const dataDate = moment(info.date).format("MM/DD/YYYY");
     // const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
@@ -3177,9 +3235,13 @@ axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/cur
           >
             {this.state.addNewISModalShow ? (
               <AddNewISItem
+              BASE_URL={this.props.BASE_URL}
+              Array={this.state.singleATitemArr}
+
                 ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                 ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                 refresh={this.refreshISItem}
+                refreshAT={this.refreshATItem}
                 timeSlot={this.state.timeSlotForIS} //timeSlot[0]== start_time, timeSlot[1] == end_time
                 hideNewISModal={
                   //function to hide the modal
@@ -3258,6 +3320,7 @@ axios.get(`https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/cur
           >
             {this.state.addNewATModalShow ? (
               <AddNewATItem
+              BASE_URL={this.props.BASE_URL}
                 timeSlot={this.state.timeSlotForAT} //timeSlot[0]== start_time, timeSlot[1] == end_time
                 refresh={this.refreshATItem} //refreshes the list of AT
                 ATArray={this.state.singleATitemArr}

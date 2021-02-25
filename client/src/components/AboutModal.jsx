@@ -17,6 +17,11 @@ import { faImage, faTemperatureHigh } from "@fortawesome/free-solid-svg-icons";
 import { storage } from "./firebase";
 import axios from "axios";
 import UploadPeopleImages from "./UploadPeopleImages";
+// import DateAndTimePickers from "./DatePicker";
+import DatePicker from 'react-datepicker'
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
+
 
 class AboutModal extends React.Component {
   constructor(props) {
@@ -26,11 +31,15 @@ class AboutModal extends React.Component {
       //   .firestore()
       //   .collection("users")
       //   .doc(this.props.theCurrentUserId),
+     
       imageChanged: false,
       importantPeople1id: null,
       importantPeople2id: null,
       importantPeople3id: null,
       aboutMeObject: {
+        birth_date: new Date(),
+        birth_date_change: false,
+        phone_number: "",
         have_pic: false,
         message_card: "",
         message_day: "",
@@ -259,8 +268,7 @@ class AboutModal extends React.Component {
 
   // Currently working on right now
   grabFireBaseAllPeopleNames = () => {
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listPeople/";
+    let url = this.props.BASE_URL + "listPeople/";
 
     let allPeopleList = {};
     let importantPeopleArray = [];
@@ -390,157 +398,11 @@ class AboutModal extends React.Component {
         console.log("Error getting all people list", err);
       });
   };
-  // const db = firebase.firestore();
-  // // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
-  // db.collection('users').doc(this.props.theCurrentUserId).collection('people').get()
-  //    .then((peoplesArray) => {
-  //        let importantPeopleArray = [];
-  //        let importantPeopleReferencid = [];
-  //        let test = {};
-  //        let j = 0;
-  //        //    console.log("this is the peoples array", peoplesArray);
-  //        // grab the ID of all of the people in the firebase.
-  //        for(let i = 0; i<peoplesArray.docs.length; i++){
-  //            // console.log("should not go in here");
-  //            // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
-  //            db.collection('users').doc(this.props.theCurrentUserId).collection('people').doc(peoplesArray.docs[i].id).get()
-  //               .then( (doc) => {
-  //                   j++;
-  //                   if(doc.data().important === true){
-  //                       importantPeopleReferencid.push(peoplesArray.docs[i].id);
-  //                       importantPeopleArray.push(doc.data());
-  //                   }
-  //                   test[doc.data().unique_id] = doc.data().name;
-  //                   if(j === peoplesArray.docs.length){
-  //                       if(importantPeopleArray.length >= 3){
-  //                           this.setState({
-  //                               peopleNamesArray:test,
-  //                               enableDropDown: true,
-  //                               importantPoeplArrayLength: importantPeopleArray.length,
-  //                               importantPeople1: importantPeopleArray[0],
-  //                               importantPeople2: importantPeopleArray[1],
-  //                               importantPeople3: importantPeopleArray[2],
-  //                               importantPeople1id: importantPeopleReferencid[0],
-  //                               importantPeople2id: importantPeopleReferencid[1],
-  //                               importantPeople3id: importantPeopleReferencid[2],
-  //                           });
-  //                       }
-  //                       else if(importantPeopleArray.length === 2){
-  //                           this.setState({
-  //                               peopleNamesArray:test,
-  //                               enableDropDown: true,
-  //                               importantPoeplArrayLength: importantPeopleArray.length,
-  //                               importantPeople1: importantPeopleArray[0],
-  //                               importantPeople2: importantPeopleArray[1],
-  //                               importantPeople1id: importantPeopleReferencid[0],
-  //                               importantPeople2id: importantPeopleReferencid[1],
-  //                           });
-  //                       }
-  //                       else if(importantPeopleArray.length === 1){
-  //                           this.setState({
-  //                               peopleNamesArray:test,
-  //                               enableDropDown: true,
-  //                               importantPoeplArrayLength: importantPeopleArray.length,
-  //                               importantPeople1: importantPeopleArray[0],
-  //                               importantPeople1id: importantPeopleReferencid[0],
-  //                           });
-  //                       }
-  //                       else if(importantPeopleArray.length === 0){
-  //                           this.setState({
-  //                               peopleNamesArray:test,
-  //                               enableDropDown: true,
-  //                               importantPoeplArrayLength: importantPeopleArray.length
-  //                           });
-  //                       }
-  //                   }
-  //               })
-  //               .catch((err) => {
-  //                   console.log('Error getting documents', err);
-  //               })
-  //        }
-  //    })
-  //    .catch((err) => {
-  //        console.log('Error getting documents', err);
-  //    });
-
-  // grabFireBaseAllPeopleNames = () => {
-  //     const db = firebase.firestore();
-  //     // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
-  //     db.collection('users').doc(this.props.theCurrentUserId).collection('people').get()
-  //     .then((peoplesArray) => {
-  //         let importantPeopleArray = [];
-  //         let importantPeopleReferencid = [];
-  //         let test = {};
-  //         let j = 0;
-  //     //    console.log("this is the peoples array", peoplesArray);
-  //         // grab the ID of all of the people in the firebase.
-  //         for(let i = 0; i<peoplesArray.docs.length; i++){
-  //             // console.log("should not go in here");
-  //             // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
-  //             db.collection('users').doc(this.props.theCurrentUserId).collection('people').doc(peoplesArray.docs[i].id).get()
-  //             .then( (doc) => {
-  //                 j++;
-  //                 if(doc.data().important === true){
-  //                     importantPeopleReferencid.push(peoplesArray.docs[i].id);
-  //                     importantPeopleArray.push(doc.data());
-  //                 }
-  //                 test[doc.data().unique_id] = doc.data().name;
-  //                 if(j === peoplesArray.docs.length){
-  //                     if(importantPeopleArray.length >= 3){
-  //                         this.setState({
-  //                             peopleNamesArray:test,
-  //                             enableDropDown: true,
-  //                             importantPoeplArrayLength: importantPeopleArray.length,
-  //                             importantPeople1: importantPeopleArray[0],
-  //                             importantPeople2: importantPeopleArray[1],
-  //                             importantPeople3: importantPeopleArray[2],
-  //                             importantPeople1id: importantPeopleReferencid[0],
-  //                             importantPeople2id: importantPeopleReferencid[1],
-  //                             importantPeople3id: importantPeopleReferencid[2],
-  //                         });
-  //                     }
-  //                     else if(importantPeopleArray.length === 2){
-  //                         this.setState({
-  //                             peopleNamesArray:test,
-  //                             enableDropDown: true,
-  //                             importantPoeplArrayLength: importantPeopleArray.length,
-  //                             importantPeople1: importantPeopleArray[0],
-  //                             importantPeople2: importantPeopleArray[1],
-  //                             importantPeople1id: importantPeopleReferencid[0],
-  //                             importantPeople2id: importantPeopleReferencid[1],
-  //                         });
-  //                     }
-  //                     else if(importantPeopleArray.length === 1){
-  //                         this.setState({
-  //                             peopleNamesArray:test,
-  //                             enableDropDown: true,
-  //                             importantPoeplArrayLength: importantPeopleArray.length,
-  //                             importantPeople1: importantPeopleArray[0],
-  //                             importantPeople1id: importantPeopleReferencid[0],
-  //                         });
-  //                     }
-  //                     else if(importantPeopleArray.length === 0){
-  //                         this.setState({
-  //                             peopleNamesArray:test,
-  //                             enableDropDown: true,
-  //                             importantPoeplArrayLength: importantPeopleArray.length
-  //                         });
-  //                     }
-  //                 }
-  //             })
-  //             .catch((err) => {
-  //                 console.log('Error getting documents', err);
-  //             })
-  //         }
-  //     })
-  //     .catch((err) => {
-  //         console.log('Error getting documents', err);
-  //     });
-  // }
-
+  
   grabFireBaseAboutMeData = () => {
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/aboutme/";
+    console.log(this.props.BASE_URL)
+    let url = this.props.BASE_URL + "aboutme/";
+    console.log(url)
 
     // console.log("!!")
     // console.log(this.props.theCurrentUserId)
@@ -549,9 +411,11 @@ class AboutModal extends React.Component {
       .then((response) => {
         if (response.data.result.length !== 0) {
           let details = response.data.result[0];
-          // console.log(details)
-
+          console.log(details.user_birth_date)
+          
           let x = {
+            birth_date: Date.parse(details.user_birth_date),
+            phone_number: details.user_phone_number,
             have_pic: details.user_have_pic
               ? details.user_have_pic.toLowerCase() === "true"
               : false,
@@ -565,11 +429,11 @@ class AboutModal extends React.Component {
               night: details.night_time,
               dayStart: details.day_start,
               dayEnd: details.day_end,
-              timeZone: details.time_zone,
+              timeZone: details.time_zone
             },
           };
 
-          // console.log(x)
+          console.log(x.birth_date)
 
           this.setState({
             aboutMeObject: x,
@@ -585,41 +449,6 @@ class AboutModal extends React.Component {
         console.log("Error getting user details", err);
       });
   };
-
-  // grabFireBaseAboutMeData = () => {
-  //     const db = firebase.firestore();
-  //     // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
-  //     const docRef = db.collection("users").doc(this.props.theCurrentUserId);
-  //     docRef
-  //       .get()
-  //       .then(doc => {
-  //         //   console.log("this is the doc exists", doc.exists);
-  //         if (doc.exists) {
-  //           var x = doc.data();
-  //         //   console.log("this is the doc data",x)
-  //         //   console.log("this is x in the about modal", x);
-  //           var firstName = x.first_name;
-  //           var lastName = x.last_name;
-  //           if(x["about_me"] !== undefined){
-  //             x = x["about_me"];
-  //             this.setState({
-  //                 aboutMeObject: x, firstName:firstName, lastName:lastName
-  //             });
-  //           }else{
-  //             this.setState({
-  //                 firstName:firstName, lastName:lastName
-  //             });
-  //           }
-  //
-  //
-  //         } else {
-  //           console.log("No such document!");
-  //         }
-  //       })
-  //       .catch(function(error) {
-  //         console.log("Error getting document:", error);
-  //       });
-  // };
 
   hidePeopleModal = () => {
     this.setState({ showAddNewPeopleModal: false });
@@ -779,62 +608,7 @@ class AboutModal extends React.Component {
   // }
 
   newInputSubmit = () => {
-    // if(this.state.importantPeople1.important === true){
-    //     if(this.state.ImporPersonOneChange === true){
-    //         if(this.state.importantPeople1id != null){
-    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1Previous);
-    //         }
-    //         if(this.state.importantPeople1DocRefChanged != null){
-    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1DocRefChanged).update(this.state.importantPeople1);
-    //         }
-    //     }
-    //     else{
-    //         this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1);
-    //     }
-    // }
-    // if(this.state.importantPeople2.important === true){
-    //     if(this.state.ImporPersonTwoChange === true){
-    //         if(this.state.importantPeople2id != null){
-    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2Previous);
-    //         }
-    //         if(this.state.importantPeople2DocRefChanged != null){
-    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2DocRefChanged).update(this.state.importantPeople2);
-    //         }
-    //     }
-    //     else{
-    //         this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2);
-    //     }
-    // }
-    // if(this.state.importantPeople3.important === true){
-    //     if(this.state.ImporPersonThreeChange === true){
-    //         if(this.state.importantPeople3id != null){
-    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3Previous);
-    //         }
-    //         if(this.state.importantPeople3DocRefChanged != null){
-    //             this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3DocRefChanged).update(this.state.importantPeople3);
-    //         }
-    //     }
-    //     else{
-    //         this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3);
-    //     }
-    // }
-
-    // let x = {
-    //     have_pic: details.have_pic,
-    //     message_card: details.message_card,
-    //     message_day: details.message_day,
-    //     pic: details.pic,
-    //     timeSettings: {
-    //         morning: details.morning_time,
-    //         afternoon: details.afternoon_time,
-    //         evening: details.evening_time,
-    //         night: details.night_time,
-    //         dayStart: details.day_start,
-    //         dayEnd: details.day_end,
-    //         timeZone: details.time_zone
-    //     }
-    // }
-
+   
     let people = Object.values(this.state.allPeopleList);
 
     people.forEach((d, i) => {
@@ -845,8 +619,6 @@ class AboutModal extends React.Component {
       if (d.user_uid) delete d.user_uid;
       if (!d.pic) d.pic = "";
     });
-
-    // console.log(this.state)
 
     if (this.state.importantPeople1.important === true) {
       if (this.state.ImporPersonOneChange === true) {
@@ -905,8 +677,7 @@ class AboutModal extends React.Component {
       currentPeople.relationship = people[i].relationship;
       currentPeople.phone_number = people[i].phone_number;
       currentPeople.ta_id = this.props.theCurrentTAId;
-      let peopleUrl =
-        "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updatePeople";
+      let peopleUrl = this.props.BASE_URL + "updatePeople";
 
       let peopleFormData = new FormData();
       Object.entries(currentPeople).forEach((entry) => {
@@ -933,6 +704,7 @@ class AboutModal extends React.Component {
         });
     }
 
+    
     const body = {
       user_id: this.props.theCurrentUserId,
       first_name: this.state.firstName,
@@ -942,8 +714,20 @@ class AboutModal extends React.Component {
       message_day: this.state.aboutMeObject.message_day,
       picture: this.state.aboutMeObject.pic,
       timeSettings: this.state.aboutMeObject.timeSettings,
+      phone_number: this.state.aboutMeObject.phone_number
     };
 
+    if(this.state.aboutMeObject.birth_date_change){
+      body.birth_date = (this.state.aboutMeObject.birth_date).toISOString()
+    }
+    else{
+      var date = new Date(this.state.aboutMeObject.birth_date)
+      body.birth_date = date;
+      var br = JSON.stringify(body.birth_date)
+      body.birth_date = br.substring(1, br.length-1)
+      
+    }
+    console.log("Pragya", body.birth_date)
     if (typeof body.picture === "string") {
       body.photo_url = body.picture;
       body.picture = "";
@@ -951,8 +735,7 @@ class AboutModal extends React.Component {
       body.photo_url = "";
     }
 
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/updateAboutMe";
+    let url =  this.props.BASE_URL + "update";
 
     let formData = new FormData();
     Object.entries(body).forEach((entry) => {
@@ -1002,6 +785,29 @@ class AboutModal extends React.Component {
     // )
   };
 
+  startTimePicker = () => {
+    // const [startDate, setStartDate] = useState(new Date());
+    return (
+      <DatePicker
+        className="form-control"
+        type="text"
+        placeholder="Enter Birth Date"
+        selected={this.state.aboutMeObject.birth_date}
+        onChange={(date) => {
+          let temp = this.state.aboutMeObject;
+          temp.birth_date = date
+          temp.birth_date_change = true
+          console.log(date)
+          this.setState(
+            {
+              aboutmeObject: temp,
+            });
+        }}
+     
+        dateFormat="MMMM d, yyyy"
+      />
+    );
+  };
   // newInputSubmit = () => {
   //     if(this.state.importantPeople1.important === true){
   //         if(this.state.ImporPersonOneChange === true){
@@ -1056,6 +862,7 @@ class AboutModal extends React.Component {
   // }
 
   render() {
+    console.log(this.state.aboutMeObject.phone_number)
     return (
       <div>
         <Modal.Dialog
@@ -1115,6 +922,37 @@ class AboutModal extends React.Component {
                       this.setState({ lastName: e.target.value });
                     }}
                   />
+                </Col>
+              </Row>
+              <Row>
+                <Col style={{ paddingRight: "0px" }}>
+                  <label style={{ marginTop: "10px", marginLeft: "10px" }}>
+                    Birth Date:
+                  </label>
+                </Col>
+                <Col xs={9} style={{ paddingLeft: "0px" }}>
+                  {this.startTimePicker()}
+                </Col>
+              </Row>
+              <Row>
+                <Col style={{ paddingRight: "0px" }}>
+                  <label style={{ marginTop: "10px", marginLeft: "10px" }}>
+                    Phone Number:
+                  </label>
+                </Col>
+                <Col xs={8} style={{ paddingLeft: "0px" }}>
+                <PhoneInput
+                  class= "form-control"
+                  placeholder="Enter phone number"
+                  value={this.state.aboutMeObject.phone_number}
+                  onChange={(e) => {
+                    let temp = this.state.aboutMeObject
+                    temp.phone_number = e
+                    this.setState(
+                      {
+                        aboutMeObject: temp,
+                      });
+                  }}/>
                 </Col>
               </Row>
             </Form.Group>
@@ -1221,6 +1059,7 @@ class AboutModal extends React.Component {
                         <UploadPeopleImages
                           parentFunction={this.setPhotoURLFunction1}
                           currentTAId={this.props.theCurrentTAId}
+                          BASE_URL={this.props.BASE_URL}
                         />
                       )}
                     </div>
@@ -1254,6 +1093,7 @@ class AboutModal extends React.Component {
                       <UploadPeopleImages
                         parentFunction={this.setPhotoURLFunction1}
                         currentTAId={this.props.theCurrentTAId}
+                        BASE_URL={this.props.BASE_URL}
                       />
                     </div>
                   )}
@@ -1393,6 +1233,7 @@ class AboutModal extends React.Component {
                         <UploadPeopleImages
                           parentFunction={this.setPhotoURLFunction2}
                           currentTAId={this.props.theCurrentTAId}
+                          BASE_URL={this.props.BASE_URL}
                         />
                       )}
                     </div>
@@ -1426,6 +1267,7 @@ class AboutModal extends React.Component {
                       <UploadPeopleImages
                         parentFunction={this.setPhotoURLFunction2}
                         currentTAId={this.props.theCurrentTAId}
+                        BASE_URL={this.props.BASE_URL}
                       />
                     </div>
                   )}
@@ -1566,6 +1408,7 @@ class AboutModal extends React.Component {
                         <UploadPeopleImages
                           parentFunction={this.setPhotoURLFunction3}
                           currentTAId={this.props.theCurrentTAId}
+                          BASE_URL={this.props.BASE_URL}
                         />
                       )}
                     </div>
@@ -1600,6 +1443,7 @@ class AboutModal extends React.Component {
                       <UploadPeopleImages
                         parentFunction={this.setPhotoURLFunction3}
                         currentTAId={this.props.theCurrentTAId}
+                        BASE_URL={this.props.BASE_URL}
                       />
                     </div>
                   )}
@@ -1780,6 +1624,7 @@ class AboutModal extends React.Component {
         </Modal.Dialog>
         {this.state.showAddNewPeopleModal && (
           <AddNewPeople
+            BASE_URL={this.props.BASE_URL}
             closeModal={this.hidePeopleModal}
             newPersonAdded={this.updatePeopleArray}
             currentUserId={this.props.theCurrentUserId}

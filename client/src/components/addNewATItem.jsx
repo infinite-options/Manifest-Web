@@ -146,8 +146,7 @@ export default class AddNewATItem extends Component {
   };
 
   addNewDoc = () => {
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/addAT";
+    let url =  this.props.BASE_URL + "addAT";
 
     if (this.props.ATArray.length > 0) {
       this.setState({
@@ -214,110 +213,9 @@ export default class AddNewATItem extends Component {
         console.log("Error adding Action/Task", err);
       });
 
-    // this.props.ATItem.fbPath
-    //    .get()
-    //    .then((doc) => {
-    //      if (doc.exists) {
-    //        var x = doc.data();
-    //        if (x["actions&tasks"] != undefined) {
-    //          x = x["actions&tasks"];
-    //          this.setState({
-    //            AT_arr: x,
-    //          });
-    //
-    //          this.props.ATItem.fbPath
-    //             .collection("actions&tasks")
-    //             .add({
-    //               title: this.state.itemToEdit.title,
-    //               "instructions&steps": [],
-    //             })
-    //             .then((ref) => {
-    //               if (ref.id === null) {
-    //                 alert("Fail to add new Action / Task item");
-    //                 return;
-    //               }
-    //               console.log("Added document with ID: ", ref.id);
-    //               //let newArr = this.props.ATArray;
-    //               let newArr = this.state.AT_arr;
-    //               let temp = this.state.itemToEdit;
-    //               temp.id = ref.id;
-    //               newArr.push(temp);
-    //               console.log(newArr);
-    //               console.log("adding new item");
-    //               this.updateEntireArray(newArr);
-    //             });
-    //        }
-    //      } else {
-    //        console.log("No such document!");
-    //      }
-    //    })
-    //    .catch(function (error) {
-    //      console.log("Error getting document:", error);
-    //      alert("Error getting document:", error);
-    //    });
+   
   };
 
-  // addNewDoc = () => {
-  //   this.props.ATItem.fbPath
-  //     .get()
-  //     .then((doc) => {
-  //       if (doc.exists) {
-  //         var x = doc.data();
-  //         if (x["actions&tasks"] != undefined) {
-  //           x = x["actions&tasks"];
-  //           this.setState({
-  //             AT_arr: x,
-  //           });
-  //
-  //           this.props.ATItem.fbPath
-  //             .collection("actions&tasks")
-  //             .add({
-  //               title: this.state.itemToEdit.title,
-  //               "instructions&steps": [],
-  //             })
-  //             .then((ref) => {
-  //               if (ref.id === null) {
-  //                 alert("Fail to add new Action / Task item");
-  //                 return;
-  //               }
-  //               console.log("Added document with ID: ", ref.id);
-  //               //let newArr = this.props.ATArray;
-  //               let newArr = this.state.AT_arr;
-  //               let temp = this.state.itemToEdit;
-  //               temp.id = ref.id;
-  //               newArr.push(temp);
-  //               console.log(newArr);
-  //               console.log("adding new item");
-  //               this.updateEntireArray(newArr);
-  //             });
-  //         }
-  //       } else {
-  //         console.log("No such document!");
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       console.log("Error getting document:", error);
-  //       alert("Error getting document:", error);
-  //     });
-  // };
-
-  // //This function will below will essentially take in a array and have a key map to it
-  // updateEntireArray = (newArr) => {
-  //   // 2. update adds to the document
-  //   this.props.ATItem.fbPath.update({ "actions&tasks": newArr }).then((doc) => {
-  //     console.log(this.props.ATItem.fbPath.path.split("/")[3]);
-  //     this.props.updateNewWentThroughATListObj(
-  //       this.props.ATItem.fbPath.path.split("/")[3]
-  //     );
-  //     console.log("updateEntireArray Finished");
-  //     // console.log(doc);
-  //     if (this.props != null) {
-  //       this.props.hideNewATModal();
-  //       console.log("refreshing FireBasev2 from AddNewATItem");
-  //       this.props.refresh(newArr);
-  //     }
-  //   });
-  // };
 
   setPhotoURLFunction = (photo, photo_url, type) => {
     let temp = this.state.itemToEdit;
@@ -404,10 +302,13 @@ export default class AddNewATItem extends Component {
 
             <Form.Label> Photo </Form.Label>
             <Row>
-              <AddIconModal parentFunction={this.setPhotoURLFunction} />
+              <AddIconModal 
+              BASE_URL={this.props.BASE_URL}
+              parentFunction={this.setPhotoURLFunction} />
               <UploadImage
                 parentFunction={this.setPhotoURLFunction}
                 currentUserId={this.props.currentUserId}
+                BASE_URL={this.props.BASE_URL}
               />
               <br />
             </Row>

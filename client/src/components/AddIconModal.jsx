@@ -56,11 +56,11 @@ export default class AddIconModal extends Component {
   };
 
   onHandleShowClick = () => {
-    let url1  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsHygiene";
-    let url2  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsClothing";
-    let url3  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsFood";
-    let url4  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsActivities";
-    let url5  = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getIconsOther";
+    let url1  = this.props.BASE_URL + "getIconsHygiene";
+    let url2  = this.props.BASE_URL +  "getIconsClothing";
+    let url3  = this.props.BASE_URL +  "getIconsFood";
+    let url4  = this.props.BASE_URL +  "getIconsActivities";
+    let url5  = this.props.BASE_URL +  "getIconsOther";
 
     let iconList1 = []
     let iconList2 = []

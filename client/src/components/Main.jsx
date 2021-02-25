@@ -233,7 +233,8 @@ export default class MainPage extends React.Component {
       newAccountID: "",
 
       versionNumber: this.getVersionNumber(),
-      date: this.getVersionDate()
+      date: this.getVersionDate(),
+      BASE_URL: this.getBaseUrl()
     };
   }
 
@@ -389,7 +390,7 @@ export default class MainPage extends React.Component {
     let email = this.getUrlParam("email", query);
     let userID = this.getUrlParam("userID", query);
 
-    let existingUserUrl = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/existingUser";
+    let existingUserUrl = this.state.BASE_URL + "existingUser";
     
     this.setState({createUserParam: result})
     console.log("before")
@@ -478,99 +479,6 @@ export default class MainPage extends React.Component {
       );
     });
 
-    // // Fetching all TA's to populate advisorIdAndNames
-    // axios.get("https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" + this.state.currentUserId)
-    //    .then((response) => {
-    //
-    //      if(response.data.result.length !== 0) {
-    //        response.data.result.forEach( ( d, i ) => {
-    //          this.state.advisorIdAndNames[i] = {
-    //            first_name: d.first_name,
-    //            last_name: d.last_name,
-    //            uid: d.unique_id
-    //          };
-    //        });
-    //      }
-    //    });
-
-    // const db = firebase.firestore();
-    // const docRef = db.collection("users");
-    // const trustedAd = db.collection("trusted_advisor");
-    //
-    // docRef.get().then((usersArray) => {
-    //   trustedAd
-    //     .get()
-    //     .then((advisorArray) => {
-    //       let nameIdObject = {};
-    //       let timeZoneObject = {};
-    //       let profilePicURLArray = [];
-    //       let theCurrentUserName = "";
-    //       let theCurrentUserPic = "";
-    //       let theCurrentUserId = "";
-    //       let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    //       for (let user of usersArray.docs) {
-    //         // console.log("this is x before", user.id);
-    //         let id = user.id;
-    //         let x = user.data();
-    //         var advisors = [];
-    //         for (let advisor of advisorArray.docs) {
-    //           this.state.advisorIdAndNames[advisor.id] = advisor.data();
-    //           if (advisor.data().users) {
-    //             if (this.state.loggedIn == advisor.data().email_id) {
-    //               for (let u of advisor.data().users) {
-    //                 if (u.User.id == id) {
-    //                   advisors.push(u.User.id);
-    //                   if (
-    //                     x.about_me != undefined &&
-    //                     x.about_me.timeSettings != undefined &&
-    //                     x.about_me.timeSettings.timeZone != ""
-    //                   ) {
-    //                     theTimeZone = x.about_me.timeSettings.timeZone;
-    //                   }
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //         if (advisors.length <= 0) continue;
-    //         let firstName = x.first_name || "";
-    //         let lastName = x.last_name || "";
-    //         let name = firstName + " " + lastName;
-    //         let picURL = "";
-    //         if (x["about_me"] !== undefined) {
-    //           picURL = x["about_me"].pic;
-    //         }
-    //
-    //         profilePicURLArray.push(picURL);
-    // nameIdObject[id] = name;
-    // timeZoneObject[id] = theTimeZone;
-    // theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
-    // theCurrentUserPic = profilePicURLArray[0];
-    // theCurrentUserId = Object.keys(nameIdObject)[0];
-
-    //         this.setState(
-    //           {
-    //             userIdAndNames: nameIdObject,
-    //             userTimeZone: timeZoneObject,
-    //             userPicsArray: profilePicURLArray,
-    //
-    //             enableNameDropDown: true,
-    //             currentUserPicUrl: theCurrentUserPic,
-    //             currentUserId: theCurrentUserId,
-    //             currentUserName: theCurrentUserName,
-    //             currentUserTimeZone: theTimeZone,
-    //           },
-    //           () => {
-    //             this.grabFireBaseRoutinesGoalsData();
-    //             this.updateEventsArray();
-    //           }
-    //         );
-    //       }
-    //     })
-    //     .catch(function (error) {
-    //       console.log("Error getting document:", error);
-    //     });
-    // });
   };
 
   // Gets all TA's for the logged in user. Added by Vishal
@@ -581,7 +489,7 @@ export default class MainPage extends React.Component {
     console.log(this.state.currentUserPicUrl);
     axios
       .get(
-        "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/listAllTA/" +
+        this.state.BASE_URL + "listAllTA/" +
           this.state.currentUserId
       )
       .then((response) => {
@@ -599,7 +507,7 @@ export default class MainPage extends React.Component {
 
   grabFireBaseRoutinesGoalsData = () => {
     let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/getgoalsandroutines/";
+    this.state.BASE_URL + "getgoalsandroutines/";
 
     let routine = [];
     let routine_ids = [];
@@ -3025,8 +2933,7 @@ this will close repeat modal.
     // console.log(this.state.currentUserId);
     // console.log(this.state.currentAdvisorCandidateId);
 
-    let url =
-      "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/anotherTAAccess";
+    let url = this.state.BASE_URL + "anotherTAAccess";
 
     let body = {
       ta_people_id: this.state.advisorIdAndNames[
@@ -3065,6 +2972,8 @@ this will close repeat modal.
             // {console.log("this is the id is it undefined at first", )}
             theCurrentUserId={this.state.currentUserId}
             theCurrentTAId={this.state.ta_people_id}
+            {...console.log("Basing", this.state.BASE_URL)}
+            BASE_URL={this.state.BASE_URL}
           />
         )
       );
@@ -3078,6 +2987,7 @@ this will close repeat modal.
             CameBackFalse={this.hideFutureForm}
             theCurrentUserId={this.state.currentUserId}
             theCurrentTAId={this.state.ta_people_id}
+            BASE_URL={this.state.BASE_URL}
           />
         )
       );
@@ -3097,6 +3007,7 @@ this will close repeat modal.
       };
 
   render() {
+    console.log(this.state.BASE_URL)
     if (this.state.loaded && !this.state.loggedIn) {
       return <Redirect to="/" />;
     } else {
@@ -3317,6 +3228,7 @@ this will close repeat modal.
                     loggedInEmail={this.state.loggedIn}
                     theCurrentTAID={this.state.ta_people_id}
                     newAccountID={this.state.newAccountID}
+                    BASE_URL={this.state.BASE_URL}
                   />
                 )}
               </Col>
@@ -3358,6 +3270,7 @@ this will close repeat modal.
               {/* the modal for routine/goal is called Firebasev2 currently */}
               {this.state.currentUserId != "" && (
                 <Firebasev2
+                  BASE_URL={this.state.BASE_URL}
                   theCurrentUserID={this.state.currentUserId}
                   theCurrentTAID={this.state.ta_people_id}
                   grabFireBaseRoutinesGoalsData={
@@ -3426,6 +3339,16 @@ this will close repeat modal.
       console.log(response.data)
       this.setState({
         date: response.data,
+      });
+    });
+  };
+
+  getBaseUrl = () => {
+    axios.get("/base_url", {}).then((response) => {
+      console.log(response)
+
+      this.setState({
+        BASE_URL: response['data'],
       });
     });
   };
@@ -3521,6 +3444,7 @@ this will close repeat modal.
             dayRoutineClick={this.toggleShowRoutine}
             theCurrentUserId={this.state.currentUserId}
             originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
+            BASE_URL={this.state.BASE_URL}
           />
 
           <DayGoals
@@ -3531,6 +3455,7 @@ this will close repeat modal.
             dayGoalClick={this.toggleShowGoal}
             theCurrentUserId={this.state.currentUserId}
             originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
+            BASE_URL={this.state.BASE_URL}
           />
         </Row>
       </div>
@@ -3612,6 +3537,7 @@ this will close repeat modal.
               timeZone={this.state.currentUserTimeZone}
               dateContext={this.state.dateContext}
               goals={this.state.goals}
+              BASE_URL={this.state.BASE_URL}
             />
           </Row>
           <Row>
@@ -3619,6 +3545,7 @@ this will close repeat modal.
               timeZone={this.state.currentUserTimeZone}
               routines={this.state.routines}
               dateContext={this.state.dateContext}
+              BASE_URL={this.state.BASE_URL}
             />
           </Row>
         </Container>
