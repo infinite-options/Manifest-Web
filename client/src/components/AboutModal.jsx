@@ -19,8 +19,8 @@ import axios from "axios";
 import UploadPeopleImages from "./UploadPeopleImages";
 // import DateAndTimePickers from "./DatePicker";
 import DatePicker from 'react-datepicker'
-import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 
 
 class AboutModal extends React.Component {
