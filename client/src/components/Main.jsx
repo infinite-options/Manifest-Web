@@ -27,6 +27,7 @@ import WeekRoutines from "./WeekRoutines.jsx";
 import WeekGoals from "./WeekGoals.jsx";
 import AboutModal from "./AboutModal.jsx";
 import FutureModal from "./FutureModal.jsx";
+import PeopleModal from "./PeopleModal.jsx";
 import CreateNewAccountModal from "./CreateNewAccountModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -141,6 +142,7 @@ export default class MainPage extends React.Component {
       showRoutineModal: false,
       showAboutModal: false,
       noteToFuture: false,
+      showPeopleModal: false,
       dayEventSelected: false, //use to show modal to create new event
       // modelSelected: false, // use to display the routine/goals modal
       newAccountEmail: "asdf",
@@ -1016,6 +1018,7 @@ the current month's events
       showRepeatModal: false,
       showAboutModal: false,
       noteToFuture: false,
+      showPeopleModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
       repeatDropDown: "DAY",
@@ -1086,6 +1089,7 @@ the current month's events
       showRepeatModal: false,
       showAboutModal: false,
       noteToFuture: false,
+      showPeopleModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
       repeatDropDown: "DAY",
@@ -1516,7 +1520,7 @@ passed that into the form where the user can edit that data
         showDateError: "",
         showAboutModal: false,
         noteToFuture: false,
-
+        showPeopleModal: false,
         byDay: {
           0: "",
           1: "",
@@ -1570,6 +1574,7 @@ passed that into the form where the user can edit that data
       showRepeatModal: false,
       showAboutModal: false,
       noteToFuture: false,
+      showPeopleModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
       repeatDropDown: "DAY",
@@ -1625,6 +1630,7 @@ passed that into the form where the user can edit that data
       showRepeatModal: false,
       showAboutModal: false,
       noteToFuture: false,
+      showPeopleModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
       repeatDropDown: "",
@@ -1704,6 +1710,7 @@ the user with a new form to create a event
         showDateError: "",
         showAboutModal: false,
         noteToFuture: false,
+        showPeopleModal: false,
         byDay: {
           0: "",
           1: "",
@@ -2875,6 +2882,12 @@ this will close repeat modal.
     });
   };
 
+  hidePeopleForm = (e) => {
+    this.setState({
+      showPeopleModal: false,
+    });
+  };
+
   updatePic = (name, url) => {
     // this.updateProfileFromFirebase();
     let index = null;
@@ -2911,6 +2924,7 @@ this will close repeat modal.
         currentUserEmail: this.state.emailIdObject[id],
         showAboutModal: false,
         noteToFuture: false,
+        showPeopleModal: false,
       },
       () => {
         this.grabFireBaseRoutinesGoalsData();
@@ -2972,7 +2986,6 @@ this will close repeat modal.
             // {console.log("this is the id is it undefined at first", )}
             theCurrentUserId={this.state.currentUserId}
             theCurrentTAId={this.state.ta_people_id}
-            {...console.log("Basing", this.state.BASE_URL)}
             BASE_URL={this.state.BASE_URL}
           />
         )
@@ -2985,6 +2998,21 @@ this will close repeat modal.
         ) : (
           <FutureModal
             CameBackFalse={this.hideFutureForm}
+            theCurrentUserId={this.state.currentUserId}
+            theCurrentTAId={this.state.ta_people_id}
+            BASE_URL={this.state.BASE_URL}
+          />
+        )
+      );
+    }
+    else if (this.state.showPeopleModal) {
+      return (
+        //  style={(onlyCal || (this.state.currentUserId === "")) ? { marginLeft: "22%" } : { marginLeft: "35px" }}
+        this.state.currentUserId === "" ? (
+          <div></div>
+        ) : (
+          <PeopleModal
+            CameBackFalse={this.hidePeopleForm}
             theCurrentUserId={this.state.currentUserId}
             theCurrentTAId={this.state.ta_people_id}
             BASE_URL={this.state.BASE_URL}
@@ -3726,6 +3754,7 @@ this will close repeat modal.
               {
                 showAboutModal: false,
                 noteToFuture: false,
+                showPeopleModal: false,
               },
               () => {
                 this.showEventsFormbyCreateNewEventButton();
@@ -3749,6 +3778,8 @@ this will close repeat modal.
           variant="outline-primary"
           onClick={() => {
             this.setState({
+              showPeopleModal: false,
+              noteToFuture: false,
               showAboutModal: !this.state.showAboutModal,
               dayEventSelected: false,
             });
@@ -3767,12 +3798,34 @@ this will close repeat modal.
           variant="outline-primary"
           onClick={() => {
             this.setState({
+              showAboutModal: false,
+              showPeopleModal: false,
               noteToFuture: !this.state.noteToFuture,
               dayEventSelected: false,
             });
           }}
         >
           Future
+        </Button>
+
+        <Button //About
+          style={{
+            display: "inline-block",
+            margin: "10px",
+            marginBottom: "0",
+            // marginRight: "200px",
+          }}
+          variant="outline-primary"
+          onClick={() => {
+            this.setState({
+              showAboutModal: false,
+              noteToFuture: false,
+              showPeopleModal: !this.state.showPeopleModal,
+              dayEventSelected: false,
+            });
+          }}
+        >
+          People
         </Button>
       </Row>
     );
