@@ -406,6 +406,7 @@ body.photo_url = this.state.photo_url
   render() {
     
     console.log(this.props.i, this.props.ISArray[this.props.i], this.state.itemToEdit)
+
     return (
       <div>
         {/* {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
