@@ -34,6 +34,7 @@ export default class AddNewISItem extends Component {
       id: "",
       type: "",
       title: "",
+      is_sequence: "",
       photo:"https://manifest-image-db.s3-us-west-1.amazonaws.com/instruction.png",
       photo_url:
         "https://manifest-image-db.s3-us-west-1.amazonaws.com/instruction.png",
@@ -238,29 +239,7 @@ export default class AddNewISItem extends Component {
     });
   };
 
-  // //This function will below will essentially take in a array and have a key map to it
-  // updateEntireArray = (newArr) => {
-  //   // 2. update adds to the document
-
-  //   this.props.ISItem.fbPath
-  //     .update({ "instructions&steps": newArr })
-  //     .then((doc) => {
-  //       // console.log(this.props.ISItem.fbPath.path.split('/')[3]);
-  //       this.props.updateNewWentThroughATListObjIS(
-  //         this.props.ISItem.fbPath.path.split("/")[3]
-  //       );
-  //       // console.log("updateEntireArray Finished");
-  //       // console.log(doc);
-  //       if (this.props != null) {
-  //         this.props.hideNewISModal();
-  //         // console.log("refreshing FireBasev2 from ISItem");
-  //         this.props.refresh(newArr);
-  //       } else {
-  //         // console.log("removing newly added item due to failure");
-  //         this.props.ISArray.pop();
-  //       }
-  //     });
-  // };
+ 
 
   convertTimeToHRMMSS = (e) => {
     // console.log(e.target.value);
@@ -359,27 +338,21 @@ export default class AddNewISItem extends Component {
                 width="auto"
               ></img>
             </div>
-
-            {/* <Row style={{ marginLeft: "3px" }}>
-              <section>
-                Start Time
-                <TimePicker
-                  setTime={this.setTime}
-                  name="start_time"
-                  time={this.state.itemToEdit.available_start_time}
-                />
-              </section>
-              <br />
-              <section style={{ marginLeft: "15px" }}>
-                End Time
-                <TimePicker
-                  setTime={this.setTime}
-                  name="end_time"
-                  time={this.state.itemToEdit.available_end_time}
-                />
-              </section>
-            </Row> */}
             <br />
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+              <label>Instruction/Step Sequence: </label>
+              <input
+                style={{ width: "200px" }}
+                placeholder="Enter Sequence"
+                value={this.state.itemToEdit.is_sequence}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.is_sequence = e.target.value;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+            </div>
 
             <label>This Takes Me</label>
             <Row>
