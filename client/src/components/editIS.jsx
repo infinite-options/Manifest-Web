@@ -16,18 +16,22 @@ export default class editIS extends Component {
   constructor(props) {
     super(props);
     console.log("from editIS: ", this.props.timeSlot);
+
     this.state = {
       type: "",
       showEditModal: false,
       itemToEdit: this.props.ISArray[this.props.i],
-      photo_url: this.props.ISArray[this.props.i].photo
-    };
+      photo_url: this.props.ISArray[this.props.i].photo    };
+    console.log("In constructor", this.state.itemToEdit)
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log("In component before", prevProps.ISArray, this.props.ISArray)
     if (prevProps.ISArray !== this.props.ISArray) {
       this.setState({ itemToEdit: this.props.ISArray[this.props.i] });
     }
+    console.log("in component", this.state.itemToEdit)
+  
   }
 
   setPhotoURLFunction = (photo, photo_url, type) => {
@@ -35,6 +39,13 @@ export default class editIS extends Component {
     temp.photo = photo;
     this.setState({ itemToEdit: temp, photo_url: photo_url, type: type });
   };
+
+  componentDidMount() {
+    console.log("Did mount", this.props.ISArray)
+    let temp = this.props.ISArray[this.props.i];
+    console.log(temp)
+    this.setState({ itemToEdit: temp });
+  }
 
   newInputSubmit = () => {
     
@@ -55,9 +66,10 @@ export default class editIS extends Component {
     let url = this.props.BASE_URL +  "updateIS"
 
 let body = newArr[this.props.i]
-
+console.log(body)
 body.photo_url = this.state.photo_url
     body.type = this.state.type
+    // body.is_sequence = this.state.is_sequence
     if (body.at_id) delete body.at_id;
   if (body.ta_notifications) delete body.ta_notifications;
   if (body.user_notifications) delete body.user_notifications;
@@ -67,7 +79,6 @@ body.photo_url = this.state.photo_url
   if (body.datetime_started) delete body.datetime_started;
   if (body.audio) delete body.audio;
   if (body.id) delete body.id;
-  if (body.is_sequence) delete body.is_sequence;
 
   let formData = new FormData();
   Object.entries(body).forEach((entry) => {
@@ -79,13 +90,16 @@ body.photo_url = this.state.photo_url
     }
   });
   console.log(formData);
+  // newArr.sort((a, b) => (a.is_sequence > b.is_sequence) ? 1 : -1);
+
+  console.log("New", newArr)
 
   axios
     .post(url, formData)
     .then((response) => {
       this.setState({ showEditModal: false });
+     
       this.props.refresh(newArr);
-      // this.updateEntireArray(newArr);
 
       console.log("Added Instuction/Step to Database");
     })
@@ -184,6 +198,9 @@ body.photo_url = this.state.photo_url
   };
 
   editISForm = () => {
+    console.log("In edit form", this.state.itemToEdit)
+    // this.setState({itemToEdit: this.props.ISArray[this.props.i]})
+
     return (
       // <div style={{margin: '0', width: "315px", padding:'20px'}}>
       <Row
@@ -233,6 +250,22 @@ body.photo_url = this.state.photo_url
             ></img>
           </div>
         </Form.Group>
+
+        <br />
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+              <label>Instruction/Step Sequence: </label>
+              <input
+                style={{ width: "200px" }}
+                placeholder="Enter Sequence"
+                value={this.state.itemToEdit.is_sequence}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.is_sequence = e.target.value;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+            </div>
 
         {/* <Row style={{ marginLeft: "3px" }}>
           <section>
@@ -338,6 +371,7 @@ body.photo_url = this.state.photo_url
           onClick={(e) => {
             e.stopPropagation();
             this.newInputSubmit();
+           
           }}
         >
           Save changes
@@ -370,6 +404,8 @@ body.photo_url = this.state.photo_url
   };
 
   render() {
+    
+    console.log(this.props.i, this.props.ISArray[this.props.i], this.state.itemToEdit)
     return (
       <div>
         {/* {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
