@@ -37,7 +37,6 @@ import {
   faList,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { isTemplateSpan } from "typescript";
 // import moment from "moment";
 
 /**
@@ -226,20 +225,10 @@ export default class FirebaseV2 extends React.Component {
    */
   refreshISItem = (arr) => {
     console.log("IS items after delete", arr);
-    console.log(typeof(arr))
-
-    // arr.sort((a, b) => (a.is_sequence > b.is_sequence) ? 1 : -1);
-
-    // console.log("AFter sort", arr)
-    // let temp = this.state.singleAT;
-    // temp.show = false;
-
     this.setState({
       singleISitemArr: arr,
-      // singleAT: temp
     });
-
-    console.log("All IS", this.state.singleISitemArr)
+    console.log("All IS", arr)
     let resArr = this.createListofIS(arr);
     let singleAt = this.state.singleAT;
     console.log("Before delete singleAt", singleAt.title, singleAt.arr);
@@ -451,7 +440,7 @@ export default class FirebaseV2 extends React.Component {
       let is_sublist_available = A[i]["is_sublist_available"]
       // console.log("in createlist")
       // console.log(this.state.timeSlotForAT)
-      console.log("Action", is_sublist_available)
+      // console.log(this.state.singleATitemArr)
 
       res.push(
         <div key={"AT" + i}>
@@ -683,14 +672,12 @@ export default class FirebaseV2 extends React.Component {
    * it in the form of a ListGroup for presentation
    */
   createListofIS = (A) => {
-    console.log("Create list", A)
     let res = [];
     for (let i = 0; i < A.length; i++) {
       let tempPhoto = A[i]["photo"];
       console.log("In create list", tempPhoto)
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
-      let sequence = A[i]["is_sequence"]
       res.push(
         <div key={"IS" + i} style={{ width: "100%" }}>
           <ListGroup.Item
@@ -740,12 +727,15 @@ export default class FirebaseV2 extends React.Component {
                         <FontAwesomeIcon
                           title="Unavailable to the user"
                           style={{ color: "#000000" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is NOT Availble to the user");
+                          }}
                           icon={faUserAltSlash}
                           size="lg"
                         />
                       </div>
                     )}
-                    <div style={{marginLeft: "20px" }} className="fancytext">{sequence}</div>
                   </Row>
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteISItem
@@ -806,8 +796,6 @@ export default class FirebaseV2 extends React.Component {
                       />
                     </div>
                   )}
-                    <div style={{marginLeft: "20px" }} className="fancytext">{sequence}</div>
-
                   {/* <ShowATList /> */}
                 </Row>
                 <Row
@@ -837,7 +825,6 @@ export default class FirebaseV2 extends React.Component {
                     updateWentThroughATListObjIS={
                       this.handleWentThroughATListObj
                     }
-
                   />
                 </Row>
               </div>
@@ -961,7 +948,6 @@ export default class FirebaseV2 extends React.Component {
             x[i].is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
             x[i].is_timed = x[i].is_timed.toLowerCase() === "true";
             x[i].title = x[i].title;
-            x[i].is_sequence = x[i].is_sequence;
           }
 
           let singleAT = {

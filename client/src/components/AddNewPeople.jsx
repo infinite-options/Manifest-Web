@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
-import { Button, Modal} from "react-bootstrap";
+import { Button, Dropdown, DropdownButton, Modal} from "react-bootstrap";
 import { storage } from './firebase';
 import axios from 'axios';
 
@@ -153,17 +153,44 @@ import axios from 'axios';
               </div>
               <label>Relationship</label>
               <div className="input-group mb-3">
-                <input
-                  style={{ width: "200px" }}
-                  placeholder="Enter Relationship "
-                  value={this.state.itemToEdit.relationship}
-                  onChange={e => {
-                    e.stopPropagation();
+              <DropdownButton
+                title={this.state.itemToEdit.relationship}
+                style={{display: "inline-block"}}
+                variant="light"
+              >
+                <Dropdown.Item
+                  eventKey="Family"
+                  onSelect={(eventKey) => {
                     let temp = this.state.itemToEdit;
-                    temp.relationship = e.target.value;
+                    temp.relationship = eventKey;
                     this.setState({ itemToEdit: temp });
                   }}
-                />
+                >
+                  Family
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="Friends"
+                  onSelect={(eventKey) => {
+                    let temp = this.state.itemToEdit;
+                    temp.relationship = eventKey;
+                    this.setState({ itemToEdit: temp });
+                  }}
+                >
+                  Friends
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="Advisor"
+                  onSelect={(eventKey) => {
+                    let temp = this.state.itemToEdit;
+                    temp.relationship = eventKey;
+                    this.setState({ itemToEdit: temp });
+                  }}
+                >
+                  Advisor
+                </Dropdown.Item>
+               
+              </DropdownButton>
+                
               </div>
               <label>Phone Number</label>
               <div className="input-group mb-3">
@@ -240,3 +267,5 @@ import axios from 'axios';
       );
     }
   }
+  
+
