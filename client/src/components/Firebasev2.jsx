@@ -129,72 +129,7 @@ export default class FirebaseV2 extends React.Component {
       WentThroughATList: {},
     };
   }
-  // state = {
-  //   firebaseRootPath: firebase
-  //     .firestore()
-  //     .collection("users")
-  //     .doc(this.props.theCurrentUserID),
-  //   // .doc("7R6hAVmDrNutRkG3sVRy"),
-  //   is_sublist_available: true,
-  //   showEditModal: false,
-  //   indexEditing: "",
-  //   //This single GR item is passed to AddNewATItem to help processed the new item
-  //   singleGR: {
-  //     //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
-  //     show: false, // Show the modal
-  //     type: "None",
-  //     title: "GR Name",
-  //     photo: "",
-  //     available_end_time: new Date(), //TODO get these used
-  //     available_start_time: new Date(), //TODO get these used
-  //     id: null,
-  //     arr: [],
-  //     fbPath: null,
-  //   },
-
-  //   singleAT: {
-  //     //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
-  //     //with the task
-  //     show: false, // Show the model
-  //     type: "None", // Action or Task
-  //     title: "AT Name", //Title of action task ,
-  //     available_end_time: new Date(), //TODO get these used
-  //     available_start_time: new Date(), //TODO get these used
-  //     photo: "",
-  //     id: null, //id of Action Task
-  //     arr: [], //array of instruction/steps formatted to display as a list
-  //     fbPath: null, //Firebase direction to the arr
-  //   },
-  //   singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
-  //   singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
-  //   // modalWidth: "350px", //primary width size for all modals
-  //   modalWidth: "390px",
-
-  //   //Use to decided whether to show the respective modals
-  //   addNewGRModalShow: false,
-  //   historyViewShow: false,
-  //   addNewATModalShow: false,
-  //   addNewISModalShow: false,
-
-  //   //used to determine thumbnail picture size
-  //   thumbnailWidth: "150px",
-  //   thumbnailHeight: "100px",
-  //   thumbnailWidthV2: "200px",
-  //   thumbnailHeightV2: "50px",
-
-  //   //isRoutine is to check whether we clicked on add routine or add goal
-  //   isRoutine: true,
-  //   availabilityColorCode: "#D6A34C",
-
-  //   //For setting default time for the AT Item
-  //   timeSlotForAT: [],
-  //   timeSlotForIS: [],
-
-  //   routine_completed: false,
-
-  //   //used for the list item icon.If at GR and this icon is turned off. then wont be able to show Action and taske list.
-  //   // iconShowATModal: true
-  // };
+  
 
   /**
    * refreshATItem:
@@ -349,82 +284,7 @@ export default class FirebaseV2 extends React.Component {
       });
   };
 
-  // //This function essentially grabs all action/tasks
-  // //for the routine or goal passed in and pops open the
-  // //modal for the action/task
-  // getATList = async (id, title, persist) => {
-  //   const db = firebase.firestore();
-  //   let docRef = db
-  //     .collection("users")
-  //     .doc(this.props.theCurrentUserID)
-  //     .collection("goals&routines")
-  //     .doc(id);
-  //   docRef
-  //     .get()
-  //     .then((doc) => {
-  //       if (doc.exists) {
-  //         // console.log(doc.data());
-  //         var x = doc.data()["actions&tasks"];
-  //         // console.log(x);
-  //         if (x == null) {
-  //           let singleGR = {
-  //             //Variable to hold information about the parent Goal/ Routine
-  //             show: true,
-  //             type: persist ? "Routine" : "Goal",
-  //             title: title,
-  //             id: id,
-  //             is_complete: doc.data().is_complete,
-  //             is_in_progress: doc.data().is_in_progress,
-  //             arr: [],
-  //             fbPath: docRef,
-  //           };
-  //           this.setState({
-  //             singleGR: singleGR,
-  //             singleATitemArr: [],
-  //           });
-  //           return;
-  //         }
-  //
-  //         let singleGR = {
-  //           //initialise without list to pass fbPath to child
-  //           show: true,
-  //           type: persist ? "Routine" : "Goal",
-  //           title: title,
-  //           id: id,
-  //           arr: [], //array of current action/task in this singular Routine
-  //           fbPath: docRef,
-  //         };
-  //
-  //         this.setState({
-  //           singleGR: singleGR,
-  //           singleATitemArr: x,
-  //         });
-  //         let resArr = this.createListofAT(x);
-  //         //assemble singleGR template here:
-  //
-  //         singleGR = {
-  //           show: true,
-  //           type: persist ? "Routine" : "Goal",
-  //           title: title,
-  //           id: id,
-  //           arr: resArr, //array of current action/task in this singular Routine
-  //           fbPath: docRef,
-  //         };
-  //
-  //         this.setState({
-  //           singleGR: singleGR,
-  //         });
-  //         console.log(this.state.singleATitemArr);
-  //       } else {
-  //         // doc.data() will be undefined in this case
-  //         console.log("No such document!");
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       console.log("Error getting document:", error);
-  //     });
-  // };
-
+  
   //Creates a array of all actions/task for get getATList function
   //getATList stands for get all action/task
   createListofAT = (A) => {
@@ -678,6 +538,8 @@ export default class FirebaseV2 extends React.Component {
       console.log("In create list", tempPhoto)
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
+      let sequence = A[i]["is_sequence"];
+
       res.push(
         <div key={"IS" + i} style={{ width: "100%" }}>
           <ListGroup.Item
@@ -736,6 +598,8 @@ export default class FirebaseV2 extends React.Component {
                         />
                       </div>
                     )}
+                    <div style={{marginLeft: "20px" }} className="fancytext">{sequence}</div>
+
                   </Row>
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteISItem
@@ -796,6 +660,8 @@ export default class FirebaseV2 extends React.Component {
                       />
                     </div>
                   )}
+                  <div style={{marginLeft: "20px" }} className="fancytext">{sequence}</div>
+
                   {/* <ShowATList /> */}
                 </Row>
                 <Row
@@ -855,60 +721,10 @@ export default class FirebaseV2 extends React.Component {
       end_day_and_time.split(" ")[4],
     ];
 
-    // const db = firestore();
-    // const userData = await db
-    //    .collection("users")
-    //    .doc(this.props.theCurrentUserID)
-    //    .get();
-    //
-    // let userGR = userData.data()["goals&routines"];
-    //
-    // userGR.forEach((doc) => {
-    //   // console.log("This is from useGR: ", this.state.singleGR);
-    //   if (doc.id === id) {
-    //     //console.log("Time String From firebase: ", doc.start_day_and_time);
-    //     let start_day_and_time = new Date(doc.start_day_and_time).toString();
-    //     let end_day_and_time = new Date(doc.end_day_and_time).toString();
-    //     //console.log("Time String after firebase: ", start_day_and_time);
-    //
-    //     timeSlot = [
-    //       start_day_and_time.split(" ")[4],
-    //       end_day_and_time.split(" ")[4],
-    //     ];
-    //   }
-    // });
     this.setState({ timeSlotForAT: timeSlot });
   };
 
-  // /**
-  //  * Retrieve parent goal's start time and end time and use them for it's ATItem
-  //  */
-  // setTimeSlot = async (id) => {
-  //   let timeSlot = [];
-  //   const db = firestore();
-  //   const userData = await db
-  //     .collection("users")
-  //     .doc(this.props.theCurrentUserID)
-  //     .get();
-  //
-  //   let userGR = userData.data()["goals&routines"];
-  //
-  //   userGR.forEach((doc) => {
-  //     // console.log("This is from useGR: ", this.state.singleGR);
-  //     if (doc.id === id) {
-  //       //console.log("Time String From firebase: ", doc.start_day_and_time);
-  //       let start_day_and_time = new Date(doc.start_day_and_time).toString();
-  //       let end_day_and_time = new Date(doc.end_day_and_time).toString();
-  //       //console.log("Time String after firebase: ", start_day_and_time);
-  //
-  //       timeSlot = [
-  //         start_day_and_time.split(" ")[4],
-  //         end_day_and_time.split(" ")[4],
-  //       ];
-  //     }
-  //   });
-  //   this.setState({ timeSlotForAT: timeSlot });
-  // };
+  
   /**
    * In this function we are passed in the id title and persist property of the incoming routine/goal
    * and we need to make return a viewable list of all the actions/tasks for this routine/goal
@@ -948,6 +764,7 @@ export default class FirebaseV2 extends React.Component {
             x[i].is_in_progress = x[i].is_in_progress.toLowerCase() === "true";
             x[i].is_timed = x[i].is_timed.toLowerCase() === "true";
             x[i].title = x[i].title;
+            x[i].is_sequence = x[i].is_sequence;
           }
 
           let singleAT = {
