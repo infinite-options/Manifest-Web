@@ -47,7 +47,6 @@ export default class AddNewISItem extends Component {
       is_timed: false,
       expected_completion_time: "00:05:00",
       is_in_progress: false,
-      is_sequence: "",
       ta_notifications: {
         before: {
           is_enabled: false,
@@ -359,21 +358,6 @@ export default class AddNewISItem extends Component {
                 height="70"
                 width="auto"
               ></img>
-            </div>
-            <br />
-            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-              <label>Instruction/Step Sequence: </label>
-              <input
-                style={{ width: "200px" }}
-                placeholder="Enter Sequence"
-                value={this.state.itemToEdit.is_sequence}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.is_sequence = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
             </div>
 
             {/* <Row style={{ marginLeft: "3px" }}>

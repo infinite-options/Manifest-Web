@@ -230,7 +230,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.motivation
                      a[0] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                    }}
                  />) : (
                   <Form.Control
@@ -241,7 +241,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                      a[0] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                   }}
                 />
                  )
@@ -259,7 +259,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                     a[1] = e.target.value
-                    this.setState({a});
+                    this.setState({motivation: a});
                    }}
                  />) : (
                   <Form.Control
@@ -270,7 +270,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                      a[1] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: aa});
                   }}
                 />
                  )
@@ -288,7 +288,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.motivation
                      a[2] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                    }}
                  />) : (
                   <Form.Control
@@ -299,7 +299,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                      a[2] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                   }}
                 />
                  )
@@ -317,7 +317,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.motivation
                      a[3] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                    }}
                  />) : (
                   <Form.Control
@@ -328,7 +328,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                      a[3] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                   }}
                 />
                  )
@@ -346,7 +346,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.motivation
                      a[4] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                    }}
                  />) : (
                   <Form.Control
@@ -357,7 +357,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                      a[4] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                   }}
                 />
                  )
@@ -375,7 +375,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.motivation
                      a[5] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                    }}
                  />) : (
                   <Form.Control
@@ -386,7 +386,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                      a[5] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                   }}
                 />
                  )
@@ -404,7 +404,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.motivation
                      a[6] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                    }}
                  />) : (
                   <Form.Control
@@ -415,7 +415,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.motivation
                      a[6] = e.target.value
-                     this.setState({a});
+                     this.setState({motivation: a});
                   }}
                 />
                  )
@@ -437,7 +437,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.important
                      a[0] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                    }}
                  />) : (
                   <Form.Control
@@ -448,7 +448,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.important
                      a[0] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                   }}
                 />
                  )
@@ -466,7 +466,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.important
                      a[1] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                    }}
                  />) : (
                   <Form.Control
@@ -477,7 +477,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.important
                      a[1] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                   }}
                 />
                  )
@@ -495,7 +495,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.important
                      a[2] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                    }}
                  />) : (
                   <Form.Control
@@ -506,7 +506,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.important
                      a[2] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                   }}
                 />
                  )
@@ -524,7 +524,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.important
                      a[3] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                    }}
                  />) : (
                   <Form.Control
@@ -535,7 +535,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.important
                      a[3] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                   }}
                 />
                  )
@@ -553,7 +553,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.important
                      a[4] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                    }}
                  />) : (
                   <Form.Control
@@ -564,7 +564,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.important
                      a[4] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                   }}
                 />
                  )
@@ -582,7 +582,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.important
                      a[5] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                    }}
                  />) : (
                   <Form.Control
@@ -593,7 +593,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.important
                      a[5] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                   }}
                 />
                  )
@@ -611,7 +611,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.important
                      a[6] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                    }}
                  />) : (
                   <Form.Control
@@ -622,7 +622,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.important
                      a[6] = e.target.value
-                     this.setState({a});
+                     this.setState({important: a});
                   }}
                 />
                  )
@@ -644,7 +644,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.happy
                      a[0] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                    }}
                  />) : (
                   <Form.Control
@@ -655,7 +655,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.happy
                      a[0] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                   }}
                 />
                  )
@@ -664,7 +664,7 @@ class FutureModal extends React.Component {
               </Row>
               <Row>
                 <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 1 ?
+                {this.state.happy.length >= 1 ?
                    (<Form.Control
                    type="text"
                    placeholder="Happy"
@@ -673,7 +673,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.happy
                      a[1] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                    }}
                  />) : (
                   <Form.Control
@@ -684,7 +684,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.happy
                     a[1] = e.target.value
-                    this.setState({a});
+                    this.setState({happy: a});
                   }}
                 />
                  )
@@ -693,7 +693,7 @@ class FutureModal extends React.Component {
               </Row>
               <Row>
                 <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 2 ?
+                {this.state.happy.length >= 2 ?
                    (<Form.Control
                    type="text"
                    placeholder="Happy"
@@ -702,7 +702,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.happy
                      a[2] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                    }}
                  />) : (
                   <Form.Control
@@ -713,7 +713,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.happy
                      a[2] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                   }}
                 />
                  )
@@ -722,7 +722,7 @@ class FutureModal extends React.Component {
               </Row>
               <Row>
                 <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 3 ?
+                {this.state.happy.length >= 3 ?
                    (<Form.Control
                    type="text"
                    placeholder="Happy"
@@ -731,7 +731,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.happy
                      a[3] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                    }}
                  />) : (
                   <Form.Control
@@ -742,7 +742,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.happy
                      a[3] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                   }}
                 />
                  )
@@ -751,7 +751,7 @@ class FutureModal extends React.Component {
               </Row>
               <Row>
                 <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 4 ?
+                {this.state.happy.length >= 4 ?
                    (<Form.Control
                    type="text"
                    placeholder="Happy"
@@ -760,7 +760,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.happy
                      a[4] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                    }}
                  />) : (
                   <Form.Control
@@ -771,7 +771,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.happy
                      a[4] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                   }}
                 />
                  )
@@ -780,7 +780,7 @@ class FutureModal extends React.Component {
               </Row>
               <Row>
                 <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 5 ?
+                {this.state.happy.length >= 5 ?
                    (<Form.Control
                    type="text"
                    placeholder="Happy"
@@ -789,7 +789,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.happy
                      a[5] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                    }}
                  />) : (
                   <Form.Control
@@ -800,7 +800,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.happy
                      a[5] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                   }}
                 />
                  )
@@ -809,7 +809,7 @@ class FutureModal extends React.Component {
               </Row>
               <Row>
                 <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 6 ?
+                {this.state.happy.length >= 6 ?
                    (<Form.Control
                    type="text"
                    placeholder="Happy"
@@ -818,7 +818,7 @@ class FutureModal extends React.Component {
                      e.stopPropagation();
                      var a = this.state.happy
                      a[6] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                    }}
                  />) : (
                   <Form.Control
@@ -829,7 +829,7 @@ class FutureModal extends React.Component {
                     e.stopPropagation();
                     var a = this.state.happy
                      a[6] = e.target.value
-                     this.setState({a});
+                     this.setState({happy: a});
                   }}
                 />
                  )
