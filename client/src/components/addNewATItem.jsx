@@ -36,7 +36,7 @@ export default class AddNewATItem extends Component {
         datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
         is_timed: false,
         expected_completion_time: "00:10:00",
-        is_sublist_available: true,
+        is_sublist_available: false,
         is_in_progress: false,
         ta_notifications: {
           before: {
@@ -154,16 +154,7 @@ export default class AddNewATItem extends Component {
       });
     }
 
-    // console.log("in addNEwATITem")
-    // console.log(this.props.ATItem.id)
-    // console.log(this.props.ATArray)
-
-    // let body = JSON.parse(JSON.stringify(this.state.itemToEdit))
-
-    // changes to request body to make it compatible with RDS
-
-    // if (body.available_end_time) delete body.available_end_time;
-    // if (body.available_start_time) delete body.available_start_time;
+    
 
     let body = this.state.itemToEdit;
 
@@ -173,7 +164,6 @@ export default class AddNewATItem extends Component {
     if (body.id || body.id === "") delete body.id;
     body.gr_id = this.props.ATItem.id;
 
-    // console.log("BODY")
     console.log(body);
 
     let formData = new FormData();
@@ -196,7 +186,7 @@ export default class AddNewATItem extends Component {
         let temp = this.state.itemToEdit;
         temp.id = response.data.result;
         temp.at_unique_id = response.data.result;
-
+        temp.is_sublist_available = false;
         // console.log("*****")
         // console.log(response.data.result)
         // console.log(newArr)

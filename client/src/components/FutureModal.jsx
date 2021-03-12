@@ -44,7 +44,7 @@ class FutureModal extends React.Component {
   grabFireBaseAllPeopleNames = () => {
     let url1 =  this.props.BASE_URL + "motivation/";
 
-    let url2 = this.props.BASE_URL + "feelings/";
+    // let url2 = this.props.BASE_URL + "feelings/";
 
     let url3 = this.props.BASE_URL + "happy/";
 
@@ -71,21 +71,21 @@ class FutureModal extends React.Component {
         console.log("Error getting motivation list", err);
       });
 
-      axios
-      .get(url2 + this.props.theCurrentUserId)
-      .then((response) => {
-        feelingsList = response.data.result[0];
-        var array = JSON.parse("[" + feelingsList['feelings'] + "]");
-        if(array[0].length >= 0){
-          this.setState({
-            feelings: array[0]
-          });
-        }
+      // axios
+      // .get(url2 + this.props.theCurrentUserId)
+      // .then((response) => {
+      //   feelingsList = response.data.result[0];
+      //   var array = JSON.parse("[" + feelingsList['feelings'] + "]");
+      //   if(array[0].length >= 0){
+      //     this.setState({
+      //       feelings: array[0]
+      //     });
+      //   }
           
-      })
-      .catch((err) => {
-        console.log("Error getting feelings list", err);
-      });
+      // })
+      // .catch((err) => {
+      //   console.log("Error getting feelings list", err);
+      // });
 
       axios
       .get(url3 + this.props.theCurrentUserId)
@@ -125,13 +125,13 @@ class FutureModal extends React.Component {
   newInputSubmit = () => {
     
     let motivationList = Object.values(this.state.motivation);
-    let feelingsList = Object.values(this.state.feelings);
+    // let feelingsList = Object.values(this.state.feelings);
     let importantList = Object.values(this.state.important);
     let happyList = Object.values(this.state.happy);
 
     
     let motivationUrl = this.props.BASE_URL +  "updateMotivation";
-    let feelingsUrl = this.props.BASE_URL +  "updateFeelings";
+    // let feelingsUrl = this.props.BASE_URL +  "updateFeelings";
     let importantUrl = this.props.BASE_URL +  "updateImportant";
     let happyUrl = this.props.BASE_URL +  "updateHappy";
 
@@ -140,10 +140,10 @@ class FutureModal extends React.Component {
       motivation: motivationList
     };
 
-    const body2 = {
-      user_id: this.props.theCurrentUserId,
-      feelings: feelingsList
-    };
+    // const body2 = {
+    //   user_id: this.props.theCurrentUserId,
+    //   feelings: feelingsList
+    // };
 
     const body3 = {
       user_id: this.props.theCurrentUserId,
@@ -164,14 +164,14 @@ class FutureModal extends React.Component {
           console.log("Error updating Details", err);
         });
 
-    axios
-    .post(feelingsUrl, body2)
-      .then(() => {
-        console.log("Updated Details");
-      })
-      .catch((err) => {
-        console.log("Error updating Details", err);
-      });
+    // axios
+    // .post(feelingsUrl, body2)
+    //   .then(() => {
+    //     console.log("Updated Details");
+    //   })
+    //   .catch((err) => {
+    //     console.log("Error updating Details", err);
+    //   });
 
     axios
     .post(importantUrl, body3)
@@ -621,213 +621,6 @@ class FutureModal extends React.Component {
                   onChange={(e) => {
                     e.stopPropagation();
                     var a = this.state.important
-                     a[6] = e.target.value
-                     this.setState({a});
-                  }}
-                />
-                 )
-                  }
-                </Col>
-              </Row>
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Feelings:</Form.Label>
-              <Row>
-                <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 0 ?
-                   (<Form.Control
-                   type="text"
-                   placeholder="Feelings"
-                   value={this.state.feelings[0] || ""}
-                   onChange={(e) => {
-                     e.stopPropagation();
-                     var a = this.state.feelings
-                     a[0] = e.target.value
-                     this.setState({a});
-                   }}
-                 />) : (
-                  <Form.Control
-                  type="text"
-                  placeholder="Feelings"
-                  value={""}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    var a = this.state.feelings
-                    a[0] = e.target.value
-                    this.setState({a});
-                  }}
-                />
-                 )
-                  }
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 1 ?
-                   (<Form.Control
-                   type="text"
-                   placeholder="Feelings"
-                   value={this.state.feelings[1] || ""}
-                   onChange={(e) => {
-                     e.stopPropagation();
-                     var a = this.state.feelings
-                     a[1] = e.target.value
-                     this.setState({a});
-                   }}
-                 />) : (
-                  <Form.Control
-                  type="text"
-                  placeholder="Feelings"
-                  value={"Feelings"}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    var a = this.state.feelings
-                     a[1] = e.target.value
-                     this.setState({a});
-                  }}
-                />
-                 )
-                  }
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 2 ?
-                   (<Form.Control
-                   type="text"
-                   placeholder="Feelings"
-                   value={this.state.feelings[2] || ""}
-                   onChange={(e) => {
-                     e.stopPropagation();
-                     var a = this.state.feelings
-                     a[2] = e.target.value
-                     this.setState({a});
-                   }}
-                 />) : (
-                  <Form.Control
-                  type="text"
-                  placeholder="Feelings"
-                  value={""}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    var a = this.state.feelings
-                     a[2] = e.target.value
-                     this.setState({a});
-                  }}
-                />
-                 )
-                  }
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 3 ?
-                   (<Form.Control
-                   type="text"
-                   placeholder="Feelings"
-                   value={this.state.feelings[3] || ""}
-                   onChange={(e) => {
-                     e.stopPropagation();
-                     var a = this.state.feelings
-                     a[3] = e.target.value
-                     this.setState({a});
-                   }}
-                 />) : (
-                  <Form.Control
-                  type="text"
-                  placeholder="Feelings"
-                  value={"Feelings"}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    var a = this.state.feelings
-                     a[3] = e.target.value
-                     this.setState({a});
-                  }}
-                />
-                 )
-                  }
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 4 ?
-                   (<Form.Control
-                   type="text"
-                   placeholder="Feelings"
-                   value={this.state.feelings[4] || ""}
-                   onChange={(e) => {
-                     e.stopPropagation();
-                     var a = this.state.feelings
-                     a[4] = e.target.value
-                     this.setState({a});
-                   }}
-                 />) : (
-                  <Form.Control
-                  type="text"
-                  placeholder="Feelings"
-                  value={""}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    var a = this.state.feelings
-                     a[4] = e.target.value
-                     this.setState({a});
-                  }}
-                />
-                 )
-                  }
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 5 ?
-                   (<Form.Control
-                   type="text"
-                   placeholder="Feelings"
-                   value={this.state.feelings[5] || ""}
-                   onChange={(e) => {
-                     e.stopPropagation();
-                     var a = this.state.feelings
-                     a[5] = e.target.value
-                     this.setState({a});
-                   }}
-                 />) : (
-                  <Form.Control
-                  type="text"
-                  placeholder="Feelings"
-                  value={""}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    var a = this.state.feelings
-                     a[5] = e.target.value
-                     this.setState({a});
-                  }}
-                />
-                 )
-                  }
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={50} style={{ paddingLeft: "70px" }}>
-                {this.state.feelings.length >= 6 ?
-                   (<Form.Control
-                   type="text"
-                   placeholder="Feelings"
-                   value={this.state.feelings[6] || ""}
-                   onChange={(e) => {
-                     e.stopPropagation();
-                     var a = this.state.feelings
-                     a[6] = e.target.value
-                     this.setState({a});
-                   }}
-                 />) : (
-                  <Form.Control
-                  type="text"
-                  placeholder="Feelings"
-                  value={""}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    var a = this.state.feelings
                      a[6] = e.target.value
                      this.setState({a});
                   }}

@@ -58,6 +58,7 @@ export default class DayGoals extends Component {
     var fontSize = 10;
     //console.log("this.props.dateContext", this.props.dateContext);
     //this.updateGRIsDisplayed()
+    // console.log("For pragya", arr)
     for (let i = 0; i < arr.length; i++) {
       tempStart = arr[i].start_day_and_time;
       tempEnd = arr[i].end_day_and_time;

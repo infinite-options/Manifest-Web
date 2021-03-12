@@ -1,6 +1,5 @@
 import React from "react";
 import firebase from "./firebase";
-import AddNewPeople from "./AddNewPeople";
 import SettingPage from "./SettingPage";
 import {
   Form,
@@ -16,22 +15,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faTemperatureHigh } from "@fortawesome/free-solid-svg-icons";
 import { storage } from "./firebase";
 import axios from "axios";
-import UploadPeopleImages from "./UploadPeopleImages";
-// import DateAndTimePickers from "./DatePicker";
 import DatePicker from 'react-datepicker'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
-
 
 class AboutModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // firebaseRootPath: firebase
-      //   .firestore()
-      //   .collection("users")
-      //   .doc(this.props.theCurrentUserId),
-     
+    
       imageChanged: false,
     
       aboutMeObject: {
@@ -54,14 +46,13 @@ class AboutModal extends React.Component {
           timeZone: "",
         },
       },
+
       firstName: "",
       lastName: "",
-   
       showTimeModal: false,
       saveButtonEnabled: true,
       enableDropDown: false,
       url: "",
- 
     };
   }
 
@@ -105,12 +96,8 @@ class AboutModal extends React.Component {
   };
 
   grabFireBaseAboutMeData = () => {
-    console.log(this.props.BASE_URL)
     let url = this.props.BASE_URL + "aboutme/";
-    console.log(url)
 
-    // console.log("!!")
-    // console.log(this.props.theCurrentUserId)
     axios
       .get(url + this.props.theCurrentUserId)
       .then((response) => {
@@ -139,8 +126,6 @@ class AboutModal extends React.Component {
             },
           };
 
-          console.log(x.birth_date)
-
           this.setState({
             aboutMeObject: x,
             firstName: details.user_first_name,
@@ -168,7 +153,6 @@ class AboutModal extends React.Component {
 
   newInputSubmit = () => {
    
-  
     const body = {
       user_id: this.props.theCurrentUserId,
       first_name: this.state.firstName,
@@ -247,7 +231,6 @@ class AboutModal extends React.Component {
   };
 
   startTimePicker = () => {
-    // const [startDate, setStartDate] = useState(new Date());
     return (
       <DatePicker
         className="form-control"
@@ -264,14 +247,12 @@ class AboutModal extends React.Component {
               aboutmeObject: temp,
             });
         }}
-     
         dateFormat="MMMM d, yyyy"
       />
     );
   };
  
   render() {
-    console.log(this.state.aboutMeObject.phone_number)
     return (
       <div>
         <Modal.Dialog
