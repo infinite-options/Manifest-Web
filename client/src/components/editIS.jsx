@@ -67,7 +67,6 @@ body.photo_url = this.state.photo_url
   if (body.datetime_started) delete body.datetime_started;
   if (body.audio) delete body.audio;
   if (body.id) delete body.id;
-  if (body.is_sequence) delete body.is_sequence;
 
   let formData = new FormData();
   Object.entries(body).forEach((entry) => {
@@ -253,6 +252,22 @@ body.photo_url = this.state.photo_url
             />
           </section>
         </Row> */}
+        <br />
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+              <label>Instruction/Step Sequence: </label>
+              <input
+                style={{ width: "200px" }}
+                placeholder="Enter Sequence"
+                value={this.state.itemToEdit.is_sequence}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.is_sequence = e.target.value;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+            </div>
+            
         <div>
           <br />
           This Takes Me
