@@ -669,6 +669,8 @@ class PeopleModal extends React.Component {
       ? temp.have_pic.toLowerCase() === "true"
       : false;
     let temp2 = {};
+    let nonImportant = this.state.nonImportantPeople
+    let test = this.state.peopleNamesArray
 
     if (this.state.ImporPersonOneChange === false) {
       temp2 = this.state.importantPeople1;
@@ -677,16 +679,25 @@ class PeopleModal extends React.Component {
       temp2 = this.state.importantPeople1Previous;
     }
 
+    nonImportant[temp2.ta_people_id] = temp2;
+    test[temp2.ta_people_id] = temp2.name;
+    delete test[Reference]
+
     this.setState({
       ImporPersonOneChange: true,
       importantPeople1Previous: temp2,
       importantPeople1: temp,
+      nonImportantPeople: nonImportant,
+      peopleNamesArray: test,
     });
+
+    
 
     console.log("Updated Important Person One in Client");
   };
 
   changeImpPersonTwo = (Reference) => {
+    console.log(Reference)
     let temp = this.state.nonImportantPeople[Reference];
     temp.important = true;
     temp.url = "";
@@ -694,19 +705,31 @@ class PeopleModal extends React.Component {
       ? temp.have_pic.toLowerCase() === "true"
       : false;
     let temp2 = {};
+    let nonImportant = this.state.nonImportantPeople
+    let test = this.state.peopleNamesArray
+
+    delete nonImportant[Reference]
 
     if (this.state.ImporPersonTwoChange === false) {
       temp2 = this.state.importantPeople2;
       temp2.important = false;
     } else {
       temp2 = this.state.importantPeople2Previous;
+
     }
+
+    nonImportant[temp2.ta_people_id] = temp2;
+    test[temp2.ta_people_id] = temp2.name;
+    delete test[Reference]
 
     this.setState({
       ImporPersonTwoChange: true,
       importantPeople2Previous: temp2,
       importantPeople2: temp,
+      nonImportantPeople: nonImportant,
+      peopleNamesArray: test
     });
+    console.log(this.state.nonImportantPeople)
     console.log("Updated Important Person Two in Client");
   };
 
@@ -719,6 +742,8 @@ class PeopleModal extends React.Component {
       ? temp.have_pic.toLowerCase() === "true"
       : false;
     let temp2 = {};
+    let nonImportant = this.state.nonImportantPeople
+    let test = this.state.peopleNamesArray
 
     if (this.state.ImporPersonThreeChange === false) {
       temp2 = this.state.importantPeople3;
@@ -727,10 +752,16 @@ class PeopleModal extends React.Component {
       temp2 = this.state.importantPeople3Previous;
     }
 
+    nonImportant[temp2.ta_people_id] = temp2;
+    test[temp2.ta_people_id] = temp2.name;
+    delete test[Reference]
+
     this.setState({
       ImporPersonThreeChange: true,
       importantPeople3Previous: temp2,
       importantPeople3: temp,
+      nonImportantPeople: nonImportant,
+      peopleNamesArray: test
     });
     console.log("Updated Important Person Three in Client");
   };
@@ -743,6 +774,8 @@ class PeopleModal extends React.Component {
       ? temp.have_pic.toLowerCase() === "true"
       : false;
     let temp2 = {};
+    let nonImportant = this.state.nonImportantPeople
+    let test = this.state.peopleNamesArray
 
     if (this.state.ImporPersonFourChange === false) {
       temp2 = this.state.importantPeople4;
@@ -751,10 +784,16 @@ class PeopleModal extends React.Component {
       temp2 = this.state.importantPeople4Previous;
     }
 
+    nonImportant[temp2.ta_people_id] = temp2;
+    test[temp2.ta_people_id] = temp2.name;
+    delete test[Reference]
+
     this.setState({
       ImporPersonFourChange: true,
       importantPeople4Previous: temp,
       importantPeople4: temp,
+      nonImportantPeople: nonImportant,
+      peopleNamesArray: test
     });
 
     console.log("Updated Important Person One in Client");
@@ -768,6 +807,8 @@ class PeopleModal extends React.Component {
       ? temp.have_pic.toLowerCase() === "true"
       : false;
     let temp2 = {};
+    let nonImportant = this.state.nonImportantPeople
+    let test = this.state.peopleNamesArray
 
     if (this.state.ImporPersonFiveChange === false) {
       temp2 = this.state.importantPeople5;
@@ -776,10 +817,16 @@ class PeopleModal extends React.Component {
       temp2 = this.state.importantPeople5Previous;
     }
 
+    nonImportant[temp2.ta_people_id] = temp2;
+    test[temp2.ta_people_id] = temp2.name;
+    delete test[Reference]
+
     this.setState({
       ImporPersonFiveChange: true,
       importantPeople5Previous: temp2,
       importantPeople5: temp,
+      nonImportantPeople: nonImportant,
+      peopleNamesArray: test
     });
 
     console.log("Updated Important Person One in Client");
@@ -793,6 +840,8 @@ class PeopleModal extends React.Component {
       ? temp.have_pic.toLowerCase() === "true"
       : false;
     let temp2 = {};
+    let nonImportant = this.state.nonImportantPeople
+    let test = this.state.peopleNamesArray
 
     if (this.state.ImporPersonSixChange === false) {
       temp2 = this.state.importantPeople6;
@@ -801,10 +850,16 @@ class PeopleModal extends React.Component {
       temp2 = this.state.importantPeople6Previous;
     }
 
+    nonImportant[temp2.ta_people_id] = temp2;
+    test[temp2.ta_people_id] = temp2.name;
+    delete test[Reference]
+
     this.setState({
       ImporPersonOneChange: true,
       importantPeople6Previous: temp2,
       importantPeople6: temp,
+      nonImportantPeople: nonImportant,
+      peopleNamesArray: test
     });
 
     console.log("Updated Important Person One in Client");
