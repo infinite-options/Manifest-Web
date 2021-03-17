@@ -25,6 +25,8 @@ import ShowATList from "./ShowATList";
 import ShowISList from "./ShowISList";
 import MustDoAT from "./MustDoAT";
 import EditIcon from "./EditIcon.jsx";
+import CopyIcon from "./CopyIcon.jsx";
+import CopyGR from "./CopyGR.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import {
@@ -35,6 +37,8 @@ import {
   faBookmark,
   faEdit,
   faList,
+  faCopy,
+  faAlignCenter,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 // import moment from "moment";
@@ -65,6 +69,7 @@ export default class FirebaseV2 extends React.Component {
       //   .doc(this.props.theCurrentUserID),
       is_sublist_available: true,
       showEditModal: false,
+      showCopyModal: false,
       indexEditing: "",
       //This single GR item is passed to AddNewATItem to help processed the new item
       singleGR: {
@@ -888,6 +893,18 @@ export default class FirebaseV2 extends React.Component {
               {this.props.routines[i]["photo"] ? (
                 <div>
                   <Row>
+                  <CopyIcon
+                    openCopyModal={() => {
+                      this.setState({
+                      showCopyModal: true,
+                      indexEditing: this.findIndexByID(tempID),
+
+                      })
+                    }}
+                    indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                    showModal={this.state.showCopyModal}
+                  />
                     <Col xs={7} style={{ paddingRight: "0px" }}>
                       <img
                         src={this.props.routines[i]["photo"]}
@@ -1110,6 +1127,23 @@ export default class FirebaseV2 extends React.Component {
                 </div>
               )}
               <Row>
+              <CopyGR
+                    BASE_URL={this.props.BASE_URL}
+                    indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)}
+                    closeCopyModal={() => {
+                      this.setState({
+                      showCopyModal: false,
+                      });
+                    }}
+                    showModal={this.state.showCopyModal}
+                    title={tempTitle}
+                    gr_id={tempID}
+                    theCurrentUserId={this.props.theCurrentUserID}
+                    theCurrentTAID={this.props.theCurrentTAID}
+                  />
+              </Row>
+              <Row>
                 {this.props.routines[i]["start_day_and_time"] ? (
                   <Col
                     style={{
@@ -1150,8 +1184,7 @@ export default class FirebaseV2 extends React.Component {
               <Row>
                 {this.props.showRoutine &&
                   (this.state.WentThroughATList[tempID] === false ||
-                    this.state.WentThroughATList[tempID] === undefined) &&
-                  this.getATexpectedTime(tempID)}
+                    this.state.WentThroughATList[tempID] === undefined)}
 
                 <Col
                   style={{
@@ -1175,82 +1208,7 @@ export default class FirebaseV2 extends React.Component {
     return displayRoutines;
   };
 
-  getATexpectedTime(id) {
-    // console.log("inside getATexpectedTime")
-
-    let ActionTaskArrayPath = firebase
-      .firestore()
-      .collection("users")
-      .doc(this.props.theCurrentUserID)
-      .collection("goals&routines")
-      .doc(id);
-
-    let ATGrabFromFB = this.state.WentThroughATList;
-    ATGrabFromFB[id] = true;
-    this.setState({
-      WentThroughATList: ATGrabFromFB,
-    });
-
-    ActionTaskArrayPath.get()
-      .then((doc) => {
-        if (doc.exists) {
-          let ATExpTimeObj = this.state.AT_expected_completion_time;
-          // let ATGrabFromFB = this.state.WentThroughATList;
-          let ATtimeCombines = 0;
-          var x = doc.data()["actions&tasks"];
-          if (x.length === 0) {
-            ATExpTimeObj[id] = "0";
-            ATGrabFromFB[id] = true;
-            this.setState({
-              AT_expected_completion_time: ATExpTimeObj,
-              WentThroughATList: ATGrabFromFB,
-            });
-            return;
-          }
-
-          for (let k = 0; k < x.length; k++) {
-            // console.log("this is k ", k);
-            ActionTaskArrayPath.collection("actions&tasks")
-              .doc(x[k]["id"])
-              .get()
-              .then((doc) => {
-                if (doc.exists) {
-                  let InsStep = doc.data()["instructions&steps"];
-                  if (InsStep.length === 0) {
-                    ATtimeCombines += this.convertToMinutes(
-                      x[k]["expected_completion_time"]
-                    );
-                  } else {
-                    for (let y = 0; y < InsStep.length; y++) {
-                      ATtimeCombines += this.convertToMinutes(
-                        InsStep[y]["expected_completion_time"]
-                      );
-                    }
-                  }
-                } else {
-                  // doc.data() will be undefined in this case
-                  console.log("No Instruction/Step documents!");
-                }
-                // if (k === x.length - 1) {
-                ATExpTimeObj[id] = ATtimeCombines;
-                ATGrabFromFB[id] = true;
-
-                this.setState({
-                  AT_expected_completion_time: ATExpTimeObj,
-                  WentThroughATList: ATGrabFromFB,
-                });
-                // }
-              });
-          }
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
-  }
+  
 
   thisTakesMeGivenVsSelected = (i, id) => {
     if (this.state.AT_expected_completion_time[id] === "0") {
@@ -1375,7 +1333,46 @@ export default class FirebaseV2 extends React.Component {
     }
   };
 
+  onClickCopy = (goalTitle, goalID) => {
+    let res = [];
+    console.log("In copy", goalTitle)
+    res.push(
+    <div>
+          
+            <Row
+              style={{ margin: "0", marginBottom: "10px" }}
+              className="d-flex flex-row-center"
+            >
+              <Col>
+                <div className="fancytext">{goalTitle}</div>
+              </Col>
+            </Row>
+        </div>
+      );
+    
+    return res;
+  };
+
   getGoals = () => {
+
+    // let temp = [];
+
+    // if (this.props.goals.length != null) {
+    //   for (let i = 0; i < this.props.goals.length; i++) {
+    //     temp[i] = false;
+    //   }
+      
+    // }
+    // console.log(temp, this.state.showCopyModal)
+
+    // let showCopyModal = [];
+
+    // if (this.props.goals.length != null) {
+    //   for (let i = 0; i < this.props.goals.length; i++) {
+    //     showCopyModal[i] = false;
+    //   }
+    // }
+
     let displayGoals = [];
     if (this.props.goals.length != null) {
       //Check to make sure routines exists
@@ -1407,10 +1404,27 @@ export default class FirebaseV2 extends React.Component {
                   </div>
                 </Col>
               </Row>
-              {this.props.goals[i]["photo"] ? (
+              {this.props.goals[i]["photo"] ? 
+              (
                 <div>
                   <Row>
-                    <Col xs={7} style={{ paddingRight: "0px" }}>
+                  <Col xs={7} style={{ paddingLeft: "0px"}}>
+
+                  <CopyIcon
+                    openCopyModal={() => {
+                      this.setState({
+                      showCopyModal: true,
+                      indexEditing: this.findIndexByID(tempID),
+
+                      })
+                    }}
+                    indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                    showModal={this.state.showCopyModal}
+                  />
+                  
+                    </Col>
+                    <Col xs={7} style={{ paddingLeft: "0px"}}>
                       <img
                         src={this.props.goals[i]["photo"]}
                         alt="Instructions/Steps"
@@ -1470,6 +1484,7 @@ export default class FirebaseV2 extends React.Component {
                         )}
                       </Row>
                       <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                        
                         <DeleteGR
                         BASE_URL={this.props.BASE_URL}
                           deleteIndex={this.findIndexByID(tempID)}
@@ -1630,6 +1645,23 @@ export default class FirebaseV2 extends React.Component {
                   </Row>
                 </div>
               )}
+              <Row>
+              <CopyGR
+                    BASE_URL={this.props.BASE_URL}
+                    indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)}
+                    closeCopyModal={() => {
+                      this.setState({
+                      showCopyModal: false,
+                      });
+                    }}
+                    showModal={this.state.showCopyModal}
+                    title={tempTitle}
+                    gr_id={tempID}
+                    theCurrentUserId={this.props.theCurrentUserID}
+                    theCurrentTAID={this.props.theCurrentTAID}
+                  />
+              </Row>
 
               <Row>
                 {this.props.goals[i]["start_day_and_time"] ? (
@@ -1672,8 +1704,8 @@ export default class FirebaseV2 extends React.Component {
               <Row>
                 {this.props.showGoal &&
                   (this.state.WentThroughATList[tempID] === false ||
-                    this.state.WentThroughATList[tempID] === undefined) &&
-                  this.getATexpectedTime(tempID)}
+                    this.state.WentThroughATList[tempID] === undefined)
+                  }
 
                 <Col
                   style={{
@@ -1689,8 +1721,10 @@ export default class FirebaseV2 extends React.Component {
                   {this.thisTakesMeGivenVsSelectedGoals(i, tempID)}
                 </Col>
               </Row>
+              
             </ListGroup.Item>
           </div>
+          
         );
       }
     }

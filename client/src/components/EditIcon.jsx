@@ -14,6 +14,7 @@ export default class EditIcon extends Component {
     }
 
     showIcon = () => {
+      console.log("In edit icon")
         return (
           <div style={{ marginLeft: "5px" }}>
             <FontAwesomeIcon
