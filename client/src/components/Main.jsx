@@ -631,102 +631,175 @@ export default class MainPage extends React.Component {
 
             gr.start_day_and_time = x[i].start_day_and_time;
 
-            const first_notifications = x[i].notifications[0];
-            const second_notifications = x[i].notifications[1];
+            // const first_notifications = x[i].notifications[0];
+            // const second_notifications = x[i].notifications[1];
             // console.log(first_notifications);
             // console.log(second_notifications);
-           
-            if (first_notifications){
-              if (first_notifications.user_ta_id.charAt(0) === "1") {
-                gr.user_notifications = {
-                  before: {
-                    is_enabled: first_notifications.before_is_enable.toLowerCase() === "true",
-                    is_set: first_notifications.before_is_set.toLowerCase() === "true",
-                    message: first_notifications.before_message,
-                    time: first_notifications.before_time,
-                  },
-                  during: {
-                    is_enabled: first_notifications.during_is_enable.toLowerCase() === "true",
-                    is_set: first_notifications.during_is_set.toLowerCase() === "true",
-                    message: first_notifications.during_message,
-                    time: first_notifications.during_time,
-                  },
-                  after: {
-                    is_enabled: first_notifications.after_is_enable.toLowerCase() === "true",
-                    is_set: first_notifications.after_is_set.toLowerCase(),
-                    message: first_notifications.after_message,
-                    time: first_notifications.after_time,
+            
+            for (let k = 0; k < x[i].notifications.length; ++k) {
+              const first_notifications = x[i].notifications[k];
+              if (first_notifications){
+                if (first_notifications.user_ta_id.charAt(0) === "1") {
+                  gr.user_notifications = {
+                    before: {
+                      is_enabled: first_notifications.before_is_enable.toLowerCase() === "true",
+                      is_set: first_notifications.before_is_set.toLowerCase() === "true",
+                      message: first_notifications.before_message,
+                      time: first_notifications.before_time,
+                    },
+                    during: {
+                      is_enabled: first_notifications.during_is_enable.toLowerCase() === "true",
+                      is_set: first_notifications.during_is_set.toLowerCase() === "true",
+                      message: first_notifications.during_message,
+                      time: first_notifications.during_time,
+                    },
+                    after: {
+                      is_enabled: first_notifications.after_is_enable.toLowerCase() === "true",
+                      is_set: first_notifications.after_is_set.toLowerCase(),
+                      message: first_notifications.after_message,
+                      time: first_notifications.after_time,
+                    }
                   }
+                }
+                else if (first_notifications.user_ta_id.charAt(0) === "2" && first_notifications.user_ta_id === this.state.ta_people_id) {
+                  gr.ta_notifications = {
+                    before: {
+                      is_enabled: first_notifications.before_is_enable.toLowerCase() === "true",
+                      is_set: first_notifications.before_is_set.toLowerCase() === "true",
+                      message: first_notifications.before_message,
+                      time: first_notifications.before_time,
+                    },
+                    during: {
+                      is_enabled: first_notifications.during_is_enable.toLowerCase() === "true",
+                      is_set: first_notifications.during_is_set.toLowerCase(),
+                      message: first_notifications.during_message,
+                      time: first_notifications.during_time,
+                    },
+                    after: {
+                      is_enabled: first_notifications.after_is_enable.toLowerCase() === "true",
+                      is_set: first_notifications.after_is_set.toLowerCase() === "true",
+                      message: first_notifications.after_message,
+                      time: first_notifications.after_time,
+                    }
+                  }
+              }
+            }
+            }
+
+            if(!gr.ta_notifications){
+              gr.ta_notifications = {
+                before: {
+                  is_enabled: false,
+                  is_set: false,
+                  message: "",
+                  time: gr.user_notifications.before.time,
+                },
+                during: {
+                  is_enabled: false,
+                  is_set: false,
+                  message: "",
+                  time: gr.user_notifications.during.time,
+                },
+                after: {
+                  is_enabled: false,
+                  is_set: false,
+                  message: "",
+                  time: gr.user_notifications.after.time,
                 }
               }
-              else if (first_notifications.user_ta_id.charAt(0) === "2") {
-                gr.ta_notifications = {
-                  before: {
-                    is_enabled: first_notifications.before_is_enable.toLowerCase() === "true",
-                    is_set: first_notifications.before_is_set.toLowerCase() === "true",
-                    message: first_notifications.before_message,
-                    time: first_notifications.before_time,
-                  },
-                  during: {
-                    is_enabled: first_notifications.during_is_enable.toLowerCase() === "true",
-                    is_set: first_notifications.during_is_set.toLowerCase(),
-                    message: first_notifications.during_message,
-                    time: first_notifications.during_time,
-                  },
-                  after: {
-                    is_enabled: first_notifications.after_is_enable.toLowerCase() === "true",
-                    is_set: first_notifications.after_is_set.toLowerCase() === "true",
-                    message: first_notifications.after_message,
-                    time: first_notifications.after_time,
-                  }
-                }
             }
-          }
-          if (second_notifications){
-              if (second_notifications.user_ta_id.charAt(0) === "1") {
-                gr.user_notifications = {
-                  before: {
-                    is_enabled: second_notifications.before_is_enable.toLowerCase() === "true",
-                    is_set: second_notifications.before_is_set.toLowerCase(),
-                    message: second_notifications.before_message,
-                    time: second_notifications.before_time,
-                  },
-                  during: {
-                    is_enabled: second_notifications.during_is_enable.toLowerCase() === "true",
-                    is_set: second_notifications.during_is_set.toLowerCase() === "true",
-                    message: second_notifications.during_message,
-                    time: second_notifications.during_time,
-                  },
-                  after: {
-                    is_enabled: second_notifications.after_is_enable.toLowerCase() === "true",
-                    is_set: second_notifications.after_is_set.toLowerCase() === "true",
-                    message: second_notifications.after_message,
-                    time: second_notifications.after_time,
-                  }
-                }
-              } else if (second_notifications.user_ta_id.charAt(0) === "2") {
-                gr.ta_notifications = {
-                  before: {
-                    is_enabled: second_notifications.before_is_enable.toLowerCase() === "true",
-                    is_set: second_notifications.before_is_set.toLowerCase() === "true",
-                    message: second_notifications.before_message,
-                    time: second_notifications.before_time,
-                  },
-                  during: {
-                    is_enabled: second_notifications.during_is_enable.toLowerCase() === "true",
-                    is_set: second_notifications.during_is_set.toLowerCase() === "true",
-                    message: second_notifications.during_message,
-                    time: second_notifications.during_time,
-                  },
-                  after: {
-                    is_enabled: second_notifications.after_is_enable.toLowerCase() === "true",
-                    is_set: second_notifications.after_is_set.toLowerCase() === "true",
-                    message: second_notifications.after_message,
-                    time: second_notifications.after_time,
-                  }
-                }
-              } 
-            }
+
+          //   if (first_notifications){
+          //     if (first_notifications.user_ta_id.charAt(0) === "1") {
+          //       gr.user_notifications = {
+          //         before: {
+          //           is_enabled: first_notifications.before_is_enable.toLowerCase() === "true",
+          //           is_set: first_notifications.before_is_set.toLowerCase() === "true",
+          //           message: first_notifications.before_message,
+          //           time: first_notifications.before_time,
+          //         },
+          //         during: {
+          //           is_enabled: first_notifications.during_is_enable.toLowerCase() === "true",
+          //           is_set: first_notifications.during_is_set.toLowerCase() === "true",
+          //           message: first_notifications.during_message,
+          //           time: first_notifications.during_time,
+          //         },
+          //         after: {
+          //           is_enabled: first_notifications.after_is_enable.toLowerCase() === "true",
+          //           is_set: first_notifications.after_is_set.toLowerCase(),
+          //           message: first_notifications.after_message,
+          //           time: first_notifications.after_time,
+          //         }
+          //       }
+          //     }
+          //     else if (first_notifications.user_ta_id.charAt(0) === "2" && first_notifications.user_ta_id === this.state.ta_people_id) {
+          //       gr.ta_notifications = {
+          //         before: {
+          //           is_enabled: first_notifications.before_is_enable.toLowerCase() === "true",
+          //           is_set: first_notifications.before_is_set.toLowerCase() === "true",
+          //           message: first_notifications.before_message,
+          //           time: first_notifications.before_time,
+          //         },
+          //         during: {
+          //           is_enabled: first_notifications.during_is_enable.toLowerCase() === "true",
+          //           is_set: first_notifications.during_is_set.toLowerCase(),
+          //           message: first_notifications.during_message,
+          //           time: first_notifications.during_time,
+          //         },
+          //         after: {
+          //           is_enabled: first_notifications.after_is_enable.toLowerCase() === "true",
+          //           is_set: first_notifications.after_is_set.toLowerCase() === "true",
+          //           message: first_notifications.after_message,
+          //           time: first_notifications.after_time,
+          //         }
+          //       }
+          //   }
+          // }
+          // if (second_notifications){
+          //     if (second_notifications.user_ta_id.charAt(0) === "1") {
+          //       gr.user_notifications = {
+          //         before: {
+          //           is_enabled: second_notifications.before_is_enable.toLowerCase() === "true",
+          //           is_set: second_notifications.before_is_set.toLowerCase(),
+          //           message: second_notifications.before_message,
+          //           time: second_notifications.before_time,
+          //         },
+          //         during: {
+          //           is_enabled: second_notifications.during_is_enable.toLowerCase() === "true",
+          //           is_set: second_notifications.during_is_set.toLowerCase() === "true",
+          //           message: second_notifications.during_message,
+          //           time: second_notifications.during_time,
+          //         },
+          //         after: {
+          //           is_enabled: second_notifications.after_is_enable.toLowerCase() === "true",
+          //           is_set: second_notifications.after_is_set.toLowerCase() === "true",
+          //           message: second_notifications.after_message,
+          //           time: second_notifications.after_time,
+          //         }
+          //       }
+          //     } else if (second_notifications.user_ta_id.charAt(0) === "2" && first_notifications.user_ta_id === this.state.ta_people_id) {
+          //       gr.ta_notifications = {
+          //         before: {
+          //           is_enabled: second_notifications.before_is_enable.toLowerCase() === "true",
+          //           is_set: second_notifications.before_is_set.toLowerCase() === "true",
+          //           message: second_notifications.before_message,
+          //           time: second_notifications.before_time,
+          //         },
+          //         during: {
+          //           is_enabled: second_notifications.during_is_enable.toLowerCase() === "true",
+          //           is_set: second_notifications.during_is_set.toLowerCase() === "true",
+          //           message: second_notifications.during_message,
+          //           time: second_notifications.during_time,
+          //         },
+          //         after: {
+          //           is_enabled: second_notifications.after_is_enable.toLowerCase() === "true",
+          //           is_set: second_notifications.after_is_set.toLowerCase() === "true",
+          //           message: second_notifications.after_message,
+          //           time: second_notifications.after_time,
+          //         }
+          //       }
+          //     } 
+          //   }
 
             console.log(gr)
             gr.title = x[i].gr_title;

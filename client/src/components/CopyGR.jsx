@@ -60,7 +60,9 @@ export default class CopyGR extends Component {
        });
   };
 
- handleChange = (val) => {
+ handleChange = (event) => {
+  var val = event.currentTarget.querySelector("input").value;
+
   this.setState({value: val})
  }
 
@@ -77,6 +79,7 @@ export default class CopyGR extends Component {
             last_name: d.ta_last_name,
             uid: d.ta_unique_id,
             email_id: d.ta_email_id,
+            users: d.users
           };
         });
       }
@@ -96,28 +99,36 @@ listAllUsers = () => {
           allUsers[i] = {
             user_name: d.user_name,
             uid: d.user_unique_id,
-            email_id: d.user_email_id,
+            email_id: d.user_email_id
           };
         });
       }
     });
-    // console.log(this.state.userNames)
-    this.setState({userNames: allUsers})
+    this.setState({userNames: Array.from(allUsers)})
     console.log(this.state.userNames)
 };
 
 
 changeCurrentTACandidate = (advisorId, userId, data) => {
-  console.log(data)
+  console.log(this.state.value)
   this.setState({
     currentAdvisorCandidateName: data["first_name"] + data["last_name"],
     currentAdvisorCandidateId: data["uid"],
     currentAdvisorEmailId: data["email_id"]
-  }, () => {
-    this.listAllUsers();
-    
   });
   
+  let allUsers = [];
+  console.log(data['users'])
+  data['users'].forEach((d, i) => {
+    allUsers[i] = {
+      user_name: d.user_name,
+      uid: d.user_unique_id,
+      email_id: d.user_email_id,
+      users: d.users
+    };
+  });
+  this.setState({userNames: Array.from(allUsers)})
+
 };
 
 changeCurrentUserCandidate = (userId, data) => {
@@ -129,7 +140,6 @@ changeCurrentUserCandidate = (userId, data) => {
 };
   
   editGRForm = () => {
-    this.listAllTAs();
     return (
       <Row
         style={{
@@ -139,79 +149,88 @@ changeCurrentUserCandidate = (userId, data) => {
           marginTop: "10px",
         }}
       >
-        <div style={{ marginTop: "10px" }}>
-        <label>Copy To:</label>
-      </div>
+       
       <Form.Group style={{ marginTop: "10px" }}>
-          <Form.Label> </Form.Label>
-      <div >
-      <ToggleButtonGroup type="checkbox" value={this.state.value || 1} 
-       onChange={(e) => {
-         console.log(e)
-        this.setState({ value: e });
-      }}>
-      <ToggleButton value={1}>MySpace</ToggleButton>
-      <ToggleButton value={2}>MyLife</ToggleButton>
-    </ToggleButtonGroup>
-      </div>  
-      <div>
-      <DropdownButton
-                      variant="outline-primary"
-                      style={{ marginTop: "10px" }}
-                      title={this.state.currentAdvisorCandidateName ||
-                        "Choose the advisor"
-                      }
-                    >
-      {Object.keys(this.state.advisorIdAndNames).map(
-                        (keyName, keyIndex) => (
-                          <Dropdown.Item
-                            key={keyName}
-                            onClick={(e) => {
-                              this.changeCurrentTACandidate(
-                                keyName,
-                                this.state.currentUserId,
-                                this.state.advisorIdAndNames[keyName]
-                              );
-                            }}
-                          >
-                            {this.state.advisorIdAndNames[keyName][
-                              "first_name"
-                            ] +
-                              " " +
-                              this.state.advisorIdAndNames[keyName][
-                                "last_name"
-                              ] || ""}
-                          </Dropdown.Item>
-                        )
-                      )}
-                      </DropdownButton>
-                      <DropdownButton
-                      variant="outline-primary"
-                      style={{ marginTop: "10px" }}
-                      title={this.state.currentUserCandidateName ||
-                        "Choose the User"
-                      }
-                    >
-      {Object.keys(this.state.userNames).map(
-                        (keyName, keyIndex) => (
-                          <Dropdown.Item
-                            key={keyName}
-                            onClick={(e) => {
-                              this.changeCurrentUserCandidate(
-                                keyName,
-                                this.state.userNames[keyName]
-                              );
-                            }}
-                          >
-                            {this.state.userNames[keyName][
-                              "user_name"
-                            ] 
-                               || ""}
-                          </Dropdown.Item>
-                        )
-                      )}
-                      </DropdownButton>
-                            </div>
+          <Form.Label> Copy To: </Form.Label>
+          <div className="btn-group btn-group-toggle" data-toggle="buttons">
+            <label className="btn btn-info active" onClick={this.handleChange}>
+              <input
+                type="radio"
+                name="platform"
+                value="mySpace"
+                autoComplete="off"
+              />{" "}
+              MySpace
+            </label>
+              <label className="btn btn-info" onClick={this.handleChange}>
+                <input
+                  type="radio"
+                  name="platform"
+                  value="myLife"
+                  autoComplete="off"
+                />{" "}
+            MyLife
+          </label>
+          
+        </div>
+
+          <DropdownButton
+            variant="outline-primary"
+            style={{ marginTop: "10px" }}
+            title={this.state.currentAdvisorCandidateName ||
+              "Choose the advisor"
+            }
+          >
+            {Object.keys(this.state.advisorIdAndNames).map(
+              (keyName, keyIndex) => (
+                <Dropdown.Item
+                  key={keyName}
+                  onClick={(e) => {
+                    this.changeCurrentTACandidate(
+                      keyName,
+                      this.state.currentUserId,
+                      this.state.advisorIdAndNames[keyName]
+                    );
+                  }}
+                >
+                  {this.state.advisorIdAndNames[keyName][
+                    "first_name"
+                  ] +
+                    " " +
+                    this.state.advisorIdAndNames[keyName][
+                      "last_name"
+                    ] || ""}
+                </Dropdown.Item>
+              )
+            )}
+          </DropdownButton>
+
+          <DropdownButton
+            variant="outline-primary"
+            style={{ marginTop: "10px" }}
+            title={this.state.currentUserCandidateName ||
+              "Choose the User"
+            }
+          >
+            {Object.keys(this.state.userNames).map(
+              (keyName, keyIndex) => (
+                <Dropdown.Item
+                  key={keyName}
+                  onClick={(e) => {
+                    this.changeCurrentUserCandidate(
+                      keyName,
+                      this.state.userNames[keyName]
+                    );
+                  }}
+                >
+                  {this.state.userNames[keyName][
+                    "user_name"
+                  ] 
+                      || ""}
+                </Dropdown.Item>
+              )
+            )}
+          </DropdownButton>
 
       </Form.Group>
       <Form.Group>
@@ -242,6 +261,7 @@ changeCurrentUserCandidate = (userId, data) => {
 
   
   showIcon = () => {
+
     return (
       <div style={{ marginLeft: "5px" }}>
         <FontAwesomeIcon
@@ -265,7 +285,8 @@ changeCurrentUserCandidate = (userId, data) => {
   };
 
   render() {
-    console.log(this.props.showModal, this.props.i, this.props.indexEditing)
+    this.listAllTAs();
+
     return (
       <div
       onClick={(e) => {
