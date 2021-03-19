@@ -213,7 +213,7 @@ class FutureModal extends React.Component {
             }}
           >
             <Modal.Title>
-              <h5 className="normalfancytext">Note To Future</h5>{" "}
+              <h5 className="normalfancytext">Notes To Future Self</h5>{" "}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>

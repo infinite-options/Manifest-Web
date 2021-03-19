@@ -1626,7 +1626,6 @@ class PeopleModal extends React.Component {
                 <Dropdown.Item
                   eventKey="Friends"
                   onSelect={(eventKey) => {
-                    e.stopPropagation();
                     let temp = this.state.importantPeople3;
                     temp.relationship = eventKey;
                     this.setState({ importantPeople3: temp });

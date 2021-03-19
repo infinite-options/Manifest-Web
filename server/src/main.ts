@@ -44,14 +44,14 @@ app.use(
   })
 );
 
-var credentials_url = "credentials.json";
+var credentials_url;
 var REDIRECTED_ADD_USER_URI;
 var firebase = require("firebase");
 var firebaseConfig;
 var FAVICON_URL;
 var BASE_URL;
 
-if (hostname == "manifestmy.life") {
+if (hostname == "manifestmylife") {
   console.log("In Manifest My Life")
   var key_url = "/etc/letsencrypt/live/manifestmy.life/privkey.pem";
   var cert_url = "/etc/letsencrypt/live/manifestmy.life/fullchain.pem";
@@ -68,6 +68,7 @@ if (hostname == "manifestmy.life") {
   };
   BASE_URL = "https://gyn3vgy3fb.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MyLife-60x60@3x.png";
+  credentials_url = "credentials2.json";
 } else {
   console.log("In Manifest My Space")
   var key_url = "/etc/letsencrypt/live/manifestmy.space/privkey.pem";
@@ -85,6 +86,8 @@ if (hostname == "manifestmy.life") {
   };
   BASE_URL = "https://3s3sftsr90.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
   FAVICON_URL = "Icon-MySpace-60x60@3x.png";
+  credentials_url = "credentials.json";
+
 }
 
 firebase.initializeApp(firebaseConfig);

@@ -29,14 +29,13 @@ export default class CopyGR extends Component {
             userNames: [],
             currentUserCandidateName: "",
             currentUserCandidateId: "",
+            copyType: ""
             };
   }
 
   
   newInputSubmit = () => {
    
-    
- 
     let url = this.props.BASE_URL + "copyGR";
 
     let body = {
@@ -44,9 +43,7 @@ export default class CopyGR extends Component {
       gr_id: this.props.gr_id,
       ta_id: this.state.currentAdvisorCandidateId,
     }
-    
-    console.log(body);
-    
+        
     axios.post(url, body)
        .then(() => {
          console.log("Copied to Database")
@@ -62,15 +59,23 @@ export default class CopyGR extends Component {
 
  handleChange = (event) => {
   var val = event.currentTarget.querySelector("input").value;
-
   this.setState({value: val})
+  this.listAllUsers();
+  this.listAllTAs();
+ }
+
+ handleChange1 = (event) => {
+  var val = event.currentTarget.querySelector("input").value;
+  this.setState({copyType: val})
+  console.log(this.state.userNames)
+  // this.listAllUsers();
+  // this.listAllTAs();
  }
 
  listAllTAs = () => {
-  
   axios
     .get(
-      this.props.BASE_URL + "listAllTAForCopy"    )
+      this.props.BASE_URL + "listAllTAForCopy")
     .then((response) => {
       if (response.data.result.length !== 0) {
         response.data.result.forEach((d, i) => {
@@ -86,28 +91,25 @@ export default class CopyGR extends Component {
     });
 };
 
+
 listAllUsers = () => {
-  console.log("Selected user", this.state.currentAdvisorEmailId)
-  let allUsers = []
   axios
   .get
-  (this.props.BASE_URL + "usersOfTA/" + this.state.currentAdvisorEmailId).then(
+  (this.props.BASE_URL + "listAllUsersForCopy").then(
     (response) => {
       if (response.data.result.length !== 0) {
-        console.log(response)
         response.data.result.forEach((d, i) => {
-          allUsers[i] = {
-            user_name: d.user_name,
+          this.state.userNames[i] = {
+            user_name: d.name,
             uid: d.user_unique_id,
-            email_id: d.user_email_id
+            email_id: d.user_email_id,
+            ta: d.TA
           };
         });
       }
     });
-    this.setState({userNames: Array.from(allUsers)})
     console.log(this.state.userNames)
 };
-
 
 changeCurrentTACandidate = (advisorId, userId, data) => {
   console.log(this.state.value)
@@ -128,14 +130,43 @@ changeCurrentTACandidate = (advisorId, userId, data) => {
     };
   });
   this.setState({userNames: Array.from(allUsers)})
-
 };
 
 changeCurrentUserCandidate = (userId, data) => {
-
   this.setState({
     currentUserCandidateName: data["user_name"],
     currentUserCandidateId: data["uid"]
+  });
+};
+
+changeCurrentUserCandidate1 = (userId, id, data) => {
+  console.log(this.state.value)
+  this.setState({
+    currentUserCandidateName: data["user_name"],
+    currentUserCandidateId: data["uid"],
+   });
+  
+  let allTA = [];
+
+  data['ta'].forEach((d, i) => {
+    allTA[i] = {
+      first_name: d.ta_first_name,
+      last_name: d.ta_last_name,
+      name: d.name,
+      uid: d.ta_unique_id,
+      email_id: d.ta_email_id,
+      users: d.users
+    };
+  });
+  this.setState({advisorIdAndNames: Array.from(allTA)})
+
+};
+
+changeCurrentTACandidate1 = (taId, data) => {
+
+  this.setState({
+    currentAdvisorCandidateName: data["first_name"] + data["last_name"],
+    currentAdvisorCandidateId: data["uid"]
   });
 };
   
@@ -173,65 +204,128 @@ changeCurrentUserCandidate = (userId, data) => {
           </label>
           
         </div>
+        <div className="btn-group btn-group-toggle" data-toggle="buttons">
+            <label className="btn btn-info active" onClick={this.handleChange1}>
+              <input
+                type="radio"
+                name="platform"
+                value="fromuser"
+                autoComplete="off"
+              />{" "}
+              From User
+            </label>
+              <label className="btn btn-info" onClick={this.handleChange1}>
+                <input
+                  type="radio"
+                  name="platform"
+                  value="fromta"
+                  autoComplete="off"
+                />{" "}
+            From TA
+          </label>
+          
+        </div>
+
+        {this.state.copyType === "fromta" ?
+        (
+          <><DropdownButton
+                variant="outline-primary"
+                style={{ marginTop: "10px" }}
+                title={this.state.currentAdvisorCandidateName ||
+                  "Choose the advisor"}
+              >
+                {Object.keys(this.state.advisorIdAndNames).map(
+                  (keyName, keyIndex) => (
+                    <Dropdown.Item
+                      key={keyName}
+                      onClick={(e) => {
+                        this.changeCurrentTACandidate(
+                          keyName,
+                          this.state.currentUserId,
+                          this.state.advisorIdAndNames[keyName]
+                        );
+                      } }
+                    >
+                      {this.state.advisorIdAndNames[keyName]["first_name"] +
+                        " " +
+                        this.state.advisorIdAndNames[keyName]["last_name"] || ""}
+                    </Dropdown.Item>
+                  )
+                )}
+              </DropdownButton>
+
+                <DropdownButton
+                  variant="outline-primary"
+                  style={{ marginTop: "10px" }}
+                  title={this.state.currentUserCandidateName ||
+                    "Choose the User"}
+                >
+                  {Object.keys(this.state.userNames).map(
+                    (keyName, keyIndex) => (
+                      <Dropdown.Item
+                        key={keyName}
+                        onClick={(e) => {
+                          this.changeCurrentUserCandidate(
+                            keyName,
+                            this.state.userNames[keyName]
+                          );
+                        } }
+                      >
+                        {this.state.userNames[keyName]["user_name"]
+                          || ""}
+                      </Dropdown.Item>
+                    )
+                  )}
+                </DropdownButton></>
+
+        ) : this.state.copyType === "fromuser" ? 
+        (<><DropdownButton
+          variant="outline-primary"
+          style={{ marginTop: "10px" }}
+          title={this.state.currentUserCandidateName ||
+            "Choose the User"}
+          >
+          {Object.keys(this.state.userNames).map(
+            (keyName, keyIndex) => (
+              <Dropdown.Item
+                key={keyName}
+                onClick={(e) => {
+                  this.changeCurrentUserCandidate1(
+                    keyName,
+                    this.state.currentUserId,
+                    this.state.userNames[keyName]
+                  );
+                } }
+              >
+                {this.state.userNames[keyName]["user_name"]  || ""}
+              </Dropdown.Item>
+            )
+          )}
+        </DropdownButton>
 
           <DropdownButton
             variant="outline-primary"
             style={{ marginTop: "10px" }}
             title={this.state.currentAdvisorCandidateName ||
-              "Choose the advisor"
-            }
+              "Choose the Advisor"}
           >
             {Object.keys(this.state.advisorIdAndNames).map(
               (keyName, keyIndex) => (
                 <Dropdown.Item
                   key={keyName}
                   onClick={(e) => {
-                    this.changeCurrentTACandidate(
+                    this.changeCurrentTACandidate1(
                       keyName,
-                      this.state.currentUserId,
                       this.state.advisorIdAndNames[keyName]
                     );
-                  }}
+                  } }
                 >
-                  {this.state.advisorIdAndNames[keyName][
-                    "first_name"
-                  ] +
-                    " " +
-                    this.state.advisorIdAndNames[keyName][
-                      "last_name"
-                    ] || ""}
+                  {this.state.advisorIdAndNames[keyName]["name"] || ""}
                 </Dropdown.Item>
               )
             )}
-          </DropdownButton>
-
-          <DropdownButton
-            variant="outline-primary"
-            style={{ marginTop: "10px" }}
-            title={this.state.currentUserCandidateName ||
-              "Choose the User"
-            }
-          >
-            {Object.keys(this.state.userNames).map(
-              (keyName, keyIndex) => (
-                <Dropdown.Item
-                  key={keyName}
-                  onClick={(e) => {
-                    this.changeCurrentUserCandidate(
-                      keyName,
-                      this.state.userNames[keyName]
-                    );
-                  }}
-                >
-                  {this.state.userNames[keyName][
-                    "user_name"
-                  ] 
-                      || ""}
-                </Dropdown.Item>
-              )
-            )}
-          </DropdownButton>
-
+          </DropdownButton></>) : (<div></div>)}
+          
       </Form.Group>
       <Form.Group>
           <Button
@@ -285,7 +379,6 @@ changeCurrentUserCandidate = (userId, data) => {
   };
 
   render() {
-    this.listAllTAs();
 
     return (
       <div
