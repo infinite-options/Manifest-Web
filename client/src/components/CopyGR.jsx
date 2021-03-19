@@ -50,6 +50,7 @@ export default class CopyGR extends Component {
          
          if (this.props != null) {
            this.props.closeCopyModal();
+           this.props.refresh();
          }
        })
        .catch((err) => {

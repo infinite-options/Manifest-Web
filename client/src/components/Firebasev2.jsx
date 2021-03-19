@@ -1139,6 +1139,8 @@ export default class FirebaseV2 extends React.Component {
                     showModal={this.state.showCopyModal}
                     title={tempTitle}
                     gr_id={tempID}
+                    ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                    refresh={this.grabFireBaseRoutinesGoalsData}
                     theCurrentUserId={this.props.theCurrentUserID}
                     theCurrentTAID={this.props.theCurrentTAID}
                   />
@@ -1660,6 +1662,8 @@ export default class FirebaseV2 extends React.Component {
                     gr_id={tempID}
                     theCurrentUserId={this.props.theCurrentUserID}
                     theCurrentTAID={this.props.theCurrentTAID}
+                    ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                    refresh={this.grabFireBaseRoutinesGoalsData}
                   />
               </Row>
 
