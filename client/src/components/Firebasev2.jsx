@@ -2426,7 +2426,7 @@ shows entire list of goals and routines
     let grId = {"id":{}};
     let grStatus = {"id":{}};
     const url =  this.props.BASE_URL +  `getHistory/${userId}`;
-    console.log(url);
+
     axios.get(url).then((res)=>{  
       const data = res.data.result;
       this.setState({dataObj: res.data.result});
@@ -2434,6 +2434,7 @@ shows entire list of goals and routines
         // const dataDate = moment(info.date).format("MM/DD/YYYY");
         // const grDate = moment(object.end_day_and_time).format("MM/DD/YYYY");
           var keyId = Object.keys(info.details);
+
           keyId.forEach((id)=>{
             
             if(id === object.id){
@@ -2492,45 +2493,10 @@ axios.get( this.props.BASE_URL + `currentStatus/${userId}`).then((response) => {
         date_string = "Today";
         let currentDateHistory = {
           date: date_string,
-          // title: object.title,
-          // is_in_progress: object.is_in_progress,
-          // is_complete: object.is_complete,
+         
           details: grStatus,
         };
-        // await db
-        //   .collection("users")
-        //   .doc(this.props.theCurrentUserID)
-        //   .collection("goals&routines")
-        //   .doc(object.id)
-        //   .get()
-        //   .then((ats) => {
-        //     console.log(ats.data()["actions&tasks"]);
-        //     currentDateHistory["actions&tasks"] =
-        //       ats.data()["actions&tasks"] != undefined
-        //         ? ats.data()["actions&tasks"]
-        //         : [];
-        //   });
-
-        // for (let i = 0; i < currentDateHistory["actions&tasks"].length; i++) {
-        //   let at = currentDateHistory["actions&tasks"][i];
-        //   console.log(currentDateHistory);
-        //   await db
-        //     .collection("users")
-        //     .doc(this.props.theCurrentUserID)
-        //     .collection("goals&routines")
-        //     .doc(object.id)
-        //     .collection("actions&tasks")
-        //     .doc(at.id)
-        //     .get()
-        //     .then((singleAT) => {
-        //       if (singleAT.data()["instructions&steps"] != undefined) {
-        //         currentDateHistory["actions&tasks"][i][
-        //           "instructions&steps"
-        //         ] = singleAT.data()["instructions&steps"];
-        //       }
-        //     });
-        // }
-
+       
         logs.push(currentDateHistory);
         let list = [];
         let headers = [

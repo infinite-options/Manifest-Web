@@ -185,7 +185,7 @@ changeCurrentTACandidate1 = (taId, data) => {
       <Form.Group style={{ marginTop: "10px" }}>
           <Form.Label> Copy To: </Form.Label>
           <div className="btn-group btn-group-toggle" data-toggle="buttons">
-            <label className="btn btn-info active" onClick={this.handleChange}>
+            <label className="btn btn-info active" onClick={this.handleChange} style={{marginLeft:"10px"}}>
               <input
                 type="radio"
                 name="platform"
@@ -194,7 +194,7 @@ changeCurrentTACandidate1 = (taId, data) => {
               />{" "}
               MySpace
             </label>
-              <label className="btn btn-info" onClick={this.handleChange}>
+              <label className="btn btn-info" onClick={this.handleChange} style={{marginLeft:"10px"}}>
                 <input
                   type="radio"
                   name="platform"
@@ -205,24 +205,24 @@ changeCurrentTACandidate1 = (taId, data) => {
           </label>
           
         </div>
-        <div className="btn-group btn-group-toggle" data-toggle="buttons">
-            <label className="btn btn-info active" onClick={this.handleChange1}>
+        <div className="btn-group btn-group-toggle" data-toggle="buttons" style={{marginTop:"10px"}}>
+            <label className="btn btn-info active" onClick={this.handleChange1} style={{marginLeft:"15px"}}>
               <input
                 type="radio"
                 name="platform"
                 value="fromuser"
                 autoComplete="off"
               />{" "}
-              From User
+              Copy to User
             </label>
-              <label className="btn btn-info" onClick={this.handleChange1}>
+              <label className="btn btn-info" onClick={this.handleChange1} style={{marginLeft:"10px"}}>
                 <input
                   type="radio"
                   name="platform"
                   value="fromta"
                   autoComplete="off"
                 />{" "}
-            From TA
+            Copy to TA
           </label>
           
         </div>
@@ -345,6 +345,7 @@ changeCurrentTACandidate1 = (taId, data) => {
               e.stopPropagation();
               this.newInputSubmit();
             }}
+            style={{marginLeft:"10px"}}
           >
             Save changes
           </Button>
